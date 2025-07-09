@@ -3,17 +3,15 @@ import { defineConfig } from 'vite';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/admin',
   plugins: [react()],
   preview: {
     host: true,
-    port: 4173,
-    allowedHosts: ['tm-cargo.com.tm', 'www.tm-cargo.com.tm'],
+    port: 3173,
+    allowedHosts: ['wedding.infoportal.news', 'www.wedding.infoportal.news'],
   },
   resolve: {
     alias: {
       '@': '/src',
-
       '@contracts': '/src/api',
     },
   },
