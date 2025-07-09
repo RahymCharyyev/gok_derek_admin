@@ -13,8 +13,17 @@ export const tsr = initTsrReactQuery(contract, {
   baseUrl: API_URL,
   baseHeaders: {
     Authorization: () => {
-      const token = JSON.parse(Cookies.get('token') || '');
-      return token ? `Bearer ${token}` : '';
+      try {
+        const token = JSON.parse(Cookies.get('token') || '');
+        if (!token) {
+          window.location.href = '/login';
+          return '';
+        }
+        return `Bearer ${token}`;
+      } catch (err) {
+        window.location.href = '/login';
+        return '';
+      }
     },
   },
   // credentials: 'include',
