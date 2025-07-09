@@ -21,7 +21,7 @@ type MenuItem = {
 const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   // const [isAuthChecked, setIsAuthChecked] = useState(false);
-  const [userData, setUserData] = useState<any>(null);
+  const [userData, _] = useState<any>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
