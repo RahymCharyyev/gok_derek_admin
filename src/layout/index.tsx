@@ -1,10 +1,10 @@
 import { tsr } from '@/api';
-import { LoadingOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Layout, Menu, Space, Spin } from 'antd';
+import { TeamOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Layout, Menu } from 'antd';
 import { Content, Header } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
 import Cookies from 'js-cookie';
-import { useEffect, useState, type FC } from 'react';
+import { useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -20,51 +20,51 @@ type MenuItem = {
 
 const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [isAuthChecked, setIsAuthChecked] = useState(false);
+  // const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [userData, setUserData] = useState<any>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const data = await tsr.auth.me.query();
-        if (data.status != 200) {
-          Cookies.remove('token');
-          navigate('/login');
-          return;
-        } else {
-          setUserData(data.body);
-        }
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     try {
+  //       const data = await tsr.auth.me.query();
+  //       if (data.status != 200) {
+  //         Cookies.remove('token');
+  //         navigate('/login');
+  //         return;
+  //       } else {
+  //         setUserData(data.body);
+  //       }
 
-        if (data.body?.role !== 'admin') {
-          Cookies.remove('token');
-          navigate('/login');
-        } else {
-          setIsAuthChecked(true);
-        }
-      } catch (error: any) {
-        if (error?.response?.status === 401) {
-          Cookies.remove('token');
-          navigate('/login');
-        }
-      }
-    };
+  //       if (data.body?.role !== 'admin') {
+  //         Cookies.remove('token');
+  //         navigate('/login');
+  //       } else {
+  //         setIsAuthChecked(true);
+  //       }
+  //     } catch (error: any) {
+  //       if (error?.response?.status === 401) {
+  //         Cookies.remove('token');
+  //         navigate('/login');
+  //       }
+  //     }
+  //   };
 
-    checkAuth();
-  }, []);
+  //   checkAuth();
+  // }, []);
 
-  if (!isAuthChecked) {
-    return (
-      <Space
-        direction='horizontal'
-        className='w-full h-screen justify-center items-center'
-      >
-        <Spin indicator={<LoadingOutlined spin style={{ fontSize: 96 }} />} />
-      </Space>
-    );
-  }
+  // if (!isAuthChecked) {
+  //   return (
+  //     <Space
+  //       direction='horizontal'
+  //       className='w-full h-screen justify-center items-center'
+  //     >
+  //       <Spin indicator={<LoadingOutlined spin style={{ fontSize: 96 }} />} />
+  //     </Space>
+  //   );
+  // }
 
   const handleLogout = async () => {
     const data = await tsr.auth.logout.query();
