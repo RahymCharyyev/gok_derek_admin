@@ -16,12 +16,12 @@ export const tsr = initTsrReactQuery(contract, {
       try {
         const token = JSON.parse(Cookies.get('token') || '');
         if (!token) {
-          window.location.href = '/login';
+          window.location.href = '/gokderek/login';
           return '';
         }
         return `Bearer ${token}`;
       } catch (err) {
-        window.location.href = '/login';
+        window.location.href = '/gokderek/login';
         return '';
       }
     },
