@@ -14,7 +14,7 @@ function App() {
         },
       }}
     >
-      <BrowserRouter>
+      <BrowserRouter basename='/gokderek'>
         <Routes>
           <Route path='/login' element={<Login />} />
           <Route
