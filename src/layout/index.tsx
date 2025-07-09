@@ -1,6 +1,6 @@
 import { tsr } from '@/api';
 import { LoadingOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Image, Layout, Menu, Space, Spin } from 'antd';
+import { Button, Layout, Menu, Space, Spin } from 'antd';
 import { Content, Header } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
 import Cookies from 'js-cookie';
