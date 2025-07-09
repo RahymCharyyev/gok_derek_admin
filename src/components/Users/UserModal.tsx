@@ -1,24 +1,15 @@
 import { Modal, Form, Input, Select } from 'antd';
 import { useEffect } from 'react';
-import { user as userSchema } from '@/api/schema/user';
+import { user as userSchema, type UserEdit } from '@/api/schema/user';
 import { useTranslation } from 'react-i18next';
 
 const { useForm } = Form;
 
-type User = {
-  id?: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-  role?: string;
-};
-
 interface Props {
   open: boolean;
   onCancel: () => void;
-  onSubmit: (values: User) => void;
-  initialValues?: User | null;
+  onSubmit: (values: UserEdit) => void;
+  initialValues?: UserEdit | null;
 }
 
 const UserModal = ({ open, onCancel, onSubmit, initialValues }: Props) => {
@@ -48,24 +39,38 @@ const UserModal = ({ open, onCancel, onSubmit, initialValues }: Props) => {
     >
       <Form form={form} layout='vertical' onFinish={onSubmit}>
         <Form.Item
-          name='firstName'
-          label={t('firstName')}
-          rules={[{ required: true }]}
+          name='username'
+          label={t('loginOfUser')}
+          rules={[{ required: initialValues ? false : true }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
-          name='lastName'
-          label={t('lastName')}
-          rules={[{ required: true }]}
+          name='role'
+          label={t('role')}
+          rules={[{ required: initialValues ? false : true }]}
+        >
+          <Select
+            options={userSchema.shape.role.options.map((r) => ({
+              label: r,
+              value: r,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
+          name='password'
+          label={t('password')}
+          rules={[{ required: initialValues ? false : true }]}
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          name='email'
-          label={t('email')}
-          rules={[{ required: true, type: 'email' }]}
-        >
+        <Form.Item name='firstName' label={t('firstName')}>
+          <Input />
+        </Form.Item>
+        <Form.Item name='lastName' label={t('lastName')}>
+          <Input />
+        </Form.Item>
+        <Form.Item name='email' label={t('email')}>
           <Input />
         </Form.Item>
         <Form.Item name='phone' label={t('phone')}>
@@ -75,28 +80,6 @@ const UserModal = ({ open, onCancel, onSubmit, initialValues }: Props) => {
             pattern='[0-9]*'
             inputMode='numeric'
           />
-        </Form.Item>
-        <Form.Item name='role' label={t('role')} rules={[{ required: true }]}>
-          <Select
-            options={userSchema.shape.role.options.map((r) => ({
-              label: r,
-              value: r,
-            }))}
-          />
-        </Form.Item>
-        <Form.Item
-          name='username'
-          label={t('username')}
-          rules={[{ required: true }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name='password'
-          label={t('password')}
-          rules={[{ required: true }]}
-        >
-          <Input />
         </Form.Item>
       </Form>
     </Modal>

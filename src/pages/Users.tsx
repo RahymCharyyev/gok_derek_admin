@@ -5,13 +5,16 @@ import UserModal from '@/components/Users/UserModal';
 import TableLayout from '@/layout/TableLayout';
 import { queryClient } from '@/Providers';
 import { EditOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Select, type TableProps } from 'antd';
+import { Button, Input, Select, type TableProps, Grid } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
+const { useBreakpoint } = Grid;
+
 const Users = () => {
+  const screens = useBreakpoint();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<any | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -67,6 +70,7 @@ const Users = () => {
       key: item.id,
       index: (page - 1) * perPage + (index + 1),
       id: item.id,
+      username: item.username || '',
       firstName: item.firstName || '',
       lastName: item.lastName || '',
       email: item.email || '',
@@ -156,161 +160,174 @@ const Users = () => {
       title: '№',
       dataIndex: 'index',
       key: 'index',
+      fixed: 'left',
     },
     {
-      title: t('firstName'),
-      dataIndex: 'firstName',
-      key: 'firstName',
-      filterDropdown: () => (
-        <div className='p-2 space-y-2 w-64'>
-          <Input
-            value={searchByFirstName}
-            suffix={<SearchOutlined />}
-            placeholder={t('search')}
-            onChange={(e) => setSearchByFirstName(e.target.value)}
-          />
-          <div className='flex justify-between'>
-            <Button size='small' type='primary' onClick={handleSearch}>
-              {t('search')}
-            </Button>
-            <Button
-              danger
-              size='small'
-              onClick={handleClearFirstNameFilter}
-              disabled={!searchByFirstName}
-            >
-              {t('clearFilter')}
-            </Button>
-          </div>
-        </div>
-      ),
-      filterIcon: () => <SearchOutlined />,
+      title: t('loginOfUser'),
+      dataIndex: 'username',
+      key: 'username',
+      fixed: 'left',
     },
-    {
-      title: t('lastName'),
-      dataIndex: 'lastName',
-      key: 'lastName',
-      filterDropdown: () => (
-        <div className='p-2 space-y-2 w-64'>
-          <Input
-            value={searchByLastName}
-            suffix={<SearchOutlined />}
-            placeholder={t('search')}
-            onChange={(e) => setSearchByLastName(e.target.value)}
-          />
-          <div className='flex justify-between'>
-            <Button size='small' type='primary' onClick={handleSearch}>
-              {t('search')}
-            </Button>
-            <Button
-              danger
-              size='small'
-              onClick={handleClearLastNameFilter}
-              disabled={!searchByLastName}
-            >
-              {t('clearFilter')}
-            </Button>
-          </div>
-        </div>
-      ),
-      filterIcon: () => <SearchOutlined />,
-    },
-    {
-      title: t('email'),
-      dataIndex: 'email',
-      key: 'email',
-      filterDropdown: () => (
-        <div className='p-2 space-y-2 w-64'>
-          <Input
-            value={searchByEmail}
-            suffix={<SearchOutlined />}
-            placeholder={t('search')}
-            onChange={(e) => setSearchByEmail(e.target.value)}
-          />
-          <div className='flex justify-between'>
-            <Button size='small' type='primary' onClick={handleSearch}>
-              {t('search')}
-            </Button>
-            <Button
-              danger
-              size='small'
-              onClick={handleClearEmailFilter}
-              disabled={!searchByEmail}
-            >
-              {t('clearFilter')}
-            </Button>
-          </div>
-        </div>
-      ),
-      filterIcon: () => <SearchOutlined />,
-    },
-    {
-      title: t('phone'),
-      dataIndex: 'phone',
-      key: 'phone',
-      filterDropdown: () => (
-        <div className='p-2 space-y-2 w-64'>
-          <Input
-            value={searchByPhone}
-            suffix={<SearchOutlined />}
-            placeholder={t('search')}
-            onChange={(e) => setSearchByPhone(e.target.value)}
-          />
-          <div className='flex justify-between'>
-            <Button size='small' type='primary' onClick={handleSearch}>
-              {t('search')}
-            </Button>
-            <Button
-              danger
-              size='small'
-              onClick={handleClearPhoneFilter}
-              disabled={!searchByPhone}
-            >
-              {t('clearFilter')}
-            </Button>
-          </div>
-        </div>
-      ),
-      filterIcon: () => <SearchOutlined />,
-    },
-    {
-      title: t('role'),
-      dataIndex: 'role',
-      key: 'role',
-      filterDropdown: () => (
-        <div className='p-2 space-y-2 w-[220px]'>
-          <Select
-            className='w-[205px]'
-            placeholder={t('selectBannerLocation')}
-            options={user.shape.role.options.map((e) => ({
-              value: e,
-              label: e,
-            }))}
-            onChange={setSearchByRole}
-          />
-          <div className='flex justify-between'>
-            <Button size='small' type='primary' onClick={handleSearch}>
-              {t('search')}
-            </Button>
-            <Button
-              danger
-              size='small'
-              onClick={handleClearRoleFilter}
-              disabled={!searchByRole}
-            >
-              {t('clearFilter')}
-            </Button>
-          </div>
-        </div>
-      ),
-      filterIcon: () => <SearchOutlined />,
-    },
-    {
-      title: t('createdAt'),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (record) => <div>{dayjs(record).format('DD.MM.YYYY HH:mm')}</div>,
-    },
+    ...(screens.sm
+      ? [
+          {
+            title: t('firstName'),
+            dataIndex: 'firstName',
+            key: 'firstName',
+            filterDropdown: () => (
+              <div className='p-2 space-y-2 w-64'>
+                <Input
+                  value={searchByFirstName}
+                  suffix={<SearchOutlined />}
+                  placeholder={t('search')}
+                  onChange={(e) => setSearchByFirstName(e.target.value)}
+                />
+                <div className='flex justify-between'>
+                  <Button size='small' type='primary' onClick={handleSearch}>
+                    {t('search')}
+                  </Button>
+                  <Button
+                    danger
+                    size='small'
+                    onClick={handleClearFirstNameFilter}
+                    disabled={!searchByFirstName}
+                  >
+                    {t('clearFilter')}
+                  </Button>
+                </div>
+              </div>
+            ),
+            filterIcon: () => <SearchOutlined />,
+          },
+          {
+            title: t('lastName'),
+            dataIndex: 'lastName',
+            key: 'lastName',
+            filterDropdown: () => (
+              <div className='p-2 space-y-2 w-64'>
+                <Input
+                  value={searchByLastName}
+                  suffix={<SearchOutlined />}
+                  placeholder={t('search')}
+                  onChange={(e) => setSearchByLastName(e.target.value)}
+                />
+                <div className='flex justify-between'>
+                  <Button size='small' type='primary' onClick={handleSearch}>
+                    {t('search')}
+                  </Button>
+                  <Button
+                    danger
+                    size='small'
+                    onClick={handleClearLastNameFilter}
+                    disabled={!searchByLastName}
+                  >
+                    {t('clearFilter')}
+                  </Button>
+                </div>
+              </div>
+            ),
+            filterIcon: () => <SearchOutlined />,
+          },
+          {
+            title: t('email'),
+            dataIndex: 'email',
+            key: 'email',
+            filterDropdown: () => (
+              <div className='p-2 space-y-2 w-64'>
+                <Input
+                  value={searchByEmail}
+                  suffix={<SearchOutlined />}
+                  placeholder={t('search')}
+                  onChange={(e) => setSearchByEmail(e.target.value)}
+                />
+                <div className='flex justify-between'>
+                  <Button size='small' type='primary' onClick={handleSearch}>
+                    {t('search')}
+                  </Button>
+                  <Button
+                    danger
+                    size='small'
+                    onClick={handleClearEmailFilter}
+                    disabled={!searchByEmail}
+                  >
+                    {t('clearFilter')}
+                  </Button>
+                </div>
+              </div>
+            ),
+            filterIcon: () => <SearchOutlined />,
+          },
+          {
+            title: t('phone'),
+            dataIndex: 'phone',
+            key: 'phone',
+            filterDropdown: () => (
+              <div className='p-2 space-y-2 w-64'>
+                <Input
+                  value={searchByPhone}
+                  suffix={<SearchOutlined />}
+                  placeholder={t('search')}
+                  onChange={(e) => setSearchByPhone(e.target.value)}
+                />
+                <div className='flex justify-between'>
+                  <Button size='small' type='primary' onClick={handleSearch}>
+                    {t('search')}
+                  </Button>
+                  <Button
+                    danger
+                    size='small'
+                    onClick={handleClearPhoneFilter}
+                    disabled={!searchByPhone}
+                  >
+                    {t('clearFilter')}
+                  </Button>
+                </div>
+              </div>
+            ),
+            filterIcon: () => <SearchOutlined />,
+          },
+          {
+            title: t('role'),
+            dataIndex: 'role',
+            key: 'role',
+            filterDropdown: () => (
+              <div className='p-2 space-y-2 w-[220px]'>
+                <Select
+                  className='w-[205px]'
+                  placeholder={t('selectBannerLocation')}
+                  options={user.shape.role.options.map((e) => ({
+                    value: e,
+                    label: e,
+                  }))}
+                  onChange={setSearchByRole}
+                />
+                <div className='flex justify-between'>
+                  <Button size='small' type='primary' onClick={handleSearch}>
+                    {t('search')}
+                  </Button>
+                  <Button
+                    danger
+                    size='small'
+                    onClick={handleClearRoleFilter}
+                    disabled={!searchByRole}
+                  >
+                    {t('clearFilter')}
+                  </Button>
+                </div>
+              </div>
+            ),
+            filterIcon: () => <SearchOutlined />,
+          },
+          {
+            title: t('createdAt'),
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            render: (record: any) => (
+              <div>{dayjs(record).format('DD.MM.YYYY HH:mm')}</div>
+            ),
+          },
+        ]
+      : []),
     {
       title: t('actions'),
       key: 'actions',
@@ -322,6 +339,7 @@ const Users = () => {
           onClick={() => handleOpenEditModal(record)}
         />
       ),
+      fixed: 'right',
     },
   ];
 
