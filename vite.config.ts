@@ -6,7 +6,7 @@ export default defineConfig({
   base: '/gokderek',
   plugins: [react()],
   preview: {
-    host: true,
+    host: '0.0.0.0',
     port: 3173,
     allowedHosts: ['wedding.infoportal.news', 'www.wedding.infoportal.news'],
   },
