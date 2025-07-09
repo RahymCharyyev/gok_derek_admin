@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'admin',
+      name: 'gokderek_admin',
       script: 'npm',
       args: ['run', 'preview'],
       time: true,
