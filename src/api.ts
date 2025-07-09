@@ -6,7 +6,7 @@ export const API_URL = import.meta.env.VITE_API_URL;
 
 export const tsrLogin = initTsrReactQuery(contract, {
   baseUrl: API_URL,
-  credentials: 'include',
+  // credentials: 'include',
 });
 
 export const tsr = initTsrReactQuery(contract, {
@@ -17,5 +17,5 @@ export const tsr = initTsrReactQuery(contract, {
       return token ? `Bearer ${token}` : '';
     },
   },
-  credentials: 'include',
+  // credentials: 'include',
 });
