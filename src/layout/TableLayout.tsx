@@ -29,7 +29,7 @@ const TableLayout = <T extends object>({
 }: TableLayoutProps<T>) => {
   const { t } = useTranslation();
   return (
-    <div className='p-6 min-h-[360px] bg-white rounded-lg'>
+    <div className='p-6 min-h-[360px] rounded-lg'>
       <ConfigProvider
         renderEmpty={() => (
           <Empty

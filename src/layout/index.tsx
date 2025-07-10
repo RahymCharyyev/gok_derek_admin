@@ -1,6 +1,7 @@
 import { tsr } from '@/api';
+import { useThemeStore } from '@/hooks/useThemeStore';
 import { LoadingOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Layout, Menu, Space, Spin } from 'antd';
+import { Button, Layout, Menu, Space, Spin, Switch } from 'antd';
 import { Content, Header } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
 import Cookies from 'js-cookie';
@@ -22,6 +23,7 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [userData, setUserData] = useState<any>(null);
+  const { darkMode, toggleDarkMode } = useThemeStore();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -110,7 +112,7 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
         />
       </Sider>
       <Layout>
-        <Header className='bg-white flex justify-between items-center'>
+        <Header className='flex justify-between items-center'>
           <div className='flex gap-2 items-center'>
             <UserOutlined />
             <span>
@@ -133,6 +135,12 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
                 },
               ]}
             /> */}
+            <Switch
+              checked={darkMode}
+              onChange={toggleDarkMode}
+              checkedChildren='Gara'
+              unCheckedChildren='Ak'
+            />
             <Button size='middle' type='primary' danger onClick={handleLogout}>
               {t('logout')}
             </Button>
