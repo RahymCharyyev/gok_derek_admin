@@ -133,9 +133,9 @@
   "bannerStatusChangeError": "Banneriň ýagdaýy üýtgedilende ýalňyşlyk döredi",
   "noInfo": "Maglumat heniz ýok",
   "username": "Ulanyjynyň ady",
-  "firstName": "Ulanyjynyň ady",
-  "lastName": "Ulanyjynyň familiýasy",
+  "firstName": "Ady",
+  "lastName": "Familiýasy",
   "createUser": "Ulanyjyny döretmek",
   "editUser": "Ulanyjyny üýtgetmek",
-  "loginOfUser": "Login"
+  "loginOfUser": "Ulanyjy"
 }

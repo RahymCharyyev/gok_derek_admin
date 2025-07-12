@@ -61,7 +61,7 @@ const Users = () => {
     },
   });
 
-  if (users?.status !== 200 || isError) {
+  if (isError) {
     return <ErrorComponent message={error || t('unknownError')} />;
   }
 
@@ -400,7 +400,7 @@ const Users = () => {
         pagination={{
           current: page,
           pageSize: perPage,
-          total: users.body?.count,
+          total: users?.body?.count,
           onChange: handleTableChange,
         }}
       />

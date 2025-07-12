@@ -1,4 +1,5 @@
 import { tsrLogin } from '@/api';
+import { useThemeStore } from '@/hooks/useThemeStore';
 import { Button, Form, Input } from 'antd';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
@@ -9,6 +10,7 @@ const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [error, setError] = useState('');
+  const { darkMode } = useThemeStore();
 
   const loginMutation = tsrLogin.auth.login.useMutation({
     onSuccess: (data) => {
@@ -35,14 +37,18 @@ const Login = () => {
   };
 
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen px-4'>
+    <div
+      className={`${
+        darkMode ? 'bg-[#141414]' : 'bg-white'
+      } flex flex-col items-center justify-center min-h-screen px-4`}
+    >
       <Form
         className='w-full max-w-sm'
         layout='vertical'
         onFinish={handleLogin}
       >
         <div className='flex justify-center mb-6 text-4xl text-blue-500'>
-          Gök Derek H.K
+          "Gök Derek H.J."
         </div>
         <h1 className='text-2xl text-center mb-4'>{t('login')}</h1>
         <Form.Item

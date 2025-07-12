@@ -36,19 +36,29 @@ const UserModal = ({ open, onCancel, onSubmit, initialValues }: Props) => {
       okText={t('okText')}
       cancelText={t('cancelText')}
       title={initialValues ? t('editUser') : t('createUser')}
+      width='100%'
+      style={{ maxWidth: 500 }}
+      styles={{ body: { padding: 16 } }}
+      centered
     >
-      <Form form={form} layout='vertical' onFinish={onSubmit}>
+      <Form
+        form={form}
+        layout='vertical'
+        onFinish={onSubmit}
+        className='max-h-[70vh] overflow-y-auto'
+      >
         <Form.Item
           name='username'
           label={t('loginOfUser')}
-          rules={[{ required: initialValues ? false : true }]}
+          rules={[{ required: !initialValues }]}
         >
           <Input />
         </Form.Item>
+
         <Form.Item
           name='role'
           label={t('role')}
-          rules={[{ required: initialValues ? false : true }]}
+          rules={[{ required: !initialValues }]}
         >
           <Select
             options={userSchema.shape.role.options.map((r) => ({
@@ -57,22 +67,27 @@ const UserModal = ({ open, onCancel, onSubmit, initialValues }: Props) => {
             }))}
           />
         </Form.Item>
+
         <Form.Item
           name='password'
           label={t('password')}
-          rules={[{ required: initialValues ? false : true }]}
+          rules={[{ required: !initialValues }]}
         >
-          <Input />
+          <Input.Password />
         </Form.Item>
+
         <Form.Item name='firstName' label={t('firstName')}>
           <Input />
         </Form.Item>
+
         <Form.Item name='lastName' label={t('lastName')}>
           <Input />
         </Form.Item>
+
         <Form.Item name='email' label={t('email')}>
-          <Input />
+          <Input type='email' />
         </Form.Item>
+
         <Form.Item name='phone' label={t('phone')}>
           <Input
             addonBefore='+993'
