@@ -8,7 +8,7 @@ export default defineConfig({
   preview: {
     host: '0.0.0.0',
     port: 3173,
-    allowedHosts: ['wedding.infoportal.news', 'www.wedding.infoportal.news'],
+    allowedHosts: ['neo.tp-projects.com', 'www.neo.tp-projects.com'],
   },
   resolve: {
     alias: {
