@@ -26,8 +26,8 @@ function App() {
         ...themeToken,
         token: {
           ...themeToken?.token,
-          colorPrimary: darkMode ? '#2F5FB7' : '#2F5FB7',
-          colorBorder: '#2F5FB7',
+          colorPrimary: darkMode ? '#007e2b' : '#007e2b',
+          colorBorder: '#007e2b',
         },
       }}
     >

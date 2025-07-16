@@ -7,7 +7,7 @@
   "vehicleTypes": "Transportyň görnüşleri",
   "fullname": "Ulanyjynyň ady",
   "email": "Elektron poçtasy",
-  "role": "Roly",
+  "role": "Rollary",
   "createdAt": "Döredilen senesi",
   "allCount": "Jemi",
   "title": "Ady",
@@ -132,10 +132,16 @@
   "bannerStatusChanged": "Banneriň ýagdaýy üýtgedildi",
   "bannerStatusChangeError": "Banneriň ýagdaýy üýtgedilende ýalňyşlyk döredi",
   "noInfo": "Maglumat heniz ýok",
-  "username": "Ulanyjynyň ady",
+  "username": "Ulanyjy",
   "firstName": "Ady",
   "lastName": "Familiýasy",
   "createUser": "Ulanyjyny döretmek",
   "editUser": "Ulanyjyny üýtgetmek",
-  "loginOfUser": "Ulanyjy"
+  "loginOfUser": "Ulanyjy",
+  "theme": "Tema",
+  "admin": "Admin",
+  "seller": "Satyjy",
+  "accountant": "Hasapçy",
+  "store": "Ammarçy",
+  "furniture": "Mebelçi"
 }

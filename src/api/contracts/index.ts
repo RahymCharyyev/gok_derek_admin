@@ -1,12 +1,14 @@
 import {initContract} from '@ts-rest/core';
-import {pokemonContract} from './pokemon';
-import {userContract} from './user';
 import {authContract} from './auth';
+import {settingsContract} from './settings';
+import {userContract} from './user';
+import {userRoleContract} from './user-role';
 
 const c = initContract();
 
 export const contract = c.router({
-  pokemon: pokemonContract,
   user: userContract,
+  userRole: userRoleContract,
   auth: authContract,
+  settings: settingsContract,
 });

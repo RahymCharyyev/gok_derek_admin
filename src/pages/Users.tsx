@@ -1,11 +1,10 @@
 import { tsr } from '@/api';
-import { user } from '@/api/schema/user';
 import ErrorComponent from '@/components/ErrorComponent';
 import UserModal from '@/components/Users/UserModal';
 import TableLayout from '@/layout/TableLayout';
 import { queryClient } from '@/Providers';
 import { EditOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Select, type TableProps, Grid } from 'antd';
+import { Button, Grid, Input, type TableProps } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -75,7 +74,7 @@ const Users = () => {
       lastName: item.lastName || '',
       email: item.email || '',
       phone: item.phone || '',
-      role: item.role || null,
+      roles: item.roles || [],
       createdAt: item.createdAt || null,
     })) || [];
 
@@ -288,35 +287,53 @@ const Users = () => {
           },
           {
             title: t('role'),
-            dataIndex: 'role',
-            key: 'role',
-            filterDropdown: () => (
-              <div className='p-2 space-y-2 w-[220px]'>
-                <Select
-                  className='w-[205px]'
-                  placeholder={t('selectBannerLocation')}
-                  options={user.shape.role.options.map((e) => ({
-                    value: e,
-                    label: e,
-                  }))}
-                  onChange={setSearchByRole}
-                />
-                <div className='flex justify-between'>
-                  <Button size='small' type='primary' onClick={handleSearch}>
-                    {t('search')}
-                  </Button>
-                  <Button
-                    danger
-                    size='small'
-                    onClick={handleClearRoleFilter}
-                    disabled={!searchByRole}
+            dataIndex: 'roles',
+            key: 'roles',
+            render: (roles: { role: string }[]) => (
+              <div className='flex flex-wrap gap-1'>
+                {roles.map((r, index) => (
+                  <span
+                    key={index}
+                    className='px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded'
                   >
-                    {t('clearFilter')}
-                  </Button>
-                </div>
+                    {t(r.role)}
+                  </span>
+                ))}
               </div>
             ),
-            filterIcon: () => <SearchOutlined />,
+            // filterDropdown: () => (
+            //   <div className='p-2 space-y-2 w-[220px]'>
+            //     <Select
+            //       mode='multiple'
+            //       allowClear
+            //       className='w-[205px]'
+            //       placeholder={t('selectRole')}
+            //       value={searchByRole ? searchByRole.split(',') : []}
+            //       options={role.options.map((e) => ({
+            //         value: e,
+            //         label: e,
+            //       }))}
+            //       onChange={(values) => {
+            //         const val = values.join(',');
+            //         setSearchByRole(val);
+            //       }}
+            //     />
+            //     <div className='flex justify-between'>
+            //       <Button size='small' type='primary' onClick={handleSearch}>
+            //         {t('search')}
+            //       </Button>
+            //       <Button
+            //         danger
+            //         size='small'
+            //         onClick={handleClearRoleFilter}
+            //         disabled={!searchByRole}
+            //       >
+            //         {t('clearFilter')}
+            //       </Button>
+            //     </div>
+            //   </div>
+            // ),
+            // filterIcon: () => <SearchOutlined />,
           },
           {
             title: t('createdAt'),

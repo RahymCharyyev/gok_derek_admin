@@ -1,10 +1,10 @@
 import {z} from 'zod';
-import {commonQuery} from './common';
+import {commonQuery, sortDirection} from './common';
+import {userRole} from './user-role';
 
 export const user = z.object({
   id: z.string().uuid(),
   username: z.string(),
-  role: z.enum(['admin', 'seller', 'accountant', 'store', 'furniture']),
   password: z.string(),
   firstName: z.string().nullish(),
   lastName: z.string().nullish(),
@@ -12,13 +12,29 @@ export const user = z.object({
   email: z.string().email().nullish(),
   createdAt: z.coerce.date(),
 });
+export const userExtra = z.object({
+  roles: userRole.pick({role: true}).array(),
+});
 
-export const userGetAll = user.partial().merge(commonQuery);
-export const userGetAllRes = z.object({count: z.number(), data: user.omit({password: true}).array()});
-export const userGetOneRes = user.omit({password: true});
+const userSort = user
+  .pick({
+    username: true,
+    firstName: true,
+    lastName: true,
+    phone: true,
+    email: true,
+    createdAt: true,
+  })
+  .keyof();
+const sort = z.object({sortBy: userSort.default('createdAt'), sortDirection: sortDirection.default('desc')}).partial();
+
+export const userGetAll = user.extend({text: z.string()}).partial().merge(sort).merge(commonQuery);
+export const userGetAllRes = z.object({count: z.number(), data: user.omit({password: true}).merge(userExtra).array()});
+
+export const userGetOneRes = user.omit({password: true}).merge(userExtra);
+
 export const userCreate = user.pick({
   username: true,
-  role: true,
   password: true,
   firstName: true,
   lastName: true,
@@ -26,7 +42,7 @@ export const userCreate = user.pick({
   email: true,
 });
 export const userEdit = user
-  .pick({username: true, role: true, password: true, firstName: true, lastName: true, phone: true, email: true})
+  .pick({username: true, password: true, firstName: true, lastName: true, phone: true, email: true})
   .partial();
 export const userEditRes = user.omit({password: true});
 

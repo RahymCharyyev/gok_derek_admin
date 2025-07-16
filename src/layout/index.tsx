@@ -47,12 +47,6 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
           return;
         } else {
           setUserData(data.body);
-        }
-
-        if (data.body?.role !== 'admin') {
-          Cookies.remove('token');
-          navigate('/login');
-        } else {
           setIsAuthChecked(true);
         }
       } catch (error: any) {
@@ -134,14 +128,14 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
           collapsedWidth={80}
           className='sticky top-0 h-screen'
         >
-          <div className='m-auto w-max py-4 text-xl text-blue-500'>
-            {collapsed ? `"GK H.J."` : `"Gök Derek H.J."`}
+          <div className='m-auto w-max py-4 text-xl text-[#007e2b]'>
+            {collapsed ? `GK H.J.` : `Gök Derek H.J.`}
           </div>
           {SidebarMenu}
         </Sider>
       ) : (
         <Drawer
-          title={<div className='text-blue-500 text-xl'>"Gök Derek H.J."</div>}
+          title={<div className='text-[#007e2b] text-xl'>Gök Derek H.J.</div>}
           placement='left'
           onClose={() => setDrawerVisible(false)}
           open={drawerVisible}

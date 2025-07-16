@@ -1,6 +1,6 @@
-import { Modal, Form, Input, Select } from 'antd';
+import { type UserEdit } from '@/api/schema/user';
+import { Form, Input, Modal } from 'antd';
 import { useEffect } from 'react';
-import { user as userSchema, type UserEdit } from '@/api/schema/user';
 import { useTranslation } from 'react-i18next';
 
 const { useForm } = Form;
@@ -54,20 +54,6 @@ const UserModal = ({ open, onCancel, onSubmit, initialValues }: Props) => {
         >
           <Input />
         </Form.Item>
-
-        <Form.Item
-          name='role'
-          label={t('role')}
-          rules={[{ required: !initialValues }]}
-        >
-          <Select
-            options={userSchema.shape.role.options.map((r) => ({
-              label: r,
-              value: r,
-            }))}
-          />
-        </Form.Item>
-
         <Form.Item
           name='password'
           label={t('password')}

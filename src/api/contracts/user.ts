@@ -35,6 +35,15 @@ export const userContract = c.router(
       method: 'PUT',
       path: '/:id',
       body: userEdit,
+      pathParams: z.object({id: z.string().uuid()}),
+      responses: {
+        201: userEditRes,
+      },
+    },
+    remove: {
+      method: 'DELETE',
+      path: '/:id',
+      pathParams: z.object({id: z.string().uuid()}),
       responses: {
         201: userEditRes,
       },

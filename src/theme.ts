@@ -4,7 +4,7 @@ import type { ThemeConfig } from 'antd/es/config-provider/context';
 const sharedTheme: ThemeConfig = {
   cssVar: true,
   token: {
-    colorPrimary: '#4CB050',
+    colorPrimary: '#007e2b',
     fontFamily: 'Inter',
   },
 };

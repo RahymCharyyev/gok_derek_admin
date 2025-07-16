@@ -1,16 +1,21 @@
 import { tsrLogin } from '@/api';
 import { useThemeStore } from '@/hooks/useThemeStore';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Image, Input, Select } from 'antd';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
+const themeOptions = [
+  { label: 'Ak', value: 'light' },
+  { label: 'Gara', value: 'dark' },
+];
+
 const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [error, setError] = useState('');
-  const { darkMode } = useThemeStore();
+  const { darkMode, toggleDarkMode } = useThemeStore();
 
   const loginMutation = tsrLogin.auth.login.useMutation({
     onSuccess: (data) => {
@@ -21,7 +26,7 @@ const Login = () => {
     },
     onError: () => {
       setError(
-        t('auth.invalid_credentials', 'Ulanyjynyň ady ýa-da paroly ýalňyş')
+        t('auth.invalid_credentials', 'Ulanyjynyň loginy ýa-da paroly ýalňyş')
       );
     },
   });
@@ -47,10 +52,10 @@ const Login = () => {
         layout='vertical'
         onFinish={handleLogin}
       >
-        <div className='flex justify-center mb-6 text-4xl text-blue-500'>
-          "Gök Derek H.J."
+        <div className='flex flex-col justify-center gap-5 items-center'>
+          <Image width={200} src='/gokderek/logo.png' alt='Logo of the app' />
+          <h1 className='text-2xl text-center'>{t('login')}</h1>
         </div>
-        <h1 className='text-2xl text-center mb-4'>{t('login')}</h1>
         <Form.Item
           label={t('username')}
           name='username'
@@ -76,21 +81,16 @@ const Login = () => {
         >
           <Input.Password placeholder={t('passwordPlaceholder')} />
         </Form.Item>
-        {/* <Select
-          className='w-full mt-3 mb-5'
-          value={i18n.language}
-          onChange={changeLanguage}
-          options={[
-            {
-              value: 'ru',
-              label: 'Русский',
-            },
-            {
-              value: 'tk',
-              label: 'Türkmençe',
-            },
-          ]}
-        /> */}
+        <Form.Item label={t('theme')} name='theme'>
+          <Select
+            className='w-full mb-8'
+            value={darkMode ? 'light' : 'dark'}
+            onChange={() => {
+              toggleDarkMode();
+            }}
+            options={themeOptions}
+          />
+        </Form.Item>
         <Button
           type='primary'
           htmlType='submit'
