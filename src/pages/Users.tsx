@@ -34,9 +34,6 @@ const Users = () => {
   const [searchByPhone, setSearchByPhone] = useState<string>(
     searchParams.get('phone') || ''
   );
-  const [searchByRole, setSearchByRole] = useState(
-    searchParams.get('role') || ''
-  );
 
   const query: Record<string, any> = {
     page,
@@ -45,7 +42,6 @@ const Users = () => {
     lastName: searchParams.get('lastName') || undefined,
     email: searchParams.get('email') || undefined,
     phone: searchParams.get('phone') || undefined,
-    role: searchParams.get('role') || undefined,
   };
 
   const {
@@ -110,12 +106,6 @@ const Users = () => {
       params.delete('phone');
     }
 
-    if (searchByRole) {
-      params.set('role', searchByRole);
-    } else {
-      params.delete('role');
-    }
-
     setSearchParams(params);
   };
 
@@ -144,13 +134,6 @@ const Users = () => {
     setSearchByPhone('');
     const params = new URLSearchParams(searchParams);
     params.delete('phone');
-    setSearchParams(params);
-  };
-
-  const handleClearRoleFilter = () => {
-    setSearchByRole('');
-    const params = new URLSearchParams(searchParams);
-    params.delete('role');
     setSearchParams(params);
   };
 
