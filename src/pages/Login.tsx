@@ -1,21 +1,16 @@
 import { tsrLogin } from '@/api';
 import { useThemeStore } from '@/hooks/useThemeStore';
-import { Button, Form, Image, Input, Select } from 'antd';
+import { Button, Form, Image, Input } from 'antd';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-const themeOptions = [
-  { label: 'Ak', value: 'light' },
-  { label: 'Gara', value: 'dark' },
-];
-
 const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [error, setError] = useState('');
-  const { darkMode, toggleDarkMode } = useThemeStore();
+  const { darkMode } = useThemeStore();
 
   const loginMutation = tsrLogin.auth.login.useMutation({
     onSuccess: (data) => {
@@ -53,8 +48,12 @@ const Login = () => {
         onFinish={handleLogin}
       >
         <div className='flex flex-col justify-center gap-5 items-center'>
-          <Image width={200} src='/gokderek/logo.png' alt='Logo of the app' />
-          <h1 className='text-2xl text-center'>{t('login')}</h1>
+          <Image
+            preview={false}
+            width={200}
+            src='/gokderek/logo.webp'
+            alt='Logo of the app'
+          />
         </div>
         <Form.Item
           label={t('username')}
@@ -80,16 +79,6 @@ const Login = () => {
           ]}
         >
           <Input.Password placeholder={t('passwordPlaceholder')} />
-        </Form.Item>
-        <Form.Item label={t('theme')} name='theme'>
-          <Select
-            className='w-full mb-8'
-            value={darkMode ? 'light' : 'dark'}
-            onChange={() => {
-              toggleDarkMode();
-            }}
-            options={themeOptions}
-          />
         </Form.Item>
         <Button
           type='primary'

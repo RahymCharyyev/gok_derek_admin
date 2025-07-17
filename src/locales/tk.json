@@ -40,8 +40,8 @@
   "bannerDeleted": "Banner üstünlikli pozuldy",
   "actions": "Hereketler",
   "unknownError": "Ýalňyşlyk ýüze çykdy",
-  "deleteConfirmTitle": "Elementi pozmak",
-  "deleteConfirmMessage": "Siz hakykatdanam bu elementi pozmak isleýärsiňizmi?",
+  "deleteConfirmTitle": "Pozmak",
+  "deleteConfirmMessage": "Siz hakykatdanam pozmak isleýärsiňizmi?",
   "yes": "Hawa",
   "no": "Ýok",
   "save": "Ýatda saklamak",
@@ -143,5 +143,15 @@
   "seller": "Satyjy",
   "accountant": "Hasapçy",
   "store": "Ammarçy",
-  "furniture": "Mebelçi"
+  "furniture": "Mebelçi",
+  "roleAdded": "Ulanyja rol üstünlikli goşuldy",
+  "roleRemoved": "Ulanyjydan rol üstünlikli pozuldy",
+  "editRoles": "Ulanyja rollary goşmak / pozmak",
+  "errorOccurred": "Ýalňyşlyk döredi",
+  "currentRoles": "Häzirki rollar",
+  "noRolesAssigned": "Rol heniz goşulmadyk",
+  "addRole": "Rol goşmak",
+  "selectRole": "Rol saýlaň",
+  "userDeleted": "Ulanyjy üstünlikli pozuldy",
+  "userDeleteError": "Ulanyjy pozulanda ýalňyşlyk döredi"
 }
