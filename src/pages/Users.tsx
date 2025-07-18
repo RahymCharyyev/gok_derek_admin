@@ -573,25 +573,31 @@ const Users = () => {
 
   const handleSubmitModal = async (values: any) => {
     const phone = values.phone ? `+993${values.phone}` : null;
-    if (editingUser) {
-      await tsr.user.edit.mutate({
-        params: { id: editingUser.id },
-        body: {
-          ...values,
-          phone,
-        },
-      });
+    try {
+      if (editingUser) {
+        await tsr.user.edit.mutate({
+          params: { id: editingUser.id },
+          body: {
+            ...values,
+            phone,
+          },
+        });
+        message.success(t('userUpdated'));
+      } else {
+        await tsr.user.create.mutate({
+          body: {
+            ...values,
+            phone,
+          },
+        });
+        message.success(t('userCreated'));
+      }
       queryClient.invalidateQueries();
-    } else {
-      await tsr.user.create.mutate({
-        body: {
-          ...values,
-          phone,
-        },
-      });
-      queryClient.invalidateQueries();
+      setIsModalOpen(false);
+      setEditingUser(null);
+    } catch (error) {
+      message.error(t('userCreateOrUpdateError'));
     }
-    setIsModalOpen(false);
   };
 
   return (

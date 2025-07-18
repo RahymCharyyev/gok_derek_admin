@@ -50,14 +50,18 @@ const UserModal = ({ open, onCancel, onSubmit, initialValues }: Props) => {
         <Form.Item
           name='username'
           label={t('loginOfUser')}
-          rules={[{ required: !initialValues }]}
+          rules={[
+            { required: !initialValues, message: t('pleaseEnterUsername') },
+          ]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           name='password'
           label={t('password')}
-          rules={[{ required: !initialValues }]}
+          rules={[
+            { required: !initialValues, message: t('pleaseEnterPassword') },
+          ]}
         >
           <Input.Password />
         </Form.Item>

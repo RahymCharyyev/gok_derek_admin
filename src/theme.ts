@@ -30,6 +30,14 @@ const lightTheme: ThemeConfig = {
     Modal: {
       headerBg: '#FFFFFF',
     },
+    Menu: {
+      itemBg: '#FFFFFF', // Background of menu items
+      itemColor: '#000000', // Text color of menu items
+      itemSelectedBg: '#007e2b', // Background of selected menu item
+      itemSelectedColor: '#FFFFFF', // Text color of selected menu item
+      itemHoverBg: '#F5F5F5', // Background on hover
+      itemHoverColor: '#007e2b', // Text color on hover
+    },
   },
 };
 const darkTheme: ThemeConfig = {
@@ -42,6 +50,9 @@ const darkTheme: ThemeConfig = {
     colorInfoBg: '#141414',
   },
   components: {
+    Layout: {
+      headerBg: '#141414',
+    },
     Popover: {
       colorBgElevated: '#323232',
     },
@@ -51,6 +62,14 @@ const darkTheme: ThemeConfig = {
     },
     Notification: {
       colorBgElevated: '#141414',
+    },
+    Menu: {
+      itemBg: '#141414', // Dark background for menu items
+      itemColor: '#FFFFFF', // Light text color for menu items
+      itemSelectedBg: '#007e2b', // Selected item background
+      itemSelectedColor: '#FFFFFF', // Selected item text color
+      itemHoverBg: '#323232', // Hover background
+      itemHoverColor: '#FFFFFF', // Hover text color
     },
   },
 };

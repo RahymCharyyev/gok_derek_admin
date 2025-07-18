@@ -1,10 +1,10 @@
 import { tsr } from '@/api';
 import { useThemeStore } from '@/hooks/useThemeStore';
 import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   LoadingOutlined,
   LogoutOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
@@ -27,7 +27,7 @@ type MenuItem = {
 };
 
 const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => window.innerWidth < 1280);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
@@ -62,8 +62,19 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      const width = window.innerWidth;
+      const isMobileSize = width < 768;
+      const isTabletSize = width < 1024;
+
+      setIsMobile(isMobileSize);
+
+      if (isTabletSize) {
+        setCollapsed(true);
+      } else {
+        setCollapsed(false);
+      }
     };
+
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -105,13 +116,15 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
   const SidebarMenu = (
     <Menu
       mode='inline'
-      theme='light'
       selectedKeys={getSelectedKey()}
       onClick={({ key }) => {
         navigate(key);
         setDrawerVisible(false);
       }}
       items={items}
+      style={{
+        color: 'black',
+      }}
     />
   );
 
@@ -119,7 +132,7 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
     <Layout className='min-h-screen'>
       {!isMobile ? (
         <Sider
-          width={300}
+          width={200}
           theme='light'
           collapsible
           collapsed={collapsed}
@@ -128,9 +141,13 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
           collapsedWidth={80}
           className='sticky top-0 h-screen'
         >
-          <div className='m-auto w-max py-4 text-xl text-[#007e2b]'>
+          <div
+            className={`m-auto w-max py-4 text-xl ${
+              darkMode ? 'text-[#0ade41]' : 'text-[#007e2b]'
+            }`}
+          >
             {collapsed ? (
-              <Image src='/gokderek/logo.webp' width={50} preview={false} />
+              <Image src='/gokderek/logo_2.webp' width={50} preview={false} />
             ) : (
               `Gök Derek H.J.`
             )}
@@ -139,7 +156,15 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
         </Sider>
       ) : (
         <Drawer
-          title={<div className='text-[#007e2b] text-xl'>Gök Derek H.J.</div>}
+          title={
+            <div
+              className={` text-xl ${
+                darkMode ? 'text-[#0ade41]' : 'text-[#007e2b]'
+              }`}
+            >
+              Gök Derek H.J.
+            </div>
+          }
           placement='left'
           onClose={() => setDrawerVisible(false)}
           open={drawerVisible}

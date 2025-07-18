@@ -153,5 +153,7 @@
   "addRole": "Rol goşmak",
   "selectRole": "Rol saýlaň",
   "userDeleted": "Ulanyjy üstünlikli pozuldy",
-  "userDeleteError": "Ulanyjy pozulanda ýalňyşlyk döredi"
+  "userDeleteError": "Ulanyjy pozulanda ýalňyşlyk döredi",
+  "pleaseEnterUsername": "Ulanyjyny giriziň",
+  "pleaseEnterPassword": "Ulanyjynynyň açar sözini giriziň"
 }
