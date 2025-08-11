@@ -16,3 +16,5 @@ export type LimitOffset = {limit: number; offset: number};
 export const result = z.object({success: z.boolean()});
 
 export const sortDirection = z.enum(['asc', 'desc']);
+
+export const paramsId = z.object({id: z.string().uuid()});

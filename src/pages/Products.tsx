@@ -1,9 +1,7 @@
 import { tsr } from '@/api';
 import { sortDirection } from '@/api/schema/common';
-import { type Role } from '@/api/schema/user-role';
 import ErrorComponent from '@/components/ErrorComponent';
-import UserModal from '@/components/Users/UserModal';
-import UserRoleModal from '@/components/Users/UserRoleModal';
+import ProductModal from '@/components/Products/ProductModal';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
 import { queryClient } from '@/Providers';
@@ -11,41 +9,44 @@ import {
   DeleteOutlined,
   DownOutlined,
   EditOutlined,
+  ProductFilled,
   SearchOutlined,
   UndoOutlined,
-  UserAddOutlined,
-  UserSwitchOutlined,
 } from '@ant-design/icons';
 import { Button, Grid, Input, message, Select, type TableProps } from 'antd';
-import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
 const { useBreakpoint } = Grid;
 
-const Users = () => {
+const Products = () => {
   const { t } = useTranslation();
   const screens = useBreakpoint();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<any | null>(null);
+  const [editingData, setEditingData] = useState<any | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
   const [perPage, setPerPage] = useState(
     Number(searchParams.get('perPage')) || 10
   );
-  const [searchByFirstName, setSearchByFirstName] = useState(
-    searchParams.get('firstName') || ''
+  const [searchByName, setSearchByName] = useState(
+    searchParams.get('name') || ''
   );
-  const [searchByLastName, setSearchByLastName] = useState(
-    searchParams.get('lastName') || ''
+  const [searchByCode, setSearchByCode] = useState(
+    searchParams.get('code') || ''
   );
-  const [searchByEmail, setSearchByEmail] = useState(
-    searchParams.get('email') || ''
+  const [searchByPrice, setSearchByPrice] = useState(
+    searchParams.get('price') || ''
   );
-  const [searchByPhone, setSearchByPhone] = useState<string>(
-    searchParams.get('phone') || ''
+  const [searchByPriceNonCash, setSearchByPriceNonCash] = useState<string>(
+    searchParams.get('priceNonCash') || ''
+  );
+  const [searchByPriceSelection, setSearchByPriceSelection] = useState<string>(
+    searchParams.get('priceSelection') || ''
+  );
+  const [searchByType, setSearchByType] = useState<string>(
+    searchParams.get('type') || ''
   );
   const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || undefined);
   const [sortDirectionParam, setSortDirectionParam] = useState(
@@ -55,27 +56,29 @@ const Users = () => {
   const query: Record<string, any> = {
     page,
     perPage,
-    firstName: searchParams.get('firstName') || undefined,
-    lastName: searchParams.get('lastName') || undefined,
-    email: searchParams.get('email') || undefined,
-    phone: searchParams.get('phone') || undefined,
+    name: searchParams.get('name') || undefined,
+    code: searchParams.get('code') || undefined,
+    price: searchParams.get('price') || undefined,
+    priceNonCash: searchParams.get('priceNonCash') || undefined,
+    priceSelection: searchParams.get('priceSelection') || undefined,
+    type: searchParams.get('type') || undefined,
     sortBy: searchParams.get('sortBy') || undefined,
     sortDirection: searchParams.get('sortDirection') || undefined,
   };
 
   const {
-    data: users,
+    data: products,
     isLoading,
     isError,
     error,
-  } = tsr.user.getAll.useQuery({
-    queryKey: ['users', query],
+  } = tsr.product.getAll.useQuery({
+    queryKey: ['products', query],
     queryData: {
       query,
     },
   });
 
-  const deleteUser = tsr.user.remove.useMutation();
+  const deleteProduct = tsr.product.remove.useMutation();
   const confirmDelete = useDeleteConfirm();
 
   if (isError) {
@@ -83,17 +86,17 @@ const Users = () => {
   }
 
   const data =
-    users?.body.data?.map((item, index) => ({
+    products?.body.data?.map((item, index) => ({
       key: item.id,
       index: (page - 1) * perPage + (index + 1),
       id: item.id,
-      username: item.username || '',
-      firstName: item.firstName || '',
-      lastName: item.lastName || '',
-      email: item.email || '',
-      phone: item.phone || '',
-      roles: item.roles || [],
-      createdAt: item.createdAt || null,
+      name: item.name || '',
+      code: item.code || '',
+      price: item.price || '',
+      priceNonCash: item.priceNonCash || '',
+      priceSelection: item.priceSelection || '',
+      type: item.type || '',
+      wood: item.wood || null,
     })) || [];
 
   const handleTableChange = (newPage: number, newPageSize: number) => {
@@ -104,28 +107,40 @@ const Users = () => {
   const handleSearch = () => {
     const params = new URLSearchParams(searchParams);
 
-    if (searchByFirstName.trim()) {
-      params.set('firstName', searchByFirstName.trim());
+    if (searchByName.trim()) {
+      params.set('name', searchByName.trim());
     } else {
-      params.delete('firstName');
+      params.delete('name');
     }
 
-    if (searchByLastName.trim()) {
-      params.set('lastName', searchByLastName.trim());
+    if (searchByCode.trim()) {
+      params.set('code', searchByCode.trim());
     } else {
-      params.delete('lastName');
+      params.delete('code');
     }
 
-    if (searchByEmail) {
-      params.set('email', searchByEmail);
+    if (searchByPrice) {
+      params.set('price', searchByPrice);
     } else {
-      params.delete('email');
+      params.delete('price');
     }
 
-    if (searchByPhone) {
-      params.set('phone', searchByPhone);
+    if (searchByPriceNonCash) {
+      params.set('priceNonCash', searchByPriceNonCash);
     } else {
-      params.delete('phone');
+      params.delete('priceNonCash');
+    }
+
+    if (searchByPriceSelection) {
+      params.set('priceSelection', searchByPriceNonCash);
+    } else {
+      params.delete('priceSelection');
+    }
+
+    if (searchByType) {
+      params.set('type', searchByPriceNonCash);
+    } else {
+      params.delete('type');
     }
 
     if (sortBy) {
@@ -143,80 +158,103 @@ const Users = () => {
     setSearchParams(params);
   };
 
-  const handleClearFirstNameFilter = () => {
-    setSearchByFirstName('');
-    if (sortBy === 'firstName') {
+  const handleClearNameFilter = () => {
+    setSearchByName('');
+    if (sortBy === 'name') {
       setSortBy(undefined);
       setSortDirectionParam(undefined);
     }
     const params = new URLSearchParams(searchParams);
-    params.delete('firstName');
-    if (params.get('sortBy') === 'firstName') {
+    params.delete('name');
+    if (params.get('sortBy') === 'name') {
       params.delete('sortBy');
       params.delete('sortDirection');
     }
     setSearchParams(params);
   };
 
-  const handleClearLastNameFilter = () => {
-    setSearchByLastName('');
-    if (sortBy === 'lastName') {
+  const handleClearCodeFilter = () => {
+    setSearchByCode('');
+    if (sortBy === 'code') {
       setSortBy(undefined);
       setSortDirectionParam(undefined);
     }
     const params = new URLSearchParams(searchParams);
-    params.delete('lastName');
-    if (params.get('sortBy') === 'lastName') {
+    params.delete('code');
+    if (params.get('sortBy') === 'code') {
       params.delete('sortBy');
       params.delete('sortDirection');
     }
     setSearchParams(params);
   };
 
-  const handleClearEmailFilter = () => {
-    setSearchByEmail('');
-    if (sortBy === 'email') {
+  const handleClearPriceFilter = () => {
+    setSearchByPrice('');
+    if (sortBy === 'price') {
       setSortBy(undefined);
       setSortDirectionParam(undefined);
     }
     const params = new URLSearchParams(searchParams);
-    params.delete('email');
-    if (params.get('sortBy') === 'email') {
+    params.delete('price');
+    if (params.get('sortBy') === 'price') {
       params.delete('sortBy');
       params.delete('sortDirection');
     }
     setSearchParams(params);
   };
 
-  const handleClearPhoneFilter = () => {
-    setSearchByPhone('');
-    if (sortBy === 'phone') {
+  const handleClearPriceNonCashFilter = () => {
+    setSearchByPriceNonCash('');
+    if (sortBy === 'priceNonCash') {
       setSortBy(undefined);
       setSortDirectionParam(undefined);
     }
     const params = new URLSearchParams(searchParams);
-    params.delete('phone');
-    if (params.get('sortBy') === 'phone') {
+    params.delete('priceNonCash');
+    if (params.get('sortBy') === 'priceNonCash') {
       params.delete('sortBy');
       params.delete('sortDirection');
     }
     setSearchParams(params);
   };
 
-  const handleClearSortByCreatedAtFilter = () => {
-    setSortBy(undefined);
-    setSortDirectionParam(undefined);
+  const handleClearPriceSelectionFilter = () => {
+    setSearchByPriceSelection('');
+    if (sortBy === 'priceSelection') {
+      setSortBy(undefined);
+      setSortDirectionParam(undefined);
+    }
     const params = new URLSearchParams(searchParams);
-    params.delete('sortBy');
-    params.delete('sortDirection');
+    params.delete('priceSelection');
+    if (params.get('sortBy') === 'priceSelection') {
+      params.delete('sortBy');
+      params.delete('sortDirection');
+    }
+    setSearchParams(params);
+  };
+
+  const handleClearTypeFilter = () => {
+    setSearchByType('');
+    if (sortBy === 'type') {
+      setSortBy(undefined);
+      setSortDirectionParam(undefined);
+    }
+    const params = new URLSearchParams(searchParams);
+    params.delete('type');
+    if (params.get('sortBy') === 'type') {
+      params.delete('sortBy');
+      params.delete('sortDirection');
+    }
     setSearchParams(params);
   };
 
   const handleResetAllFilters = () => {
-    setSearchByFirstName('');
-    setSearchByLastName('');
-    setSearchByEmail('');
-    setSearchByPhone('');
+    setSearchByName('');
+    setSearchByCode('');
+    setSearchByPrice('');
+    setSearchByPriceNonCash('');
+    setSearchByPriceSelection('');
+    setSearchByType('');
     setSortBy(undefined);
     setSortDirectionParam(undefined);
     setPage(1);
@@ -227,11 +265,12 @@ const Users = () => {
   const isResetDisabled =
     !searchParams.get('sortBy') &&
     !searchParams.get('sortDirection') &&
-    !searchParams.get('username') &&
-    !searchParams.get('firstName') &&
-    !searchParams.get('lastName') &&
-    !searchParams.get('phone') &&
-    !searchParams.get('email');
+    !searchParams.get('name') &&
+    !searchParams.get('code') &&
+    !searchParams.get('price') &&
+    !searchParams.get('priceNonCash') &&
+    !searchParams.get('priceSelection') &&
+    !searchParams.get('type');
 
   const columns: TableProps['columns'] = [
     {
@@ -241,11 +280,17 @@ const Users = () => {
       fixed: 'left',
     },
     {
-      title: t('loginOfUser'),
-      dataIndex: 'username',
-      key: 'username',
+      title: t('name'),
+      dataIndex: 'name',
+      key: 'name',
       filterDropdown: () => (
         <div className='p-2 space-y-2 w-[220px]'>
+          <Input
+            value={searchByName}
+            suffix={<SearchOutlined />}
+            placeholder={t('search')}
+            onChange={(e) => setSearchByName(e.target.value)}
+          />
           <Select
             className='w-[205px]'
             placeholder={t('selectSortDirection')}
@@ -255,7 +300,7 @@ const Users = () => {
             }))}
             value={sortDirectionParam}
             onChange={(value) => {
-              setSortBy('username');
+              setSortBy('name');
               setSortDirectionParam(value);
             }}
           />
@@ -266,7 +311,7 @@ const Users = () => {
             <Button
               danger
               size='small'
-              onClick={handleClearSortByCreatedAtFilter}
+              onClick={handleClearNameFilter}
               disabled={!sortBy}
             >
               {t('clearFilter')}
@@ -277,16 +322,16 @@ const Users = () => {
       filterIcon: () => <DownOutlined />,
     },
     {
-      title: t('firstName'),
-      dataIndex: 'firstName',
-      key: 'firstName',
+      title: t('code'),
+      dataIndex: 'code',
+      key: 'code',
       filterDropdown: () => (
         <div className='p-2 space-y-2 w-64'>
           <Input
-            value={searchByFirstName}
+            value={searchByCode}
             suffix={<SearchOutlined />}
             placeholder={t('search')}
-            onChange={(e) => setSearchByFirstName(e.target.value)}
+            onChange={(e) => setSearchByCode(e.target.value)}
           />
           <Select
             className='w-full'
@@ -295,9 +340,9 @@ const Users = () => {
               value: e,
               label: t(`sortDirection.${e}`),
             }))}
-            value={sortBy === 'firstName' ? sortDirectionParam : undefined}
+            value={sortBy === 'code' ? sortDirectionParam : undefined}
             onChange={(value) => {
-              setSortBy('firstName');
+              setSortBy('code');
               setSortDirectionParam(value);
             }}
           />
@@ -308,8 +353,8 @@ const Users = () => {
             <Button
               danger
               size='small'
-              onClick={handleClearFirstNameFilter}
-              disabled={!searchByFirstName && sortBy !== 'firstName'}
+              onClick={handleClearCodeFilter}
+              disabled={!searchByName && sortBy !== 'code'}
             >
               {t('clearFilter')}
             </Button>
@@ -319,16 +364,16 @@ const Users = () => {
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('lastName'),
-      dataIndex: 'lastName',
-      key: 'lastName',
+      title: t('price'),
+      dataIndex: 'price',
+      key: 'price',
       filterDropdown: () => (
         <div className='p-2 space-y-2 w-64'>
           <Input
-            value={searchByLastName}
+            value={searchByPrice}
             suffix={<SearchOutlined />}
             placeholder={t('search')}
-            onChange={(e) => setSearchByLastName(e.target.value)}
+            onChange={(e) => setSearchByPrice(e.target.value)}
           />
           <Select
             className='w-full'
@@ -337,9 +382,9 @@ const Users = () => {
               value: e,
               label: t(`sortDirection.${e}`),
             }))}
-            value={sortBy === 'lastName' ? sortDirectionParam : undefined}
+            value={sortBy === 'price' ? sortDirectionParam : undefined}
             onChange={(value) => {
-              setSortBy('lastName');
+              setSortBy('price');
               setSortDirectionParam(value);
             }}
           />
@@ -350,8 +395,8 @@ const Users = () => {
             <Button
               danger
               size='small'
-              onClick={handleClearLastNameFilter}
-              disabled={!searchByLastName && sortBy !== 'lastName'}
+              onClick={handleClearPriceFilter}
+              disabled={!searchByPrice && sortBy !== 'price'}
             >
               {t('clearFilter')}
             </Button>
@@ -361,16 +406,16 @@ const Users = () => {
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('email'),
-      dataIndex: 'email',
-      key: 'email',
+      title: t('priceNonCash'),
+      dataIndex: 'priceNonCash',
+      key: 'priceNonCash',
       filterDropdown: () => (
         <div className='p-2 space-y-2 w-64'>
           <Input
-            value={searchByEmail}
+            value={searchByPriceNonCash}
             suffix={<SearchOutlined />}
             placeholder={t('search')}
-            onChange={(e) => setSearchByEmail(e.target.value)}
+            onChange={(e) => setSearchByPriceNonCash(e.target.value)}
           />
           <Select
             className='w-full'
@@ -379,9 +424,9 @@ const Users = () => {
               value: e,
               label: t(`sortDirection.${e}`),
             }))}
-            value={sortBy === 'email' ? sortDirectionParam : undefined}
+            value={sortBy === 'priceNonCash' ? sortDirectionParam : undefined}
             onChange={(value) => {
-              setSortBy('email');
+              setSortBy('priceNonCash');
               setSortDirectionParam(value);
             }}
           />
@@ -392,8 +437,8 @@ const Users = () => {
             <Button
               danger
               size='small'
-              onClick={handleClearEmailFilter}
-              disabled={!searchByEmail && sortBy !== 'email'}
+              onClick={handleClearPriceNonCashFilter}
+              disabled={!searchByCode && sortBy !== 'priceNonCash'}
             >
               {t('clearFilter')}
             </Button>
@@ -403,16 +448,16 @@ const Users = () => {
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('phone'),
-      dataIndex: 'phone',
-      key: 'phone',
+      title: t('priceSelection'),
+      dataIndex: 'priceSelection',
+      key: 'priceSelection',
       filterDropdown: () => (
         <div className='p-2 space-y-2 w-64'>
           <Input
-            value={searchByPhone}
+            value={searchByPriceSelection}
             suffix={<SearchOutlined />}
             placeholder={t('search')}
-            onChange={(e) => setSearchByPhone(e.target.value)}
+            onChange={(e) => setSearchByPriceSelection(e.target.value)}
           />
           <Select
             className='w-full'
@@ -421,9 +466,9 @@ const Users = () => {
               value: e,
               label: t(`sortDirection.${e}`),
             }))}
-            value={sortBy === 'phone' ? sortDirectionParam : undefined}
+            value={sortBy === 'priceSelection' ? sortDirectionParam : undefined}
             onChange={(value) => {
-              setSortBy('phone');
+              setSortBy('priceSelection');
               setSortDirectionParam(value);
             }}
           />
@@ -434,8 +479,8 @@ const Users = () => {
             <Button
               danger
               size='small'
-              onClick={handleClearPhoneFilter}
-              disabled={!searchByPhone && sortBy !== 'phone'}
+              onClick={handleClearPriceSelectionFilter}
+              disabled={!searchByPriceNonCash && sortBy !== 'priceSelection'}
             >
               {t('clearFilter')}
             </Button>
@@ -445,31 +490,20 @@ const Users = () => {
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('role'),
-      dataIndex: 'roles',
-      key: 'roles',
-      render: (roles: { role: Role }[]) => (
-        <div className='flex flex-wrap gap-1'>
-          {roles.map((r, index) => (
-            <span
-              key={index}
-              className='px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded'
-            >
-              {r.role == 'furniture' ? t('furnitemaster') : t(r.role)}
-            </span>
-          ))}
-        </div>
-      ),
-    },
-    {
-      title: t('createdAt'),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (record: any) => (
-        <div>{dayjs(record).format('DD.MM.YYYY HH:mm')}</div>
-      ),
+      title: t('type'),
+      dataIndex: 'type',
+      key: 'type',
+      render: (record) => {
+        return <div>{t(record)}</div>;
+      },
       filterDropdown: () => (
         <div className='p-2 space-y-2 w-64'>
+          <Input
+            value={searchByType}
+            suffix={<SearchOutlined />}
+            placeholder={t('search')}
+            onChange={(e) => setSearchByType(e.target.value)}
+          />
           <Select
             className='w-full'
             placeholder={t('selectSortDirection')}
@@ -477,9 +511,9 @@ const Users = () => {
               value: e,
               label: t(`sortDirection.${e}`),
             }))}
-            value={sortBy === 'createdAt' ? sortDirectionParam : undefined}
+            value={sortBy === 'type' ? sortDirectionParam : undefined}
             onChange={(value) => {
-              setSortBy('createdAt');
+              setSortBy('type');
               setSortDirectionParam(value);
             }}
           />
@@ -490,15 +524,68 @@ const Users = () => {
             <Button
               danger
               size='small'
-              onClick={handleClearPhoneFilter}
-              disabled={sortBy !== 'createdAt'}
+              onClick={handleClearTypeFilter}
+              disabled={!searchByPriceNonCash && sortBy !== 'type'}
             >
               {t('clearFilter')}
             </Button>
           </div>
         </div>
       ),
-      filterIcon: () => <DownOutlined />,
+      filterIcon: () => <SearchOutlined />,
+    },
+    {
+      title: t('wood'),
+      dataIndex: 'wood',
+      key: 'wood',
+      render: (wood) => {
+        if (!wood) return <span className='text-gray-400'>{t('noData')}</span>;
+
+        const typeLabels: Record<string, string> = {
+          cheap: t('cheap'),
+          dryPlaned: t('dryPlaned'),
+          osina: t('osina'),
+          regular: t('regular'),
+          sticky: t('sticky'),
+        };
+
+        const unitLabels: Record<string, string> = {
+          meter: t('meter'),
+          piece: t('piece'),
+          sqMeter: t('sqMeter'),
+        };
+
+        const qualityLabels: Record<string, string> = {
+          '1': '1',
+          '2': '2',
+          '3': '3',
+        };
+
+        return (
+          <div className='text-sm space-y-1 leading-tight'>
+            <div>
+              <span className='font-semibold'>{t('type')}: </span>
+              {typeLabels[wood.type] || wood.type}
+            </div>
+            <div>
+              <span className='font-semibold'>{t('woodLength')}: </span>
+              {wood.length} {unitLabels[wood.unit] || wood.unit}
+            </div>
+            <div>
+              <span className='font-semibold'>{t('woodWidth')}: </span>
+              {wood.width} {unitLabels[wood.unit] || wood.unit}
+            </div>
+            <div>
+              <span className='font-semibold'>{t('woodThickness')}: </span>
+              {wood.thickness} {unitLabels[wood.unit] || wood.unit}
+            </div>
+            <div>
+              <span className='font-semibold'>{t('woodQuality')}: </span>
+              {qualityLabels[wood.quality] || wood.quality}
+            </div>
+          </div>
+        );
+      },
     },
     {
       title: t('actions'),
@@ -514,27 +601,21 @@ const Users = () => {
           <Button
             size='small'
             type='primary'
-            icon={<UserSwitchOutlined />}
-            onClick={() => handleChangeRoleModal(record)}
-          />
-          <Button
-            size='small'
-            type='primary'
             danger
             icon={<DeleteOutlined />}
             onClick={() => {
               confirmDelete({
                 onConfirm: () => {
-                  deleteUser.mutate(
+                  deleteProduct.mutate(
                     {
                       params: { id: record.id },
                     },
                     {
                       onSuccess: () => {
-                        message.success(t('userDeleted'));
+                        message.success(t('productDeleted'));
                         queryClient.invalidateQueries();
                       },
-                      onError: () => message.error(t('userDeleteError')),
+                      onError: () => message.error(t('productDeleteError')),
                     }
                   );
                 },
@@ -547,56 +628,43 @@ const Users = () => {
   ];
 
   const handleOpenCreateModal = () => {
-    setEditingUser(null);
+    setEditingData(null);
     setIsModalOpen(true);
   };
 
   const handleOpenEditModal = (user: any) => {
-    setEditingUser(user);
+    setEditingData(user);
     setIsModalOpen(true);
-  };
-
-  const handleChangeRoleModal = (user: any) => {
-    setEditingUser(user);
-    setIsRoleModalOpen(true);
-  };
-
-  const handleCloseChangeRoleModal = () => {
-    setIsRoleModalOpen(false);
-    setEditingUser(null);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setEditingUser(null);
+    setEditingData(null);
   };
 
   const handleSubmitModal = async (values: any) => {
-    const phone = values.phone ? `+993${values.phone}` : null;
     try {
-      if (editingUser) {
-        await tsr.user.edit.mutate({
-          params: { id: editingUser.id },
+      if (editingData) {
+        await tsr.product.edit.mutate({
+          params: { id: editingData.id },
           body: {
             ...values,
-            phone,
           },
         });
-        message.success(t('userUpdated'));
+        message.success(t('productUpdated'));
       } else {
-        await tsr.user.create.mutate({
+        await tsr.product.create.mutate({
           body: {
             ...values,
-            phone,
           },
         });
-        message.success(t('userCreated'));
+        message.success(t('productCreated'));
       }
       queryClient.invalidateQueries();
       setIsModalOpen(false);
-      setEditingUser(null);
+      setEditingData(null);
     } catch (error) {
-      message.error(t('userCreateOrUpdateError'));
+      message.error(t('productCreateOrUpdateError'));
     }
   };
 
@@ -607,11 +675,11 @@ const Users = () => {
           <div className='flex gap-4 items-center justify-between'>
             <div className='flex gap-2'>
               <Button
-                icon={<UserAddOutlined />}
+                icon={<ProductFilled />}
                 type='primary'
                 onClick={handleOpenCreateModal}
               >
-                {t('createUser')}
+                {t('createProduct')}
               </Button>
               <Button
                 icon={<UndoOutlined />}
@@ -623,7 +691,7 @@ const Users = () => {
               </Button>
             </div>
             <span className='font-medium text-xl'>
-              {t('allCount')}: {users?.body.count}
+              {t('allCount')}: {products?.body.count}
             </span>
           </div>
         )}
@@ -633,23 +701,18 @@ const Users = () => {
         pagination={{
           current: page,
           pageSize: perPage,
-          total: users?.body?.count,
+          total: products?.body?.count,
           onChange: handleTableChange,
         }}
       />
-      <UserModal
+      <ProductModal
         open={isModalOpen}
         onCancel={handleCloseModal}
         onSubmit={handleSubmitModal}
-        initialValues={editingUser}
-      />
-      <UserRoleModal
-        open={isRoleModalOpen}
-        onCancel={handleCloseChangeRoleModal}
-        initialValues={editingUser}
+        initialValues={editingData}
       />
     </>
   );
 };
 
-export default Users;
+export default Products;

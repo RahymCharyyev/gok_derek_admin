@@ -20,9 +20,7 @@ const Login = () => {
       navigate('/');
     },
     onError: () => {
-      setError(
-        t('auth.invalid_credentials', 'Ulanyjynyň loginy ýa-da paroly ýalňyş')
-      );
+      setError(t('invalid_credentials'));
     },
   });
 

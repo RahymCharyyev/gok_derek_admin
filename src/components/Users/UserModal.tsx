@@ -1,18 +1,23 @@
 import { type UserEdit } from '@/api/schema/user';
 import { Form, Input, Modal } from 'antd';
-import { useEffect } from 'react';
+import { useEffect, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const { useForm } = Form;
 
-interface Props {
+interface UserModalProps {
   open: boolean;
   onCancel: () => void;
   onSubmit: (values: UserEdit) => void;
   initialValues?: UserEdit | null;
 }
 
-const UserModal = ({ open, onCancel, onSubmit, initialValues }: Props) => {
+const UserModal: FC<UserModalProps> = ({
+  open,
+  onCancel,
+  onSubmit,
+  initialValues,
+}) => {
   const [form] = useForm();
   const { t } = useTranslation();
 
@@ -50,18 +55,14 @@ const UserModal = ({ open, onCancel, onSubmit, initialValues }: Props) => {
         <Form.Item
           name='username'
           label={t('loginOfUser')}
-          rules={[
-            { required: !initialValues, message: t('pleaseEnterUsername') },
-          ]}
+          rules={[{ required: !initialValues, message: t('notEmptyField') }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           name='password'
           label={t('password')}
-          rules={[
-            { required: !initialValues, message: t('pleaseEnterPassword') },
-          ]}
+          rules={[{ required: !initialValues, message: t('notEmptyField') }]}
         >
           <Input.Password />
         </Form.Item>

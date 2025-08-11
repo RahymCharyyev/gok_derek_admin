@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Users from './pages/Users';
 import { useThemeStore } from './hooks/useThemeStore';
 import { darkTheme, lightTheme, sharedTheme } from './theme';
+import Products from './pages/Products';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -39,6 +40,14 @@ function App() {
             element={
               <LayoutComponent>
                 <Users />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/products'
+            element={
+              <LayoutComponent>
+                <Products />
               </LayoutComponent>
             }
           />

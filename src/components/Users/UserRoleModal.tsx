@@ -2,17 +2,21 @@ import { tsr } from '@/api';
 import { role, type Role } from '@/api/schema/user-role';
 import { queryClient } from '@/Providers';
 import { Divider, Modal, Select, Tag, message } from 'antd';
-import { useState } from 'react';
+import { useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import ErrorComponent from '../ErrorComponent';
 
-interface Props {
+interface UserRoleModalProps {
   open: boolean;
   onCancel: () => void;
   initialValues?: { id: string } | null;
 }
 
-const UserRoleModal = ({ open, onCancel, initialValues }: Props) => {
+const UserRoleModal: FC<UserRoleModalProps> = ({
+  open,
+  onCancel,
+  initialValues,
+}) => {
   const { t } = useTranslation();
   const [_, setLoading] = useState(false);
   const userId = initialValues?.id;

@@ -5,6 +5,7 @@ import {
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  ProductOutlined,
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
@@ -104,6 +105,11 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
       key: '/',
       icon: <TeamOutlined />,
       label: <div className='text-base'>{t('users')}</div>,
+    },
+    {
+      key: '/products',
+      icon: <ProductOutlined />,
+      label: <div className='text-base'>{t('products')}</div>,
     },
   ];
 
