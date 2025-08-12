@@ -15,6 +15,7 @@ interface TableLayoutProps<T> {
   onRow?: (record: T) => React.HTMLAttributes<HTMLElement>;
   onChange?: TableProps<T>['onChange'];
   loading: boolean;
+  expandable?: TableProps<T>['expandable'];
 }
 
 const TableLayout = <T extends object>({
@@ -26,6 +27,7 @@ const TableLayout = <T extends object>({
   onRow,
   onChange,
   loading,
+  expandable,
 }: TableLayoutProps<T>) => {
   const { t } = useTranslation();
   return (
@@ -62,6 +64,7 @@ const TableLayout = <T extends object>({
           onRow={onRow}
           onChange={onChange}
           loading={loading}
+          expandable={expandable}
         />
         {children}
       </ConfigProvider>

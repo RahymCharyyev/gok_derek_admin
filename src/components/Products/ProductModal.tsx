@@ -21,6 +21,7 @@ const ProductModal: FC<ProductModalProps> = ({
 }) => {
   const [form] = useForm();
   const { t } = useTranslation();
+  const selectedType = Form.useWatch('type', form);
 
   useEffect(() => {
     if (initialValues) {
@@ -29,8 +30,6 @@ const ProductModal: FC<ProductModalProps> = ({
       form.resetFields();
     }
   }, [initialValues]);
-
-  console.log(productSchema.schema.shape.type.options);
 
   return (
     <Modal
@@ -87,51 +86,55 @@ const ProductModal: FC<ProductModalProps> = ({
           />
         </Form.Item>
 
-        <Divider>{t('wood')}</Divider>
+        {selectedType === 'wood' && (
+          <>
+            <Divider>{t('wood')}</Divider>
 
-        <Form.Item label={t('woodType')} name={['wood', 'type']}>
-          <Select
-            options={[
-              { label: t('cheap'), value: 'cheap' },
-              { label: t('dryPlaned'), value: 'dryPlaned' },
-              { label: t('osina'), value: 'osina' },
-              { label: t('regular'), value: 'regular' },
-              { label: t('sticky'), value: 'sticky' },
-            ]}
-          />
-        </Form.Item>
+            <Form.Item label={t('woodType')} name={['wood', 'type']}>
+              <Select
+                options={[
+                  { label: t('cheap'), value: 'cheap' },
+                  { label: t('dryPlaned'), value: 'dryPlaned' },
+                  { label: t('osina'), value: 'osina' },
+                  { label: t('regular'), value: 'regular' },
+                  { label: t('sticky'), value: 'sticky' },
+                ]}
+              />
+            </Form.Item>
 
-        <Form.Item label={t('woodLength')} name={['wood', 'length']}>
-          <Input type='number' />
-        </Form.Item>
+            <Form.Item label={t('woodLength')} name={['wood', 'length']}>
+              <Input type='number' />
+            </Form.Item>
 
-        <Form.Item label={t('woodQuality')} name={['wood', 'quality']}>
-          <Select
-            options={[
-              { label: '1', value: '1' },
-              { label: '2', value: '2' },
-              { label: '3', value: '3' },
-            ]}
-          />
-        </Form.Item>
+            <Form.Item label={t('woodQuality')} name={['wood', 'quality']}>
+              <Select
+                options={[
+                  { label: '1', value: '1' },
+                  { label: '2', value: '2' },
+                  { label: '3', value: '3' },
+                ]}
+              />
+            </Form.Item>
 
-        <Form.Item label={t('woodThickness')} name={['wood', 'thickness']}>
-          <Input type='number' />
-        </Form.Item>
+            <Form.Item label={t('woodThickness')} name={['wood', 'thickness']}>
+              <Input type='number' />
+            </Form.Item>
 
-        <Form.Item label={t('woodUnit')} name={['wood', 'unit']}>
-          <Select
-            options={[
-              { label: t('meter'), value: 'meter' },
-              { label: t('piece'), value: 'piece' },
-              { label: t('sqMeter'), value: 'sqMeter' },
-            ]}
-          />
-        </Form.Item>
+            <Form.Item label={t('woodUnit')} name={['wood', 'unit']}>
+              <Select
+                options={[
+                  { label: t('meter'), value: 'meter' },
+                  { label: t('piece'), value: 'piece' },
+                  { label: t('sqMeter'), value: 'sqMeter' },
+                ]}
+              />
+            </Form.Item>
 
-        <Form.Item label={t('woodWidth')} name={['wood', 'width']}>
-          <Input type='number' />
-        </Form.Item>
+            <Form.Item label={t('woodWidth')} name={['wood', 'width']}>
+              <Input type='number' />
+            </Form.Item>
+          </>
+        )}
       </Form>
     </Modal>
   );

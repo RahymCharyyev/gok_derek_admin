@@ -9,11 +9,21 @@ import {
   DeleteOutlined,
   DownOutlined,
   EditOutlined,
+  PlusCircleOutlined,
   ProductFilled,
   SearchOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
-import { Button, Grid, Input, message, Select, type TableProps } from 'antd';
+import {
+  Button,
+  Divider,
+  Grid,
+  Input,
+  message,
+  Select,
+  Table,
+  type TableProps,
+} from 'antd';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
@@ -23,6 +33,7 @@ const { useBreakpoint } = Grid;
 const Products = () => {
   const { t } = useTranslation();
   const screens = useBreakpoint();
+  const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -494,7 +505,24 @@ const Products = () => {
       dataIndex: 'type',
       key: 'type',
       render: (record) => {
-        return <div>{t(record)}</div>;
+        return (
+          <div
+            className={
+              record.type === 'wood' ? 'cursor-pointer text-blue-600' : ''
+            }
+            onClick={() => {
+              if (record.type === 'wood') {
+                setExpandedRowKeys((prev) =>
+                  prev.includes(record.key)
+                    ? prev.filter((k) => k !== record.key)
+                    : [...prev, record.key]
+                );
+              }
+            }}
+          >
+            {t(record)}
+          </div>
+        );
       },
       filterDropdown: () => (
         <div className='p-2 space-y-2 w-64'>
@@ -533,59 +561,6 @@ const Products = () => {
         </div>
       ),
       filterIcon: () => <SearchOutlined />,
-    },
-    {
-      title: t('wood'),
-      dataIndex: 'wood',
-      key: 'wood',
-      render: (wood) => {
-        if (!wood) return <span className='text-gray-400'>{t('noData')}</span>;
-
-        const typeLabels: Record<string, string> = {
-          cheap: t('cheap'),
-          dryPlaned: t('dryPlaned'),
-          osina: t('osina'),
-          regular: t('regular'),
-          sticky: t('sticky'),
-        };
-
-        const unitLabels: Record<string, string> = {
-          meter: t('meter'),
-          piece: t('piece'),
-          sqMeter: t('sqMeter'),
-        };
-
-        const qualityLabels: Record<string, string> = {
-          '1': '1',
-          '2': '2',
-          '3': '3',
-        };
-
-        return (
-          <div className='text-sm space-y-1 leading-tight'>
-            <div>
-              <span className='font-semibold'>{t('type')}: </span>
-              {typeLabels[wood.type] || wood.type}
-            </div>
-            <div>
-              <span className='font-semibold'>{t('woodLength')}: </span>
-              {wood.length} {unitLabels[wood.unit] || wood.unit}
-            </div>
-            <div>
-              <span className='font-semibold'>{t('woodWidth')}: </span>
-              {wood.width} {unitLabels[wood.unit] || wood.unit}
-            </div>
-            <div>
-              <span className='font-semibold'>{t('woodThickness')}: </span>
-              {wood.thickness} {unitLabels[wood.unit] || wood.unit}
-            </div>
-            <div>
-              <span className='font-semibold'>{t('woodQuality')}: </span>
-              {qualityLabels[wood.quality] || wood.quality}
-            </div>
-          </div>
-        );
-      },
     },
     {
       title: t('actions'),
@@ -703,6 +678,90 @@ const Products = () => {
           pageSize: perPage,
           total: products?.body?.count,
           onChange: handleTableChange,
+        }}
+        expandable={{
+          expandedRowKeys,
+          onExpand: (expanded, record) => {
+            if (record.type === 'wood') {
+              setExpandedRowKeys(
+                expanded
+                  ? [...expandedRowKeys, record.key]
+                  : expandedRowKeys.filter((k) => k !== record.key)
+              );
+            }
+          },
+          expandedRowRender: (record) => {
+            if (record.type !== 'wood') return null;
+
+            const wood = record.wood;
+            if (!wood)
+              return <span className='text-gray-400'>{t('noData')}</span>;
+
+            const typeLabels: Record<string, string> = {
+              cheap: t('cheap'),
+              dryPlaned: t('dryPlaned'),
+              osina: t('osina'),
+              regular: t('regular'),
+              sticky: t('sticky'),
+            };
+
+            const unitLabels: Record<string, string> = {
+              meter: t('meter'),
+              piece: t('piece'),
+              sqMeter: t('sqMeter'),
+            };
+
+            const qualityLabels: Record<string, string> = {
+              '1': '1',
+              '2': '2',
+              '3': '3',
+            };
+
+            const columns = [
+              { title: t('type'), dataIndex: 'type', key: 'type' },
+              { title: t('woodLength'), dataIndex: 'length', key: 'length' },
+              { title: t('woodWidth'), dataIndex: 'width', key: 'width' },
+              {
+                title: t('woodThickness'),
+                dataIndex: 'thickness',
+                key: 'thickness',
+              },
+              { title: t('woodQuality'), dataIndex: 'quality', key: 'quality' },
+            ];
+
+            const data = [
+              {
+                key: 'wood-details',
+                type: typeLabels[wood.type] || wood.type,
+                length: `${wood.length} ${unitLabels[wood.unit] || wood.unit}`,
+                width: `${wood.width} ${unitLabels[wood.unit] || wood.unit}`,
+                thickness: `${wood.thickness} ${
+                  unitLabels[wood.unit] || wood.unit
+                }`,
+                quality: qualityLabels[wood.quality] || wood.quality,
+              },
+            ];
+
+            return (
+              <>
+                <Divider>{t('wood')}</Divider>
+                <Table
+                  columns={columns}
+                  dataSource={data}
+                  pagination={false}
+                  size='small'
+                />
+              </>
+            );
+          },
+          expandIcon: ({ expanded, onExpand, record }) =>
+            record.type === 'wood' ? (
+              <PlusCircleOutlined
+                style={{ cursor: 'pointer' }}
+                rotate={expanded ? 90 : 0}
+                onClick={(e) => onExpand(record, e)}
+              />
+            ) : null,
         }}
       />
       <ProductModal
