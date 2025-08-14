@@ -114,8 +114,11 @@
   "piece": "bölek",
   "sqMeter": "m²",
   "woodWidth": "Agajyň giňligi",
-  "other": "Başga",
+  "other": "Beýlekiler",
   "role": "Roly",
   "furnitemaster": "Mebelçi",
-  "noData": "Maglumat ýok"
+  "noData": "Maglumat ýok",
+  "woodProducts": "Agaç harytlar",
+  "furnitureProducts": "Mebel harytlar",
+  "otherProducts": "Beýleki harytlar"
 }

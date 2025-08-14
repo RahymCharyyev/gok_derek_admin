@@ -1,6 +1,6 @@
 import { productSchema } from '@/api/schema';
 import { type UserEdit } from '@/api/schema/user';
-import { Form, Input, Modal, Select, Divider } from 'antd';
+import { Divider, Form, Input, Modal, Select } from 'antd';
 import { useEffect, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 

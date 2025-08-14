@@ -1,11 +1,11 @@
 import { tsr } from '@/api';
 import { useThemeStore } from '@/hooks/useThemeStore';
 import {
+  AppstoreOutlined,
   LoadingOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  ProductOutlined,
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
@@ -24,7 +24,8 @@ interface LayoutComponentProps {
 type MenuItem = {
   key: string;
   label: React.ReactElement;
-  icon: React.ReactElement;
+  icon?: React.ReactElement;
+  children?: MenuItem[];
 };
 
 const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
@@ -108,21 +109,45 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
     },
     {
       key: '/products',
-      icon: <ProductOutlined />,
+      icon: <AppstoreOutlined />,
       label: <div className='text-base'>{t('products')}</div>,
+      children: [
+        {
+          key: '/products/wood',
+          label: <div className='text-base'>{t('woodProducts')}</div>,
+        },
+        {
+          key: '/products/furniture',
+          label: <div className='text-base'>{t('furnitureProducts')}</div>,
+        },
+        {
+          key: '/products/other',
+          label: <div className='text-base'>{t('otherProducts')}</div>,
+        },
+      ],
     },
   ];
 
   const getSelectedKey = () => {
     const path = location.pathname;
-    const item = items.find((item) => item.key === path);
-    return item ? [item.key] : [];
+    const findKey = (menuItems: MenuItem[]): string[] => {
+      for (const item of menuItems) {
+        if (item.key === path) return [item.key];
+        if (item.children) {
+          const childKey = findKey(item.children);
+          if (childKey.length) return childKey;
+        }
+      }
+      return [];
+    };
+    return findKey(items);
   };
 
   const SidebarMenu = (
     <Menu
       mode='inline'
       selectedKeys={getSelectedKey()}
+      defaultOpenKeys={['/products']}
       onClick={({ key }) => {
         navigate(key);
         setDrawerVisible(false);

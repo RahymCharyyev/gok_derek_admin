@@ -6,6 +6,9 @@ import Users from './pages/Users';
 import { useThemeStore } from './hooks/useThemeStore';
 import { darkTheme, lightTheme, sharedTheme } from './theme';
 import Products from './pages/Products';
+import Wood from './pages/Products/Wood';
+import FurnitureProducts from './pages/Products/Furniture';
+import OtherProducts from './pages/Products/Other';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -48,6 +51,30 @@ function App() {
             element={
               <LayoutComponent>
                 <Products />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/products/wood'
+            element={
+              <LayoutComponent>
+                <Wood />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/products/furniture'
+            element={
+              <LayoutComponent>
+                <FurnitureProducts />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/products/other'
+            element={
+              <LayoutComponent>
+                <OtherProducts />
               </LayoutComponent>
             }
           />
