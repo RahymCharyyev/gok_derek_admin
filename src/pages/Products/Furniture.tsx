@@ -1,7 +1,8 @@
 import { tsr } from '@/api';
 import { sortDirection } from '@/api/schema/common';
 import ErrorComponent from '@/components/ErrorComponent';
-import ProductModal from '@/components/Products/ProductModal';
+import FurnitureProductsModal from '@/components/Products/FurnitureModal';
+import WoodModal from '@/components/Products/WoodModal';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
 import { queryClient } from '@/Providers';
@@ -580,7 +581,7 @@ const FurnitureProducts = () => {
           onChange: handleTableChange,
         }}
       />
-      <ProductModal
+      <FurnitureProductsModal
         open={isModalOpen}
         onCancel={handleCloseModal}
         onSubmit={handleSubmitModal}

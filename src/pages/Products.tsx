@@ -1,7 +1,7 @@
 import { tsr } from '@/api';
 import { sortDirection } from '@/api/schema/common';
 import ErrorComponent from '@/components/ErrorComponent';
-import ProductModal from '@/components/Products/ProductModal';
+import WoodModal from '@/components/Products/WoodModal';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
 import { queryClient } from '@/Providers';
@@ -764,7 +764,7 @@ const Products = () => {
             ) : null,
         }}
       />
-      <ProductModal
+      <WoodModal
         open={isModalOpen}
         onCancel={handleCloseModal}
         onSubmit={handleSubmitModal}
