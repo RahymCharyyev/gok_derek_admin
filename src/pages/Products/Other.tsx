@@ -2,7 +2,6 @@ import { tsr } from '@/api';
 import { sortDirection } from '@/api/schema/common';
 import ErrorComponent from '@/components/ErrorComponent';
 import OtherProductsModal from '@/components/Products/OtherModal';
-import WoodModal from '@/components/Products/WoodModal';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
 import { queryClient } from '@/Providers';
