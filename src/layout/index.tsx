@@ -113,6 +113,10 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
       label: <div className='text-base'>{t('products')}</div>,
       children: [
         {
+          key: '/wood-types',
+          label: <div className='text-base'>{t('woodTypes')}</div>,
+        },
+        {
           key: '/products/wood',
           label: <div className='text-base'>{t('woodProducts')}</div>,
         },

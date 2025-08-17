@@ -253,7 +253,7 @@ const OtherProducts = () => {
       fixed: 'left',
     },
     {
-      title: t('name'),
+      title: t('productName'),
       dataIndex: 'name',
       key: 'name',
       filterDropdown: () => (

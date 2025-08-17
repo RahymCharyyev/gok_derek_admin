@@ -43,7 +43,7 @@ const createItem = schema.pick({
 });
 
 const create = z.discriminatedUnion('type', [
-  z.object({type: z.literal('wood'), wood: productWoodSchema.schema.omit({productId: true})}).merge(createItem),
+  z.object({type: z.literal('wood'), wood: productWoodSchema.create.omit({productId: true})}).merge(createItem),
   z.object({type: z.literal('furniture')}).merge(createItem),
   z.object({type: z.literal('other')}).merge(createItem),
 ]);

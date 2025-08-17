@@ -1,26 +1,27 @@
 import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
+import {productUnitsSchema} from './product-unit';
 
 const schema = z.object({
   productId: z.string().uuid(),
-  type: z.enum(['dryPlaned', 'regular', 'osina', 'sticky', 'cheap']),
+  woodTypeId: z.string().uuid(),
   quality: z.enum(['1', '2', '3', 'extra', 'premium']).nullish(),
-  unit: z.enum(['piece', 'meter', 'sqMeter']).nullish(),
   thickness: z.coerce.number().nullish(),
   width: z.coerce.number().nullish(),
   length: z.coerce.number().nullish(),
+
+  units: productUnitsSchema.schema.pick({unit: true}).array().nullish(),
 });
 
 const sortable = schema
   .pick({
-    type: true,
-    unit: true,
+    woodTypeId: true,
     quality: true,
   })
   .keyof();
 const sort = z.object({sortBy: sortable, sortDirection: sortDirection}).partial();
 
-const getAll = schema.partial().merge(sort).merge(commonQuery);
+const getAll = schema.omit({units: true}).partial().merge(sort).merge(commonQuery);
 const getAllRes = z.object({
   count: z.number(),
   data: schema.array(),
@@ -28,9 +29,9 @@ const getAllRes = z.object({
 
 const getOneRes = schema;
 
-const create = schema;
+const create = schema.omit({units: true}).extend({units: productUnitsSchema.schema.shape.unit.array()});
 
-const edit = schema.partial();
+const edit = create.partial();
 
 type Schema = z.infer<typeof schema>;
 type GetAll = z.infer<typeof getAll>;

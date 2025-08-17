@@ -1,7 +1,7 @@
 import { tsr } from '@/api';
 import { sortDirection } from '@/api/schema/common';
 import ErrorComponent from '@/components/ErrorComponent';
-import WoodModal from '@/components/Products/WoodModal';
+import WoodTypeModal from '@/components/Products/WoodTypeModal';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
 import { queryClient } from '@/Providers';
@@ -20,7 +20,7 @@ import { useSearchParams } from 'react-router-dom';
 
 const { useBreakpoint } = Grid;
 
-const WoodProducts = () => {
+const WoodTypes = () => {
   const { t } = useTranslation();
   const screens = useBreakpoint();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,7 +58,6 @@ const WoodProducts = () => {
     price: searchParams.get('price') || undefined,
     priceNonCash: searchParams.get('priceNonCash') || undefined,
     priceSelection: searchParams.get('priceSelection') || undefined,
-    type: 'wood',
     sortBy: searchParams.get('sortBy') || undefined,
     sortDirection: searchParams.get('sortDirection') || undefined,
   };
@@ -68,14 +67,14 @@ const WoodProducts = () => {
     isLoading,
     isError,
     error,
-  } = tsr.product.getAll.useQuery({
-    queryKey: ['products', query],
+  } = tsr.woodType.getAll.useQuery({
+    queryKey: ['wood-type', query],
     queryData: {
       query,
     },
   });
 
-  const deleteProduct = tsr.product.remove.useMutation();
+  const deleteProduct = tsr.woodType.remove.useMutation();
   const confirmDelete = useDeleteConfirm();
 
   if (isError) {
@@ -92,11 +91,6 @@ const WoodProducts = () => {
       price: item.price || '',
       priceNonCash: item.priceNonCash || '',
       priceSelection: item.priceSelection || '',
-      type: item.type || '',
-      woodLength: item.wood?.length || '',
-      woodWidth: item.wood?.width || '',
-      woodThickness: item.wood?.thickness || '',
-      woodQuality: item.wood?.quality || '',
     })) || [];
 
   const handleTableChange = (newPage: number, newPageSize: number) => {
@@ -161,6 +155,21 @@ const WoodProducts = () => {
     const params = new URLSearchParams(searchParams);
     params.delete('name');
     if (params.get('sortBy') === 'name') {
+      params.delete('sortBy');
+      params.delete('sortDirection');
+    }
+    setSearchParams(params);
+  };
+
+  const handleClearCodeFilter = () => {
+    setSearchByCode('');
+    if (sortBy === 'code') {
+      setSortBy(undefined);
+      setSortDirectionParam(undefined);
+    }
+    const params = new URLSearchParams(searchParams);
+    params.delete('code');
+    if (params.get('sortBy') === 'code') {
       params.delete('sortBy');
       params.delete('sortDirection');
     }
@@ -242,7 +251,7 @@ const WoodProducts = () => {
       fixed: 'left',
     },
     {
-      title: t('productName'),
+      title: t('name'),
       dataIndex: 'name',
       key: 'name',
       filterDropdown: () => (
@@ -284,40 +293,47 @@ const WoodProducts = () => {
       filterIcon: () => <DownOutlined />,
     },
     {
-      title: t('woodType'),
-      dataIndex: 'woodType',
-      key: 'woodType',
-      render: (value) => t(value),
-    },
-    {
-      title: t('woodThickness'),
-      dataIndex: 'woodThickness',
-      key: 'woodThickness',
-      render: (value) => value,
-    },
-    {
-      title: t('woodWidth'),
-      dataIndex: 'woodWidth',
-      key: 'woodWidth',
-      render: (value) => value,
-    },
-    {
-      title: t('woodLength'),
-      dataIndex: 'woodLength',
-      key: 'woodLength',
-      render: (value) => value,
-    },
-    {
-      title: t('woodQuality'),
-      dataIndex: 'woodQuality',
-      key: 'woodQuality',
-      render: (value) => value,
-    },
-    {
-      title: t('woodUnit'),
-      dataIndex: 'woodUnit',
-      key: 'woodUnit',
-      render: (value) => t(value),
+      title: t('code'),
+      dataIndex: 'code',
+      key: 'code',
+      render: (record) => <div>{t(record)}</div>,
+      filterDropdown: () => (
+        <div className='p-2 space-y-2 w-64'>
+          <Input
+            value={searchByCode}
+            suffix={<SearchOutlined />}
+            placeholder={t('search')}
+            onChange={(e) => setSearchByCode(e.target.value)}
+          />
+          <Select
+            className='w-full'
+            placeholder={t('selectSortDirection')}
+            options={sortDirection.options.map((e) => ({
+              value: e,
+              label: t(`sortDirection.${e}`),
+            }))}
+            value={sortBy === 'code' ? sortDirectionParam : undefined}
+            onChange={(value) => {
+              setSortBy('code');
+              setSortDirectionParam(value);
+            }}
+          />
+          <div className='flex justify-between pt-1'>
+            <Button size='small' type='primary' onClick={handleSearch}>
+              {t('search')}
+            </Button>
+            <Button
+              danger
+              size='small'
+              onClick={handleClearCodeFilter}
+              disabled={!searchByName && sortBy !== 'code'}
+            >
+              {t('clearFilter')}
+            </Button>
+          </div>
+        </div>
+      ),
+      filterIcon: () => <SearchOutlined />,
     },
     {
       title: t('price'),
@@ -503,26 +519,26 @@ const WoodProducts = () => {
   const handleSubmitModal = async (values: any) => {
     try {
       if (editingData) {
-        await tsr.product.edit.mutate({
+        await tsr.woodType.edit.mutate({
           params: { id: editingData.id },
           body: {
             ...values,
           },
         });
-        message.success(t('productUpdated'));
+        message.success(t('woodTypeUpdated'));
       } else {
-        await tsr.product.create.mutate({
+        await tsr.woodType.create.mutate({
           body: {
             ...values,
           },
         });
-        message.success(t('productCreated'));
+        message.success(t('woodTypeCreated'));
       }
       queryClient.invalidateQueries();
       setIsModalOpen(false);
       setEditingData(null);
     } catch (error) {
-      message.error(t('productCreateOrUpdateError'));
+      message.error(t('woodTypeCreateOrUpdateError'));
     }
   };
 
@@ -537,7 +553,7 @@ const WoodProducts = () => {
                 type='primary'
                 onClick={handleOpenCreateModal}
               >
-                {t('createProduct')}
+                {t('createWoodType')}
               </Button>
               <Button
                 icon={<UndoOutlined />}
@@ -563,7 +579,7 @@ const WoodProducts = () => {
           onChange: handleTableChange,
         }}
       />
-      <WoodModal
+      <WoodTypeModal
         open={isModalOpen}
         onCancel={handleCloseModal}
         onSubmit={handleSubmitModal}
@@ -573,4 +589,4 @@ const WoodProducts = () => {
   );
 };
 
-export default WoodProducts;
+export default WoodTypes;

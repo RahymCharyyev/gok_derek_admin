@@ -4,6 +4,7 @@ import {productContract} from './product';
 import {settingsContract} from './settings';
 import {userContract} from './user';
 import {userRoleContract} from './user-role';
+import {woodTypeContract} from './wood-type';
 
 const c = initContract();
 
@@ -13,4 +14,5 @@ export const contract = c.router({
   auth: authContract,
   settings: settingsContract,
   product: productContract,
+  woodType: woodTypeContract,
 });
