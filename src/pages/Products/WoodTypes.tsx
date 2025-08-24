@@ -161,21 +161,6 @@ const WoodTypes = () => {
     setSearchParams(params);
   };
 
-  const handleClearCodeFilter = () => {
-    setSearchByCode('');
-    if (sortBy === 'code') {
-      setSortBy(undefined);
-      setSortDirectionParam(undefined);
-    }
-    const params = new URLSearchParams(searchParams);
-    params.delete('code');
-    if (params.get('sortBy') === 'code') {
-      params.delete('sortBy');
-      params.delete('sortDirection');
-    }
-    setSearchParams(params);
-  };
-
   const handleClearPriceFilter = () => {
     setSearchByPrice('');
     if (sortBy === 'price') {
@@ -185,21 +170,6 @@ const WoodTypes = () => {
     const params = new URLSearchParams(searchParams);
     params.delete('price');
     if (params.get('sortBy') === 'price') {
-      params.delete('sortBy');
-      params.delete('sortDirection');
-    }
-    setSearchParams(params);
-  };
-
-  const handleClearPriceNonCashFilter = () => {
-    setSearchByPriceNonCash('');
-    if (sortBy === 'priceNonCash') {
-      setSortBy(undefined);
-      setSortDirectionParam(undefined);
-    }
-    const params = new URLSearchParams(searchParams);
-    params.delete('priceNonCash');
-    if (params.get('sortBy') === 'priceNonCash') {
       params.delete('sortBy');
       params.delete('sortDirection');
     }
