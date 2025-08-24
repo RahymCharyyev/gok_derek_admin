@@ -31,9 +31,9 @@ const getAllRes = z.object({
 
 const getOneRes = schema;
 
-const create = schema.omit({id: true});
+const create = schema.omit({id: true, createdAt: true, deletedAt: true});
 
-const edit = schema.omit({id: true}).partial();
+const edit = create.partial();
 
 type Schema = z.infer<typeof schema>;
 type GetAll = z.infer<typeof getAll>;

@@ -1,5 +1,6 @@
+import { productUnitsSchema } from '@/api/schema';
 import { type UserEdit } from '@/api/schema/user';
-import { Form, Input, Modal } from 'antd';
+import { Form, Input, Modal, Select } from 'antd';
 import { useEffect, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -56,22 +57,39 @@ const OtherProductsModal: FC<OtherProductsModalProps> = ({
           <Input />
         </Form.Item>
         <Form.Item
-          name='code'
-          label={t('code')}
+          label={t('woodUnit')}
+          name={'units'}
+          rules={[{ required: !initialValues, message: t('notEmptyField') }]}
+        >
+          <Select
+            mode='multiple'
+            options={productUnitsSchema?.schema.shape.unit.options.map((e) => ({
+              label: t(e),
+              value: e,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
+          name='price'
+          label={t('actualPrice')}
           rules={[{ required: !initialValues, message: t('notEmptyField') }]}
         >
           <Input />
         </Form.Item>
-        <Form.Item name='price' label={t('price')}>
+        <Form.Item
+          name='priceSelection'
+          label={t('sellPrice')}
+          rules={[{ required: !initialValues, message: t('notEmptyField') }]}
+        >
           <Input />
         </Form.Item>
         <Form.Item name='priceNonCash' label={t('priceNonCash')}>
           <Input />
         </Form.Item>
-        <Form.Item name='priceSelection' label={t('priceSelection')}>
+        <Form.Item name='type' initialValue='other' hidden>
           <Input />
         </Form.Item>
-        <Form.Item name='type' initialValue='other' hidden>
+        <Form.Item name='code' initialValue={Date.now().toString()} hidden>
           <Input />
         </Form.Item>
       </Form>

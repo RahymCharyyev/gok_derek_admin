@@ -68,7 +68,7 @@ const WoodTypeModal: FC<WoodTypeModalProps> = ({
             }))}
           />
         </Form.Item>
-        <Form.Item name='price' label={t('price')}>
+        <Form.Item name='price' label={t('actual')}>
           <Input />
         </Form.Item>
         <Form.Item name='priceNonCash' label={t('priceNonCash')}>

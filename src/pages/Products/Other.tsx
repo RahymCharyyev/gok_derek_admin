@@ -92,7 +92,7 @@ const OtherProducts = () => {
       price: item.price || '',
       priceNonCash: item.priceNonCash || '',
       priceSelection: item.priceSelection || '',
-      type: item.type || '',
+      units: item.units || '',
     })) || [];
 
   const handleTableChange = (newPage: number, newPageSize: number) => {
@@ -163,21 +163,6 @@ const OtherProducts = () => {
     setSearchParams(params);
   };
 
-  const handleClearCodeFilter = () => {
-    setSearchByCode('');
-    if (sortBy === 'code') {
-      setSortBy(undefined);
-      setSortDirectionParam(undefined);
-    }
-    const params = new URLSearchParams(searchParams);
-    params.delete('code');
-    if (params.get('sortBy') === 'code') {
-      params.delete('sortBy');
-      params.delete('sortDirection');
-    }
-    setSearchParams(params);
-  };
-
   const handleClearPriceFilter = () => {
     setSearchByPrice('');
     if (sortBy === 'price') {
@@ -187,21 +172,6 @@ const OtherProducts = () => {
     const params = new URLSearchParams(searchParams);
     params.delete('price');
     if (params.get('sortBy') === 'price') {
-      params.delete('sortBy');
-      params.delete('sortDirection');
-    }
-    setSearchParams(params);
-  };
-
-  const handleClearPriceNonCashFilter = () => {
-    setSearchByPriceNonCash('');
-    if (sortBy === 'priceNonCash') {
-      setSortBy(undefined);
-      setSortDirectionParam(undefined);
-    }
-    const params = new URLSearchParams(searchParams);
-    params.delete('priceNonCash');
-    if (params.get('sortBy') === 'priceNonCash') {
       params.delete('sortBy');
       params.delete('sortDirection');
     }
@@ -253,7 +223,7 @@ const OtherProducts = () => {
       fixed: 'left',
     },
     {
-      title: t('productName'),
+      title: t('name'),
       dataIndex: 'name',
       key: 'name',
       filterDropdown: () => (
@@ -294,50 +264,9 @@ const OtherProducts = () => {
       ),
       filterIcon: () => <DownOutlined />,
     },
+
     {
-      title: t('code'),
-      dataIndex: 'code',
-      key: 'code',
-      filterDropdown: () => (
-        <div className='p-2 space-y-2 w-64'>
-          <Input
-            value={searchByCode}
-            suffix={<SearchOutlined />}
-            placeholder={t('search')}
-            onChange={(e) => setSearchByCode(e.target.value)}
-          />
-          <Select
-            className='w-full'
-            placeholder={t('selectSortDirection')}
-            options={sortDirection.options.map((e) => ({
-              value: e,
-              label: t(`sortDirection.${e}`),
-            }))}
-            value={sortBy === 'code' ? sortDirectionParam : undefined}
-            onChange={(value) => {
-              setSortBy('code');
-              setSortDirectionParam(value);
-            }}
-          />
-          <div className='flex justify-between pt-1'>
-            <Button size='small' type='primary' onClick={handleSearch}>
-              {t('search')}
-            </Button>
-            <Button
-              danger
-              size='small'
-              onClick={handleClearCodeFilter}
-              disabled={!searchByName && sortBy !== 'code'}
-            >
-              {t('clearFilter')}
-            </Button>
-          </div>
-        </div>
-      ),
-      filterIcon: () => <SearchOutlined />,
-    },
-    {
-      title: t('price'),
+      title: t('actualPrice'),
       dataIndex: 'price',
       key: 'price',
       filterDropdown: () => (
@@ -379,16 +308,16 @@ const OtherProducts = () => {
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('priceNonCash'),
-      dataIndex: 'priceNonCash',
-      key: 'priceNonCash',
+      title: t('price'),
+      dataIndex: 'priceSelection',
+      key: 'priceSelection',
       filterDropdown: () => (
         <div className='p-2 space-y-2 w-64'>
           <Input
-            value={searchByPriceNonCash}
+            value={searchByPriceSelection}
             suffix={<SearchOutlined />}
             placeholder={t('search')}
-            onChange={(e) => setSearchByPriceNonCash(e.target.value)}
+            onChange={(e) => setSearchByPriceSelection(e.target.value)}
           />
           <Select
             className='w-full'
@@ -397,9 +326,9 @@ const OtherProducts = () => {
               value: e,
               label: t(`sortDirection.${e}`),
             }))}
-            value={sortBy === 'priceNonCash' ? sortDirectionParam : undefined}
+            value={sortBy === 'priceSelection' ? sortDirectionParam : undefined}
             onChange={(value) => {
-              setSortBy('priceNonCash');
+              setSortBy('priceSelection');
               setSortDirectionParam(value);
             }}
           />
@@ -410,8 +339,8 @@ const OtherProducts = () => {
             <Button
               danger
               size='small'
-              onClick={handleClearPriceNonCashFilter}
-              disabled={!searchByCode && sortBy !== 'priceNonCash'}
+              onClick={handleClearPriceSelectionFilter}
+              disabled={!searchByCode && sortBy !== 'priceSelection'}
             >
               {t('clearFilter')}
             </Button>
@@ -421,9 +350,18 @@ const OtherProducts = () => {
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('priceSelection'),
-      dataIndex: 'priceSelection',
-      key: 'priceSelection',
+      title: t('woodUnit'),
+      dataIndex: 'units',
+      key: 'units',
+      render: (value) => {
+        if (!Array.isArray(value)) return null;
+        return value.map((e) => t(e.unit)).join(' / ');
+      },
+    },
+    {
+      title: t('benefit'),
+      dataIndex: 'priceNonCash',
+      key: 'priceNonCash',
       filterDropdown: () => (
         <div className='p-2 space-y-2 w-64'>
           <Input

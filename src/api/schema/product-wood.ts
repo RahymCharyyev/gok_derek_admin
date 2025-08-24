@@ -1,6 +1,7 @@
 import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
 import {productUnitsSchema} from './product-unit';
+import {woodTypeSchema} from './wood-type';
 
 const schema = z.object({
   productId: z.string().uuid(),
@@ -11,6 +12,7 @@ const schema = z.object({
   length: z.coerce.number().nullish(),
 
   units: productUnitsSchema.schema.pick({unit: true}).array().nullish(),
+  woodType: woodTypeSchema.schema.nullish(),
 });
 
 const sortable = schema

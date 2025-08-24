@@ -49,6 +49,13 @@ const FurnitureProductsModal: FC<FurnitureProductsModalProps> = ({
         className='max-h-[70vh] overflow-y-auto'
       >
         <Form.Item
+          name='code'
+          label={t('productCode')}
+          rules={[{ required: !initialValues, message: t('notEmptyField') }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
           name='name'
           label={t('name')}
           rules={[{ required: !initialValues, message: t('notEmptyField') }]}
@@ -56,19 +63,20 @@ const FurnitureProductsModal: FC<FurnitureProductsModalProps> = ({
           <Input />
         </Form.Item>
         <Form.Item
-          name='code'
-          label={t('code')}
+          name='price'
+          label={t('actualPrice')}
           rules={[{ required: !initialValues, message: t('notEmptyField') }]}
         >
           <Input />
         </Form.Item>
-        <Form.Item name='price' label={t('price')}>
+        <Form.Item
+          name='priceSelection'
+          label={t('sellPrice')}
+          rules={[{ required: !initialValues, message: t('notEmptyField') }]}
+        >
           <Input />
         </Form.Item>
         <Form.Item name='priceNonCash' label={t('priceNonCash')}>
-          <Input />
-        </Form.Item>
-        <Form.Item name='priceSelection' label={t('priceSelection')}>
           <Input />
         </Form.Item>
         <Form.Item name='type' initialValue='furniture' hidden>

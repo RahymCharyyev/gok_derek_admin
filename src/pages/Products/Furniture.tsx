@@ -193,21 +193,6 @@ const FurnitureProducts = () => {
     setSearchParams(params);
   };
 
-  const handleClearPriceNonCashFilter = () => {
-    setSearchByPriceNonCash('');
-    if (sortBy === 'priceNonCash') {
-      setSortBy(undefined);
-      setSortDirectionParam(undefined);
-    }
-    const params = new URLSearchParams(searchParams);
-    params.delete('priceNonCash');
-    if (params.get('sortBy') === 'priceNonCash') {
-      params.delete('sortBy');
-      params.delete('sortDirection');
-    }
-    setSearchParams(params);
-  };
-
   const handleClearPriceSelectionFilter = () => {
     setSearchByPriceSelection('');
     if (sortBy === 'priceSelection') {
@@ -253,49 +238,7 @@ const FurnitureProducts = () => {
       fixed: 'left',
     },
     {
-      title: t('productName'),
-      dataIndex: 'name',
-      key: 'name',
-      filterDropdown: () => (
-        <div className='p-2 space-y-2 w-[220px]'>
-          <Input
-            value={searchByName}
-            suffix={<SearchOutlined />}
-            placeholder={t('search')}
-            onChange={(e) => setSearchByName(e.target.value)}
-          />
-          <Select
-            className='w-[205px]'
-            placeholder={t('selectSortDirection')}
-            options={sortDirection.options.map((e) => ({
-              value: e,
-              label: t(`sortDirection.${e}`),
-            }))}
-            value={sortDirectionParam}
-            onChange={(value) => {
-              setSortBy('name');
-              setSortDirectionParam(value);
-            }}
-          />
-          <div className='flex justify-between'>
-            <Button size='small' type='primary' onClick={handleSearch}>
-              {t('search')}
-            </Button>
-            <Button
-              danger
-              size='small'
-              onClick={handleClearNameFilter}
-              disabled={!sortBy}
-            >
-              {t('clearFilter')}
-            </Button>
-          </div>
-        </div>
-      ),
-      filterIcon: () => <DownOutlined />,
-    },
-    {
-      title: t('code'),
+      title: t('productCode'),
       dataIndex: 'code',
       key: 'code',
       filterDropdown: () => (
@@ -337,7 +280,49 @@ const FurnitureProducts = () => {
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('price'),
+      title: t('name'),
+      dataIndex: 'name',
+      key: 'name',
+      filterDropdown: () => (
+        <div className='p-2 space-y-2 w-[220px]'>
+          <Input
+            value={searchByName}
+            suffix={<SearchOutlined />}
+            placeholder={t('search')}
+            onChange={(e) => setSearchByName(e.target.value)}
+          />
+          <Select
+            className='w-[205px]'
+            placeholder={t('selectSortDirection')}
+            options={sortDirection.options.map((e) => ({
+              value: e,
+              label: t(`sortDirection.${e}`),
+            }))}
+            value={sortDirectionParam}
+            onChange={(value) => {
+              setSortBy('name');
+              setSortDirectionParam(value);
+            }}
+          />
+          <div className='flex justify-between'>
+            <Button size='small' type='primary' onClick={handleSearch}>
+              {t('search')}
+            </Button>
+            <Button
+              danger
+              size='small'
+              onClick={handleClearNameFilter}
+              disabled={!sortBy}
+            >
+              {t('clearFilter')}
+            </Button>
+          </div>
+        </div>
+      ),
+      filterIcon: () => <DownOutlined />,
+    },
+    {
+      title: t('actualPrice'),
       dataIndex: 'price',
       key: 'price',
       filterDropdown: () => (
@@ -379,16 +364,16 @@ const FurnitureProducts = () => {
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('priceNonCash'),
-      dataIndex: 'priceNonCash',
-      key: 'priceNonCash',
+      title: t('selectedPrice'),
+      dataIndex: 'priceSelection',
+      key: 'priceSelection',
       filterDropdown: () => (
         <div className='p-2 space-y-2 w-64'>
           <Input
-            value={searchByPriceNonCash}
+            value={searchByPriceSelection}
             suffix={<SearchOutlined />}
             placeholder={t('search')}
-            onChange={(e) => setSearchByPriceNonCash(e.target.value)}
+            onChange={(e) => setSearchByPriceSelection(e.target.value)}
           />
           <Select
             className='w-full'
@@ -397,9 +382,9 @@ const FurnitureProducts = () => {
               value: e,
               label: t(`sortDirection.${e}`),
             }))}
-            value={sortBy === 'priceNonCash' ? sortDirectionParam : undefined}
+            value={sortBy === 'priceSelection' ? sortDirectionParam : undefined}
             onChange={(value) => {
-              setSortBy('priceNonCash');
+              setSortBy('priceSelection');
               setSortDirectionParam(value);
             }}
           />
@@ -410,8 +395,8 @@ const FurnitureProducts = () => {
             <Button
               danger
               size='small'
-              onClick={handleClearPriceNonCashFilter}
-              disabled={!searchByCode && sortBy !== 'priceNonCash'}
+              onClick={handleClearPriceSelectionFilter}
+              disabled={!searchByPriceNonCash && sortBy !== 'priceSelection'}
             >
               {t('clearFilter')}
             </Button>
@@ -421,9 +406,9 @@ const FurnitureProducts = () => {
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('priceSelection'),
-      dataIndex: 'priceSelection',
-      key: 'priceSelection',
+      title: t('benefit'),
+      dataIndex: 'benefit',
+      key: 'benefit',
       filterDropdown: () => (
         <div className='p-2 space-y-2 w-64'>
           <Input

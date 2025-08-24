@@ -336,7 +336,7 @@ const WoodTypes = () => {
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('price'),
+      title: t('actual'),
       dataIndex: 'price',
       key: 'price',
       filterDropdown: () => (

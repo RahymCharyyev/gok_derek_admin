@@ -5,7 +5,6 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Users from './pages/Users';
 import { useThemeStore } from './hooks/useThemeStore';
 import { darkTheme, lightTheme, sharedTheme } from './theme';
-import Products from './pages/Products';
 import Wood from './pages/Products/Wood';
 import FurnitureProducts from './pages/Products/Furniture';
 import OtherProducts from './pages/Products/Other';
@@ -44,14 +43,6 @@ function App() {
             element={
               <LayoutComponent>
                 <Users />
-              </LayoutComponent>
-            }
-          />
-          <Route
-            path='/products'
-            element={
-              <LayoutComponent>
-                <Products />
               </LayoutComponent>
             }
           />

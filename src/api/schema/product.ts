@@ -1,6 +1,7 @@
 import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
 import {productWoodSchema} from './product-wood';
+import {productUnitsSchema} from './product-unit';
 
 const schema = z.object({
   id: z.string().uuid(),
@@ -14,6 +15,7 @@ const schema = z.object({
   deletedAt: z.coerce.date().nullish(),
 
   wood: productWoodSchema.schema.nullish(),
+  units: productUnitsSchema.schema.partial().array().nullish(),
 });
 
 const sortable = schema
@@ -45,7 +47,7 @@ const createItem = schema.pick({
 const create = z.discriminatedUnion('type', [
   z.object({type: z.literal('wood'), wood: productWoodSchema.create.omit({productId: true})}).merge(createItem),
   z.object({type: z.literal('furniture')}).merge(createItem),
-  z.object({type: z.literal('other')}).merge(createItem),
+  z.object({type: z.literal('other'), units: productUnitsSchema.schema.shape.unit.array()}).merge(createItem),
 ]);
 
 const edit = schema.pick({name: true, price: true, priceNonCash: true, priceSelection: true}).partial();
