@@ -292,51 +292,9 @@ const WoodTypes = () => {
       ),
       filterIcon: () => <DownOutlined />,
     },
+
     {
-      title: t('code'),
-      dataIndex: 'code',
-      key: 'code',
-      render: (record) => <div>{t(record)}</div>,
-      filterDropdown: () => (
-        <div className='p-2 space-y-2 w-64'>
-          <Input
-            value={searchByCode}
-            suffix={<SearchOutlined />}
-            placeholder={t('search')}
-            onChange={(e) => setSearchByCode(e.target.value)}
-          />
-          <Select
-            className='w-full'
-            placeholder={t('selectSortDirection')}
-            options={sortDirection.options.map((e) => ({
-              value: e,
-              label: t(`sortDirection.${e}`),
-            }))}
-            value={sortBy === 'code' ? sortDirectionParam : undefined}
-            onChange={(value) => {
-              setSortBy('code');
-              setSortDirectionParam(value);
-            }}
-          />
-          <div className='flex justify-between pt-1'>
-            <Button size='small' type='primary' onClick={handleSearch}>
-              {t('search')}
-            </Button>
-            <Button
-              danger
-              size='small'
-              onClick={handleClearCodeFilter}
-              disabled={!searchByName && sortBy !== 'code'}
-            >
-              {t('clearFilter')}
-            </Button>
-          </div>
-        </div>
-      ),
-      filterIcon: () => <SearchOutlined />,
-    },
-    {
-      title: t('actual'),
+      title: t('priceDollar'),
       dataIndex: 'price',
       key: 'price',
       filterDropdown: () => (
@@ -378,49 +336,7 @@ const WoodTypes = () => {
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('priceNonCash'),
-      dataIndex: 'priceNonCash',
-      key: 'priceNonCash',
-      filterDropdown: () => (
-        <div className='p-2 space-y-2 w-64'>
-          <Input
-            value={searchByPriceNonCash}
-            suffix={<SearchOutlined />}
-            placeholder={t('search')}
-            onChange={(e) => setSearchByPriceNonCash(e.target.value)}
-          />
-          <Select
-            className='w-full'
-            placeholder={t('selectSortDirection')}
-            options={sortDirection.options.map((e) => ({
-              value: e,
-              label: t(`sortDirection.${e}`),
-            }))}
-            value={sortBy === 'priceNonCash' ? sortDirectionParam : undefined}
-            onChange={(value) => {
-              setSortBy('priceNonCash');
-              setSortDirectionParam(value);
-            }}
-          />
-          <div className='flex justify-between'>
-            <Button size='small' type='primary' onClick={handleSearch}>
-              {t('search')}
-            </Button>
-            <Button
-              danger
-              size='small'
-              onClick={handleClearPriceNonCashFilter}
-              disabled={!searchByCode && sortBy !== 'priceNonCash'}
-            >
-              {t('clearFilter')}
-            </Button>
-          </div>
-        </div>
-      ),
-      filterIcon: () => <SearchOutlined />,
-    },
-    {
-      title: t('priceSelection'),
+      title: t('selectionPriceDollar'),
       dataIndex: 'priceSelection',
       key: 'priceSelection',
       filterDropdown: () => (

@@ -1,6 +1,5 @@
-import { woodTypeSchema } from '@/api/schema';
 import { type UserEdit } from '@/api/schema/user';
-import { Form, Input, Modal, Select } from 'antd';
+import { Form, Input, Modal } from 'antd';
 import { useEffect, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -56,25 +55,23 @@ const WoodTypeModal: FC<WoodTypeModalProps> = ({
         >
           <Input />
         </Form.Item>
+
         <Form.Item
-          label={t('code')}
-          name='code'
+          name='price'
+          label={t('priceM3')}
           rules={[{ required: !initialValues, message: t('notEmptyField') }]}
         >
-          <Select
-            options={woodTypeSchema.schema.shape.code.options.map((e) => ({
-              label: t(e),
-              value: e,
-            }))}
-          />
-        </Form.Item>
-        <Form.Item name='price' label={t('actual')}>
           <Input />
         </Form.Item>
-        <Form.Item name='priceNonCash' label={t('priceNonCash')}>
+
+        <Form.Item
+          name='priceSelection'
+          label={t('selectionPriceDollar')}
+          rules={[{ required: !initialValues, message: t('notEmptyField') }]}
+        >
           <Input />
         </Form.Item>
-        <Form.Item name='priceSelection' label={t('priceSelection')}>
+        <Form.Item name='code' initialValue={Date.now().toString()} hidden>
           <Input />
         </Form.Item>
       </Form>
