@@ -76,9 +76,6 @@ const FurnitureProductsModal: FC<FurnitureProductsModalProps> = ({
         >
           <Input />
         </Form.Item>
-        <Form.Item name='priceNonCash' label={t('priceNonCash')}>
-          <Input />
-        </Form.Item>
         <Form.Item name='type' initialValue='furniture' hidden>
           <Input />
         </Form.Item>

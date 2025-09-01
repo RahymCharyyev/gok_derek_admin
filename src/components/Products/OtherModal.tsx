@@ -83,9 +83,6 @@ const OtherProductsModal: FC<OtherProductsModalProps> = ({
         >
           <Input />
         </Form.Item>
-        <Form.Item name='priceNonCash' label={t('priceNonCash')}>
-          <Input />
-        </Form.Item>
         <Form.Item name='type' initialValue='other' hidden>
           <Input />
         </Form.Item>

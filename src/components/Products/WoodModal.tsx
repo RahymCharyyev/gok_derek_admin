@@ -1,17 +1,29 @@
-import { productUnitsSchema, type WoodTypeSchema } from '@/api/schema';
+import {
+  productUnitsSchema,
+  type ProductSchema,
+  type WoodTypeSchema,
+} from '@/api/schema';
 import { productWoodSchema } from '@/api/schema/product-wood';
-import { type UserEdit } from '@/api/schema/user';
 import { Form, Input, Modal, Select } from 'antd';
 import { useEffect, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const { useForm } = Form;
 
+type WoodModalInitialValues = Partial<ProductSchema['Schema']> & {
+  woodThickness?: number;
+  woodWidth?: number;
+  woodLength?: number;
+  woodQuality?: string;
+  woodUnits?: { unit: string }[];
+  woodType?: string;
+};
+
 interface WoodModalProps {
   open: boolean;
   onCancel: () => void;
-  onSubmit: (values: UserEdit) => void;
-  initialValues?: UserEdit | null;
+  onSubmit: (values: ProductSchema['Schema']) => void;
+  initialValues?: WoodModalInitialValues | null;
   woodTypes: WoodTypeSchema['Schema'][];
 }
 
@@ -26,16 +38,29 @@ const WoodModal: FC<WoodModalProps> = ({
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (initialValues) {
-      form.setFieldsValue({ ...initialValues });
-    } else {
-      form.resetFields();
-      form.setFieldsValue({
-        type: 'wood',
-        code: Date.now().toString(),
-      });
+    if (open) {
+      if (initialValues) {
+        form.setFieldsValue({
+          name: initialValues.name,
+          price: initialValues.price,
+          priceSelection: initialValues.priceSelection,
+          wood: {
+            thickness: initialValues.woodThickness ?? null,
+            width: initialValues.woodWidth ?? null,
+            length: initialValues.woodLength ?? null,
+            quality: initialValues.woodQuality ?? null,
+            units: initialValues.woodUnits?.map((u) => u.unit) ?? [],
+            woodTypeId:
+              woodTypes.find((w) => w.name === initialValues.woodType)?.id ??
+              null,
+          },
+        });
+      } else {
+        form.resetFields();
+        form.setFieldsValue({ type: 'wood' });
+      }
     }
-  }, [initialValues]);
+  }, [open, initialValues, woodTypes]);
 
   return (
     <Modal

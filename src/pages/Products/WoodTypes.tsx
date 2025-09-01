@@ -1,6 +1,7 @@
 import { tsr } from '@/api';
 import { sortDirection } from '@/api/schema/common';
 import ErrorComponent from '@/components/ErrorComponent';
+import { PrintButtons } from '@/components/PrintButtons';
 import WoodTypeModal from '@/components/Products/WoodTypeModal';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
@@ -449,6 +450,7 @@ const WoodTypes = () => {
               >
                 {!screens.xs ? t('resetAllFilters') : ''}
               </Button>
+              <PrintButtons />
             </div>
             <span className='font-medium text-xl'>
               {t('allCount')}: {products?.body.count}
