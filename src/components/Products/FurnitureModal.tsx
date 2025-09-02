@@ -1,5 +1,5 @@
 import { type UserEdit } from '@/api/schema/user';
-import { Form, Input, Modal } from 'antd';
+import { Button, Form, Input, Modal } from 'antd';
 import { useEffect, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,6 +29,13 @@ const FurnitureProductsModal: FC<FurnitureProductsModalProps> = ({
     }
   }, [initialValues]);
 
+  const generateCode = () => {
+    const randomNumber = Math.floor(Math.random() * 999999) + 1;
+    const formattedNumber = randomNumber.toString().padStart(6, '0');
+    const code = `MBL${formattedNumber}`;
+    form.setFieldsValue({ code });
+  };
+
   return (
     <Modal
       open={open}
@@ -53,7 +60,13 @@ const FurnitureProductsModal: FC<FurnitureProductsModalProps> = ({
           label={t('productCode')}
           rules={[{ required: !initialValues, message: t('notEmptyField') }]}
         >
-          <Input />
+          <Input
+            addonAfter={
+              <div className='cursor-pointer' onClick={generateCode}>
+                {t('generate')}
+              </div>
+            }
+          />
         </Form.Item>
         <Form.Item
           name='name'

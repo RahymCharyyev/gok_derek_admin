@@ -137,5 +137,6 @@
   "woodTypeCreateOrUpdateError": "Agajyň görnüşi goşulanda ýa-da üýtgedilende ýalňyşlyk döredi",
   "actualPrice": "Düýp nyrhy (man)",
   "selectedPrice": "Saýlama nyrhy (man)",
-  "benefit": "Peýda"
+  "benefit": "Peýda",
+  "generate": "Kod ber"
 }

@@ -1,6 +1,5 @@
-import { productUnitsSchema } from '@/api/schema';
 import { type UserEdit } from '@/api/schema/user';
-import { Form, Input, Modal, Select } from 'antd';
+import { Form, Input, Modal } from 'antd';
 import { useEffect, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -61,13 +60,7 @@ const OtherProductsModal: FC<OtherProductsModalProps> = ({
           name={'units'}
           rules={[{ required: !initialValues, message: t('notEmptyField') }]}
         >
-          <Select
-            mode='multiple'
-            options={productUnitsSchema?.schema.shape.unit.options.map((e) => ({
-              label: t(e),
-              value: e,
-            }))}
-          />
+          <Input />
         </Form.Item>
         <Form.Item
           name='price'
