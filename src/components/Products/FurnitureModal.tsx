@@ -1,5 +1,5 @@
 import { type UserEdit } from '@/api/schema/user';
-import { Button, Form, Input, Modal } from 'antd';
+import { Form, Input, Modal } from 'antd';
 import { useEffect, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
