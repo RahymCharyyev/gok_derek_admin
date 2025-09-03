@@ -2,6 +2,7 @@ import { tsr } from '@/api';
 import { useThemeStore } from '@/hooks/useThemeStore';
 import {
   AppstoreOutlined,
+  BankOutlined,
   GlobalOutlined,
   LoadingOutlined,
   LogoutOutlined,
@@ -135,6 +136,11 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
       key: '/locations',
       icon: <GlobalOutlined />,
       label: <div className='text-base'>{t('locations')}</div>,
+    },
+    {
+      key: '/stores',
+      icon: <BankOutlined />,
+      label: <div className='text-base'>{t('stores')}</div>,
     },
   ];
 
