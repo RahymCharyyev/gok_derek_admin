@@ -1,13 +1,17 @@
 import {
   DeleteOutlined,
-  SearchOutlined,
+  DownOutlined,
   EditOutlined,
+  SearchOutlined,
+  UserSwitchOutlined,
 } from '@ant-design/icons';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { renderFilterDropdown } from '../../renderFilterDropdown';
+import type { Role } from '@/api/schema/user-role';
+import dayjs from 'dayjs';
 
-interface UseWoodTableColumnProps {
+interface UseUsersTableColumnProps {
   t: (key: string) => string;
   searchValues: { [key: string]: string };
   setSearchValues: (values: { [key: string]: string }) => void;
@@ -19,10 +23,11 @@ interface UseWoodTableColumnProps {
   clearFilter: (key: string) => void;
   sortOptions: string[];
   handleOpenEditModal: (record: any) => void;
+  handleChangeRoleModal: (record: any) => void;
   confirmDelete: (options: { id: string }) => void;
 }
 
-export const useWoodTableColumn = ({
+export const useUsersTableColumn = ({
   t,
   searchValues,
   setSearchValues,
@@ -33,8 +38,9 @@ export const useWoodTableColumn = ({
   clearFilter,
   sortOptions,
   handleOpenEditModal,
+  handleChangeRoleModal,
   confirmDelete,
-}: UseWoodTableColumnProps): ColumnsType<any> => {
+}: UseUsersTableColumnProps): ColumnsType<any> => {
   return [
     {
       title: '№',
@@ -43,13 +49,13 @@ export const useWoodTableColumn = ({
       fixed: 'left',
     },
     {
-      title: t('productName'),
-      dataIndex: 'name',
-      key: 'name',
+      title: t('loginOfUser'),
+      dataIndex: 'username',
+      key: 'username',
       filterDropdown: () =>
         renderFilterDropdown(
-          'name',
-          t('productName'),
+          'username',
+          t('loginOfUser'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -59,18 +65,19 @@ export const useWoodTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'name'
+          'username',
+          false
         ),
-      filterIcon: () => <SearchOutlined />,
+      filterIcon: () => <DownOutlined />,
     },
     {
-      title: t('woodType'),
-      dataIndex: 'woodType',
-      key: 'woodType',
+      title: t('firstName'),
+      dataIndex: 'firstName',
+      key: 'firstName',
       filterDropdown: () =>
         renderFilterDropdown(
-          'woodType',
-          t('woodType'),
+          'firstName',
+          t('firstName'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -80,19 +87,18 @@ export const useWoodTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'woodType'
+          'firstName'
         ),
       filterIcon: () => <SearchOutlined />,
-      render: (value) => <div>{t(value)}</div>,
     },
     {
-      title: t('woodThickness'),
-      dataIndex: 'woodThickness',
-      key: 'woodThickness',
+      title: t('lastName'),
+      dataIndex: 'lastName',
+      key: 'lastName',
       filterDropdown: () =>
         renderFilterDropdown(
-          'woodThickness',
-          t('woodThickness'),
+          'lastName',
+          t('lastName'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -102,18 +108,18 @@ export const useWoodTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'thickness'
+          'lastName'
         ),
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('woodWidth'),
-      dataIndex: 'woodWidth',
-      key: 'woodWidth',
+      title: t('email'),
+      dataIndex: 'email',
+      key: 'email',
       filterDropdown: () =>
         renderFilterDropdown(
-          'woodWidth',
-          t('woodWidth'),
+          'email',
+          t('email'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -123,18 +129,18 @@ export const useWoodTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'width'
+          'email'
         ),
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('woodLength'),
-      dataIndex: 'woodLength',
-      key: 'woodLength',
+      title: t('phone'),
+      dataIndex: 'phone',
+      key: 'phone',
       filterDropdown: () =>
         renderFilterDropdown(
-          'woodLength',
-          t('woodLength'),
+          'phone',
+          t('phone'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -144,18 +150,35 @@ export const useWoodTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'length'
+          'phone'
         ),
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('woodQuality'),
-      dataIndex: 'woodQuality',
-      key: 'woodQuality',
+      title: t('role'),
+      dataIndex: 'roles',
+      key: 'roles',
+      render: (roles: { role: Role }[]) => (
+        <div className='flex flex-wrap gap-1'>
+          {roles.map((r, index) => (
+            <span
+              key={index}
+              className='px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded'
+            >
+              {r.role == 'furniture' ? t('furnitemaster') : t(r.role)}
+            </span>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: t('createdAt'),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       filterDropdown: () =>
         renderFilterDropdown(
-          'woodQuality',
-          t('woodQuality'),
+          'createdAt',
+          t('createdAt'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -165,61 +188,13 @@ export const useWoodTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'quality'
+          'createdAt',
+          false
         ),
-      filterIcon: () => <SearchOutlined />,
-      render: (value) => t(value),
-    },
-    {
-      title: t('woodUnit'),
-      dataIndex: 'woodUnits',
-      key: 'woodUnits',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'woodUnits',
-          t('woodUnit'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'unit'
-        ),
-      filterIcon: () => <SearchOutlined />,
-      render: (value) => {
-        if (!Array.isArray(value)) return null;
-        return value.map((e) => t(e.unit)).join(' / ');
-      },
-    },
-    {
-      title: 'Ştuk/metr nyrhy (man)',
-      children: [
-        {
-          title: t('actual'),
-          dataIndex: 'price',
-          key: 'price',
-        },
-        {
-          title: t('priceSelection'),
-          dataIndex: 'priceSelection',
-          key: 'priceSelection',
-        },
-      ],
-    },
-    {
-      title: 'Peýda (man)',
-      children: [
-        {
-          title: t('actual'),
-        },
-        {
-          title: t('priceSelection'),
-        },
-      ],
+      filterIcon: () => <DownOutlined />,
+      render: (record: any) => (
+        <div>{dayjs(record).format('DD.MM.YYYY HH:mm')}</div>
+      ),
     },
     {
       title: t('actions'),
@@ -231,6 +206,12 @@ export const useWoodTableColumn = ({
             type='primary'
             icon={<EditOutlined />}
             onClick={() => handleOpenEditModal(record)}
+          />
+          <Button
+            size='small'
+            type='primary'
+            icon={<UserSwitchOutlined />}
+            onClick={() => handleChangeRoleModal(record)}
           />
           <Button
             size='small'

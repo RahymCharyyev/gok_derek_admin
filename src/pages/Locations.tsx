@@ -1,30 +1,29 @@
 import ErrorComponent from '@/components/ErrorComponent';
-import FurnitureProductsModal from '@/components/Products/FurnitureModal';
-import { useFurnitureTableColumn } from '@/components/Products/hooks/useFurnitureTableColumn';
-import { useProducts } from '@/components/Products/hooks/useProducts';
+import { useLocations } from '@/components/Locations/hooks/useLocations';
+import { useLocationsTableColumn } from '@/components/Locations/hooks/useLocationsTableColumn';
+import LocationModal from '@/components/Locations/LocationModal';
 import Toolbar from '@/components/Products/Toolbar';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { useFilters } from '@/hooks/useFilters';
 import TableLayout from '@/layout/TableLayout';
-import { ProductFilled } from '@ant-design/icons';
+import { GlobalOutlined } from '@ant-design/icons';
 import { message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const FurnitureProducts = () => {
+const Locations = () => {
   const { t } = useTranslation();
-
   const {
     query,
     searchParams,
     setSearchParams,
     page,
     perPage,
-    productsQuery,
-    createProductMutation,
-    updateProductMutation,
-    deleteProductMutation,
-  } = useProducts('furniture');
+    locationsQuery,
+    createLocationMutation,
+    updateLocationMutation,
+    deleteLocationMutation,
+  } = useLocations();
 
   const { updateFilter, clearFilter, resetAllFilters } = useFilters(
     searchParams,
@@ -35,7 +34,6 @@ const FurnitureProducts = () => {
   const [editingData, setEditingData] = useState<any | null>(null);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
-    code: '',
   });
 
   const confirmDelete = useDeleteConfirm();
@@ -64,7 +62,7 @@ const FurnitureProducts = () => {
     );
   }, [searchValues, query]);
 
-  const columns = useFurnitureTableColumn({
+  const columns = useLocationsTableColumn({
     t,
     searchValues,
     setSearchValues,
@@ -85,14 +83,14 @@ const FurnitureProducts = () => {
     confirmDelete: ({ id }) => {
       confirmDelete({
         onConfirm: () => {
-          deleteProductMutation.mutate(
+          deleteLocationMutation.mutate(
             { id },
             {
               onSuccess: () => {
-                message.success(t('productDeleted'));
-                productsQuery.refetch();
+                message.success(t('locationDeleted'));
+                locationsQuery.refetch();
               },
-              onError: () => message.error(t('productDeleteError')),
+              onError: () => message.error(t('locationDeleteError')),
             }
           );
         },
@@ -100,41 +98,36 @@ const FurnitureProducts = () => {
     },
   });
 
-  if (productsQuery.isError) {
+  if (locationsQuery.isError) {
     return (
-      <ErrorComponent message={productsQuery.error || t('unknownError')} />
+      <ErrorComponent message={locationsQuery.error || t('unknownError')} />
     );
   }
 
   const data =
-    productsQuery.data?.body.data?.map((item, index) => ({
+    locationsQuery.data?.body.data?.map((item, index) => ({
       key: item.id,
       index: (page - 1) * perPage + (index + 1),
       id: item.id,
       name: item.name || '',
-      code: item.code || '',
-      price: item.price || '',
-      priceNonCash: item.priceNonCash || '',
-      priceSelection: item.priceSelection || '',
-      type: item.type || '',
     })) || [];
 
   const handleSubmitModal = async (values: any) => {
     try {
       if (editingData) {
-        await updateProductMutation.mutateAsync({
+        await updateLocationMutation.mutateAsync({
           id: editingData.key,
           body: values,
         });
-        message.success(t('productUpdated'));
+        message.success(t('locationUpdated'));
       } else {
-        await createProductMutation.mutateAsync(values);
-        message.success(t('productCreated'));
+        await createLocationMutation.mutateAsync(values);
+        message.success(t('locationCreated'));
       }
       setIsModalOpen(false);
       setEditingData(null);
     } catch (error) {
-      message.error(t('productCreateOrUpdateError'));
+      message.error(t('locationCreateOrUpdateError'));
     }
   };
 
@@ -143,27 +136,27 @@ const FurnitureProducts = () => {
       <TableLayout
         title={() => (
           <Toolbar
-            title={t('createProduct')}
-            icon={<ProductFilled />}
+            title={t('createLocation')}
+            icon={<GlobalOutlined />}
             onCreate={() => {
               setEditingData(null);
               setIsModalOpen(true);
             }}
             onReset={resetAllFilters}
             resetDisabled={resetDisabled}
-            count={productsQuery.data?.body.count}
+            count={locationsQuery.data?.body.count}
           />
         )}
-        loading={productsQuery.isLoading}
+        loading={locationsQuery.isLoading}
         columns={columns}
         data={data}
         pagination={{
           current: page,
           pageSize: perPage,
-          total: productsQuery.data?.body?.count,
+          total: locationsQuery.data?.body?.count,
         }}
       />
-      <FurnitureProductsModal
+      <LocationModal
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         onSubmit={handleSubmitModal}
@@ -173,4 +166,4 @@ const FurnitureProducts = () => {
   );
 };
 
-export default FurnitureProducts;
+export default Locations;

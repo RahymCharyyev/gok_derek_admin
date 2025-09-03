@@ -7,7 +7,7 @@ import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { renderFilterDropdown } from '../../renderFilterDropdown';
 
-interface UseFurnitureTableColumnProps {
+interface UseLocationsTableColumnProps {
   t: (key: string) => string;
   searchValues: { [key: string]: string };
   setSearchValues: (values: { [key: string]: string }) => void;
@@ -22,7 +22,7 @@ interface UseFurnitureTableColumnProps {
   confirmDelete: (options: { id: string }) => void;
 }
 
-export const useFurnitureTableColumn = ({
+export const useLocationsTableColumn = ({
   t,
   searchValues,
   setSearchValues,
@@ -34,34 +34,13 @@ export const useFurnitureTableColumn = ({
   sortOptions,
   handleOpenEditModal,
   confirmDelete,
-}: UseFurnitureTableColumnProps): ColumnsType<any> => {
+}: UseLocationsTableColumnProps): ColumnsType<any> => {
   return [
     {
       title: '№',
       dataIndex: 'index',
       key: 'index',
       fixed: 'left',
-    },
-    {
-      title: t('productCode'),
-      dataIndex: 'code',
-      key: 'code',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'code',
-          t('productCode'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'code'
-        ),
-      filterIcon: () => <SearchOutlined />,
     },
     {
       title: t('name'),
@@ -83,22 +62,6 @@ export const useFurnitureTableColumn = ({
           'name'
         ),
       filterIcon: () => <SearchOutlined />,
-    },
-    {
-      title: t('actualPrice'),
-      dataIndex: 'price',
-      key: 'price',
-      render: (value) => <div>{t(value)}</div>,
-    },
-    {
-      title: t('selectedPrice'),
-      dataIndex: 'priceSelection',
-      key: 'priceSelection',
-    },
-    {
-      title: t('benefit'),
-      dataIndex: 'benefit',
-      key: 'benefit',
     },
     {
       title: t('actions'),

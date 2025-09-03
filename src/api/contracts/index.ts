@@ -1,7 +1,9 @@
 import {initContract} from '@ts-rest/core';
 import {authContract} from './auth';
+import {locationContract} from './location';
 import {productContract} from './product';
 import {settingsContract} from './settings';
+import {storeContract} from './store';
 import {userContract} from './user';
 import {userRoleContract} from './user-role';
 import {woodTypeContract} from './wood-type';
@@ -15,4 +17,6 @@ export const contract = c.router({
   settings: settingsContract,
   product: productContract,
   woodType: woodTypeContract,
+  location: locationContract,
+  store: storeContract,
 });

@@ -50,3 +50,17 @@ export type User = z.infer<typeof user>;
 export type UserGetAll = z.infer<typeof userGetAll>;
 export type UserCreate = z.infer<typeof userCreate>;
 export type UserEdit = z.infer<typeof userEdit>;
+
+export const userSchema = {
+  schema: user,
+  getAll: userGetAll,
+  create: userCreate,
+  edit: userEdit,
+};
+
+export type UserSchema = {
+  Schema: User;
+  GetAll: UserGetAll;
+  Create: UserCreate;
+  Edit: UserEdit;
+};

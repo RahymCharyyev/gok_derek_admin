@@ -1,12 +1,14 @@
-import { ProductFilled, UndoOutlined } from '@ant-design/icons';
+import { UndoOutlined } from '@ant-design/icons';
 import { Button, Grid } from 'antd';
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PrintButtons } from '../PrintButtons';
 
 const { useBreakpoint } = Grid;
 
 interface ToolbarProps {
+  icon: ReactNode;
+  title: string;
   onCreate: () => void;
   onReset: () => void;
   resetDisabled: boolean;
@@ -14,6 +16,8 @@ interface ToolbarProps {
 }
 
 const Toolbar: FC<ToolbarProps> = ({
+  icon,
+  title,
   onCreate,
   onReset,
   resetDisabled,
@@ -24,8 +28,8 @@ const Toolbar: FC<ToolbarProps> = ({
   return (
     <div className='flex gap-4 items-center justify-between'>
       <div className='flex gap-2'>
-        <Button icon={<ProductFilled />} type='primary' onClick={onCreate}>
-          {t('createProduct')}
+        <Button icon={icon} type='primary' onClick={onCreate}>
+          {title}
         </Button>
         <Button
           icon={<UndoOutlined />}

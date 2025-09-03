@@ -1,11 +1,12 @@
 import ErrorComponent from '@/components/ErrorComponent';
-import { useFilters } from '@/components/Products/hooks/useFilters';
-import { useWoodTableColumn } from '@/components/Products/hooks/useWoodTableColumn';
 import { useProducts } from '@/components/Products/hooks/useProducts';
+import { useWoodTableColumn } from '@/components/Products/hooks/useWoodTableColumn';
 import Toolbar from '@/components/Products/Toolbar';
 import WoodModal from '@/components/Products/WoodModal';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
+import { useFilters } from '@/hooks/useFilters';
 import TableLayout from '@/layout/TableLayout';
+import { ProductFilled } from '@ant-design/icons';
 import { message } from 'antd';
 import { useCallback, useMemo, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -155,6 +156,8 @@ const WoodProducts: FC = () => {
       <TableLayout
         title={() => (
           <Toolbar
+            title={t('createProduct')}
+            icon={<ProductFilled />}
             onCreate={() => {
               setEditingData(null);
               setIsModalOpen(true);

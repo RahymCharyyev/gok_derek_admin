@@ -1,11 +1,12 @@
 import ErrorComponent from '@/components/ErrorComponent';
-import { useFilters } from '@/components/Products/hooks/useFilters';
 import { useOtherTableColumn } from '@/components/Products/hooks/useOtherTableColumn';
 import { useProducts } from '@/components/Products/hooks/useProducts';
 import OtherProductsModal from '@/components/Products/OtherModal';
 import Toolbar from '@/components/Products/Toolbar';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
+import { useFilters } from '@/hooks/useFilters';
 import TableLayout from '@/layout/TableLayout';
+import { ProductFilled } from '@ant-design/icons';
 import { message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -142,6 +143,8 @@ const OtherProducts = () => {
       <TableLayout
         title={() => (
           <Toolbar
+            title={t('createProduct')}
+            icon={<ProductFilled />}
             onCreate={() => {
               setEditingData(null);
               setIsModalOpen(true);

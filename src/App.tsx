@@ -9,6 +9,7 @@ import Wood from './pages/Products/Wood';
 import FurnitureProducts from './pages/Products/Furniture';
 import OtherProducts from './pages/Products/Other';
 import WoodTypes from './pages/Products/WoodTypes';
+import Locations from './pages/Locations';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -75,6 +76,14 @@ function App() {
             element={
               <LayoutComponent>
                 <WoodTypes />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/locations'
+            element={
+              <LayoutComponent>
+                <Locations />
               </LayoutComponent>
             }
           />

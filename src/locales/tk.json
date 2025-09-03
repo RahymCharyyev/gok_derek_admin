@@ -138,5 +138,13 @@
   "actualPrice": "Düýp nyrhy (man)",
   "selectedPrice": "Saýlama nyrhy (man)",
   "benefit": "Peýda",
-  "generate": "Kod ber"
+  "generate": "Kod ber",
+  "locationDeleted": "Lokasiýa üstünlikli pozuldy",
+  "locationDeleteError": "Lokasiýa pozulanda ýalňyşlyk döredi",
+  "locationUpdated": "Lokasiýa üstünlikli täzelendi",
+  "locationCreated": "Lokasiýa üstünlikli döredildi",
+  "locationCreateOrUpdateError": "Lokasiýa goşulanda ýa-da üýtgedilende ýalňyşlyk döredi",
+  "createLocation": "Lokasiýa döretmek",
+  "locations": "Lokasiýalar",
+  "editLocation": "Lokasiýany üýtgetmek"
 }

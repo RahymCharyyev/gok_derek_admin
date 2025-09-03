@@ -13,19 +13,22 @@ export const renderFilterDropdown = (
   handleSearch: () => void,
   clearFilter: (key: string) => void,
   t: (key: string) => string,
-  sortField: string
+  sortField: string,
+  showSearch: boolean = true
 ) => {
   return (
     <div className='p-2 space-y-2 w-[220px]'>
-      <Input
-        value={searchValues[key]}
-        suffix={<SearchOutlined />}
-        placeholder={t('search')}
-        onChange={(e) =>
-          setSearchValues({ ...searchValues, [key]: e.target.value })
-        }
-        onPressEnter={handleSearch}
-      />
+      {showSearch && (
+        <Input
+          value={searchValues[key]}
+          suffix={<SearchOutlined />}
+          placeholder={t('search')}
+          onChange={(e) =>
+            setSearchValues({ ...searchValues, [key]: e.target.value })
+          }
+          onPressEnter={handleSearch}
+        />
+      )}
       <Select
         className='w-[205px]'
         placeholder={t('selectSortDirection')}

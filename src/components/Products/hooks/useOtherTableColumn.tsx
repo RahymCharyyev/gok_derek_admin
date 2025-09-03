@@ -1,7 +1,11 @@
-import { DeleteOutlined, DownOutlined, EditOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  SearchOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { renderFilterDropdown } from '../renderFilterDropdown';
+import { renderFilterDropdown } from '../../renderFilterDropdown';
 
 interface UseOtherTableColumnProps {
   t: (key: string) => string;
@@ -57,7 +61,7 @@ export const useOtherTableColumn = ({
           t,
           'name'
         ),
-      filterIcon: () => <DownOutlined />,
+      filterIcon: () => <SearchOutlined />,
     },
     {
       title: t('actualPrice'),

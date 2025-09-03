@@ -3,7 +3,8 @@ import {commonQuery, sortDirection} from './common';
 
 const schema = z.object({
   id: z.string().uuid(),
-  code: z.enum(['dryPlaned', 'regular', 'osina', 'sticky', 'cheap']),
+  // code: z.enum(['dryPlaned', 'regular', 'osina', 'sticky', 'cheap']),
+  code: z.string(),
   name: z.string(),
   price: z.coerce.number().nullish(),
   priceSelection: z.coerce.number().nullish(),
