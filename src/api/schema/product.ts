@@ -18,15 +18,14 @@ const schema = z.object({
   units: productUnitsSchema.schema.partial().array().nullish(),
 });
 
-const sortable = schema
-  .pick({
-    type: true,
-    name: true,
-    price: true,
-    createdAt: true,
-  })
-  .keyof();
-const sort = z.object({sortBy: sortable.default('createdAt'), sortDirection: sortDirection.default('desc')}).partial();
+const sortKeys = schema.pick({
+  type: true,
+  name: true,
+  price: true,
+  createdAt: true,
+});
+const sortable = sortKeys.merge(productWoodSchema.sortKeys).keyof();
+const sort = z.object({sortBy: sortable.default('createdAt'), sortDirection: sortDirection.default('desc')});
 
 const getAll = schema.extend({text: z.string()}).partial().merge(sort).merge(commonQuery);
 const getAllRes = z.object({
@@ -56,6 +55,7 @@ type Schema = z.infer<typeof schema>;
 type GetAll = z.infer<typeof getAll>;
 type Create = z.infer<typeof create>;
 type Edit = z.infer<typeof edit>;
+type Sortable = z.infer<typeof sortable>;
 
 export const productSchema = {
   schema,
@@ -64,6 +64,8 @@ export const productSchema = {
   getOneRes,
   create,
   edit,
+  sortKeys,
+  sortable,
 };
 
 export type ProductSchema = {
@@ -71,4 +73,5 @@ export type ProductSchema = {
   GetAll: GetAll;
   Create: Create;
   Edit: Edit;
+  Sortable: Sortable;
 };

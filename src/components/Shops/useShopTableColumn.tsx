@@ -8,7 +8,7 @@ import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { renderFilterDropdown } from '../renderFilterDropdown';
 
-interface UseStoresTableColumnProps {
+interface UseShopTableColumnProps {
   t: (key: string) => string;
   searchValues: { [key: string]: string };
   setSearchValues: (values: { [key: string]: string }) => void;
@@ -23,7 +23,7 @@ interface UseStoresTableColumnProps {
   confirmDelete: (options: { id: string }) => void;
 }
 
-export const useStoresTableColumn = ({
+export const useShopTableColumn = ({
   t,
   searchValues,
   setSearchValues,
@@ -35,7 +35,7 @@ export const useStoresTableColumn = ({
   sortOptions,
   handleOpenEditModal,
   confirmDelete,
-}: UseStoresTableColumnProps): ColumnsType<any> => {
+}: UseShopTableColumnProps): ColumnsType<any> => {
   return [
     {
       title: '№',
@@ -44,13 +44,13 @@ export const useStoresTableColumn = ({
       fixed: 'left',
     },
     {
-      title: t('storeSeller'),
+      title: t('shopSeller'),
       dataIndex: 'user',
       key: 'user',
       filterDropdown: () =>
         renderFilterDropdown(
           'user',
-          t('storeSeller'),
+          t('shopSeller'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -70,7 +70,7 @@ export const useStoresTableColumn = ({
       ),
     },
     {
-      title: t('storeType'),
+      title: t('shopType'),
       dataIndex: 'type',
       key: 'type',
       filterDropdown: () =>
@@ -92,13 +92,13 @@ export const useStoresTableColumn = ({
       render: (record) => <div>{t(record)}</div>,
     },
     {
-      title: t('storeLocation'),
-      dataIndex: 'location',
-      key: 'location',
+      title: t('shopLocation'),
+      dataIndex: 'geoLocation',
+      key: 'geoLocation',
       filterDropdown: () =>
         renderFilterDropdown(
-          'location',
-          t('storeLocation'),
+          'geoLocation',
+          t('shopLocation'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -108,19 +108,18 @@ export const useStoresTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'location'
+          'geoLocation'
         ),
       filterIcon: () => <SearchOutlined />,
-      render: (record) => <div>{record.name}</div>,
     },
     {
-      title: t('storeAddress'),
+      title: t('shopAddress'),
       dataIndex: 'address',
       key: 'address',
       filterDropdown: () =>
         renderFilterDropdown(
           'address',
-          t('storeAddress'),
+          t('shopAddress'),
           searchValues,
           setSearchValues,
           sortOptions,

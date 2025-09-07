@@ -1,11 +1,11 @@
 import {initContract} from '@ts-rest/core';
 import {z} from 'zod';
-import {locationSchema as schema} from '../schema';
+import {storeWorkshopSchema as schema} from '../schema';
 import {paramsId} from '../schema/common';
 
 const c = initContract();
 
-export const locationContract = c.router(
+export const storeWorkshopContract = c.router(
   {
     getAll: {
       method: 'GET',
@@ -50,5 +50,5 @@ export const locationContract = c.router(
       },
     },
   },
-  {pathPrefix: '/api/locations'},
+  {pathPrefix: '/api/store-workshop'},
 );

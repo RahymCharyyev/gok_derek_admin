@@ -3,7 +3,7 @@ import { queryClient } from '@/Providers';
 import { useMutation } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 
-export const useStores = () => {
+export const useShops = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = Number(searchParams.get('page')) || 1;
@@ -20,31 +20,31 @@ export const useStores = () => {
     sortDirection: searchParams.get('sortDirection') || undefined,
   };
 
-  const storesQuery = tsr.store.getAll.useQuery({
-    queryKey: ['stores', Object.fromEntries(searchParams.entries())],
+  const shopsQuery = tsr.shop.getAll.useQuery({
+    queryKey: ['shops', Object.fromEntries(searchParams.entries())],
     queryData: { query },
   });
 
-  const createStoreMutation = useMutation({
-    mutationFn: (body: any) => tsr.store.create.mutate({ body }),
+  const createShopMutation = useMutation({
+    mutationFn: (body: any) => tsr.shop.create.mutate({ body }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['stores'] });
+      queryClient.invalidateQueries({ queryKey: ['shops'] });
     },
   });
 
-  const updateStoreMutation = useMutation({
+  const updateShopMutation = useMutation({
     mutationFn: ({ id, body }: { id: string; body: any }) =>
-      tsr.store.edit.mutate({ params: { id }, body }),
+      tsr.shop.edit.mutate({ params: { id }, body }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['stores'] });
+      queryClient.invalidateQueries({ queryKey: ['shops'] });
     },
   });
 
-  const deleteStoreMutation = useMutation({
+  const deleteShopMutation = useMutation({
     mutationFn: ({ id }: { id: string }) =>
-      tsr.store.remove.mutate({ params: { id } }),
+      tsr.shop.remove.mutate({ params: { id } }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['stores'] });
+      queryClient.invalidateQueries({ queryKey: ['shops'] });
     },
   });
 
@@ -54,9 +54,9 @@ export const useStores = () => {
     setSearchParams,
     page,
     perPage,
-    storesQuery,
-    createStoreMutation,
-    updateStoreMutation,
-    deleteStoreMutation,
+    shopsQuery,
+    createShopMutation,
+    updateShopMutation,
+    deleteShopMutation,
   };
 };

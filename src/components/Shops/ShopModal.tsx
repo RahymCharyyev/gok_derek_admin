@@ -1,4 +1,3 @@
-import type { LocationSchema } from '@/api/schema';
 import { type UserEdit, type UserSchema } from '@/api/schema/user';
 import { Form, Input, Modal, Select } from 'antd';
 import { useEffect, type FC } from 'react';
@@ -6,21 +5,18 @@ import { useTranslation } from 'react-i18next';
 
 const { useForm } = Form;
 
-interface StoreModalProps {
+interface ShopModalProps {
   open: boolean;
   onCancel: () => void;
   onSubmit: (values: UserEdit) => void;
   initialValues?: UserEdit | null;
   users: Pick<UserSchema['Schema'], 'id' | 'firstName' | 'lastName'>[];
-  locations: LocationSchema['Schema'][];
   loading: boolean;
   onSearchUser: (value: string) => void;
-  onSearchLocation: (value: string) => void;
   onClearUser: () => void;
-  onClearLocation: () => void;
 }
 
-const StoreModal: FC<StoreModalProps> = ({
+const ShopModal: FC<ShopModalProps> = ({
   open,
   onCancel,
   onSubmit,
@@ -28,10 +24,7 @@ const StoreModal: FC<StoreModalProps> = ({
   users,
   loading,
   onSearchUser,
-  locations,
-  onSearchLocation,
   onClearUser,
-  onClearLocation,
 }) => {
   const [form] = useForm();
   const { t } = useTranslation();
@@ -51,7 +44,7 @@ const StoreModal: FC<StoreModalProps> = ({
       onOk={() => form.submit()}
       okText={t('okText')}
       cancelText={t('cancelText')}
-      title={initialValues ? t('editStore') : t('createStore')}
+      title={initialValues ? t('editShop') : t('createShop')}
       width='100%'
       style={{ maxWidth: 500 }}
       styles={{ body: { padding: 16 } }}
@@ -65,7 +58,7 @@ const StoreModal: FC<StoreModalProps> = ({
       >
         <Form.Item
           name='userId'
-          label={t('storeSeller')}
+          label={t('shopSeller')}
           rules={[{ required: !initialValues, message: t('notEmptyField') }]}
         >
           <Select
@@ -84,33 +77,20 @@ const StoreModal: FC<StoreModalProps> = ({
           />
         </Form.Item>
         <Form.Item
-          name='locationId'
-          label={t('storeLocation')}
+          name='geoLocation'
+          label={t('shopLocation')}
           rules={[{ required: !initialValues, message: t('notEmptyField') }]}
         >
-          <Select
-            showSearch
-            allowClear
-            placeholder={t('selectLocation')}
-            filterOption={false}
-            onSearch={onSearchLocation}
-            loading={loading}
-            notFoundContent={loading ? t('loading') : t('noResults')}
-            options={locations.map((e) => ({
-              label: e.name,
-              value: e.id,
-            }))}
-            onClear={() => onClearLocation()}
-          />
+          <Input allowClear />
         </Form.Item>
         <Form.Item
           name='type'
-          label={t('storeType')}
+          label={t('shopType')}
           rules={[{ required: !initialValues, message: t('notEmptyField') }]}
         >
           <Select
             allowClear
-            placeholder={t('selectStoreType')}
+            placeholder={t('selectShopType')}
             options={[
               {
                 label: t('furniture'),
@@ -125,7 +105,7 @@ const StoreModal: FC<StoreModalProps> = ({
         </Form.Item>
         <Form.Item
           name='address'
-          label={t('storeAddress')}
+          label={t('shopAddress')}
           rules={[{ required: !initialValues, message: t('notEmptyField') }]}
         >
           <Input allowClear />
@@ -142,4 +122,4 @@ const StoreModal: FC<StoreModalProps> = ({
   );
 };
 
-export default StoreModal;
+export default ShopModal;

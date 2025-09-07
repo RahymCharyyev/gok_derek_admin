@@ -3,7 +3,6 @@ import { useThemeStore } from '@/hooks/useThemeStore';
 import {
   AppstoreOutlined,
   BankOutlined,
-  GlobalOutlined,
   LoadingOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
@@ -133,14 +132,9 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
       ],
     },
     {
-      key: '/locations',
-      icon: <GlobalOutlined />,
-      label: <div className='text-base'>{t('locations')}</div>,
-    },
-    {
-      key: '/stores',
+      key: '/shops',
       icon: <BankOutlined />,
-      label: <div className='text-base'>{t('stores')}</div>,
+      label: <div className='text-base'>{t('shops')}</div>,
     },
   ];
 

@@ -1,16 +1,30 @@
 import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
+import {productSchema} from './product';
 
 const schema = z.object({
   id: z.string().uuid(),
-  type: z.enum(['warehouse', 'workshop', 'shop']),
-
+  type: z.enum(['transfer', 'sale']),
+  productId: z.string().uuid(),
+  fromStoreId: z.string().uuid(),
+  toStoreId: z.string().uuid().nullish(),
+  quantity: z.coerce.number().int(),
+  price: z.coerce.number().int().nullish(),
   createdAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullish(),
 });
 
-const sortable = schema.pick({type: true, createdAt: true}).keyof();
+const sortKeys = schema.pick({
+  type: true,
+  productId: true,
+  fromStoreId: true,
+  toStoreId: true,
+  quantity: true,
+  price: true,
+  createdAt: true,
+});
 
+const sortable = sortKeys.merge(productSchema.sortKeys).keyof();
 const sort = z.object({sortBy: sortable.default('createdAt'), sortDirection: sortDirection.default('desc')});
 
 const getAll = schema.partial().merge(sort).merge(commonQuery);
@@ -21,7 +35,14 @@ const getAllRes = z.object({
 
 const getOneRes = schema;
 
-const create = schema.pick({type: true});
+const create = schema.pick({
+  type: true,
+  productId: true,
+  fromStoreId: true,
+  toStoreId: true,
+  quantity: true,
+  price: true,
+});
 
 const edit = create.partial();
 
@@ -30,7 +51,7 @@ type GetAll = z.infer<typeof getAll>;
 type Create = z.infer<typeof create>;
 type Edit = z.infer<typeof edit>;
 
-export const storeSchema = {
+export const productTransactionSchema = {
   schema,
   getAll,
   getAllRes,
@@ -39,7 +60,7 @@ export const storeSchema = {
   edit,
 };
 
-export type StoreSchema = {
+export type ProductTransactionSchema = {
   Schema: Schema;
   GetAll: GetAll;
   Create: Create;

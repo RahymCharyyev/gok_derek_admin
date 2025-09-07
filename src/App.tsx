@@ -2,18 +2,18 @@ import LayoutComponent from '@/layout';
 import Login from '@/pages/Login';
 import { ConfigProvider } from 'antd';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Users from './pages/Users';
 import { useThemeStore } from './hooks/useThemeStore';
-import { darkTheme, lightTheme, sharedTheme } from './theme';
-import Wood from './pages/Products/Wood';
 import FurnitureProducts from './pages/Products/Furniture';
 import OtherProducts from './pages/Products/Other';
+import Wood from './pages/Products/Wood';
 import WoodTypes from './pages/Products/WoodTypes';
-import Locations from './pages/Locations';
-import Stores from './pages/Stores';
+import Shops from './pages/Shops';
+import Users from './pages/Users';
+import { darkTheme, lightTheme, sharedTheme } from './theme';
 
 function App() {
   const { darkMode } = useThemeStore();
+
   if (!localStorage.getItem('theme')) {
     localStorage.setItem('theme', 'light');
   }
@@ -81,18 +81,10 @@ function App() {
             }
           />
           <Route
-            path='/locations'
+            path='/shops'
             element={
               <LayoutComponent>
-                <Locations />
-              </LayoutComponent>
-            }
-          />
-          <Route
-            path='/stores'
-            element={
-              <LayoutComponent>
-                <Stores />
+                <Shops />
               </LayoutComponent>
             }
           />

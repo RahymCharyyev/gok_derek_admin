@@ -2,13 +2,14 @@ import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
 
 const schema = z.object({
-  id: z.string().uuid(),
+  storeId: z.string().uuid(),
   name: z.string(),
 });
 
-const sortable = schema.pick({name: true}).keyof();
+const sortKeys = schema.pick({name: true, storeId: true});
 
-const sort = z.object({sortBy: sortable.default('name'), sortDirection: sortDirection.default('desc')}).partial();
+const sortable = sortKeys.keyof();
+const sort = z.object({sortBy: sortable.default('name'), sortDirection: sortDirection.default('desc')});
 
 const getAll = schema.partial().merge(sort).merge(commonQuery);
 const getAllRes = z.object({
@@ -26,19 +27,25 @@ type Schema = z.infer<typeof schema>;
 type GetAll = z.infer<typeof getAll>;
 type Create = z.infer<typeof create>;
 type Edit = z.infer<typeof edit>;
+type SortKeys = z.infer<typeof sortKeys>;
+type Sortable = z.infer<typeof sortable>;
 
-export const locationSchema = {
+export const storeWarehouseSchema = {
   schema,
   getAll,
   getAllRes,
   getOneRes,
   create,
   edit,
+  sortKeys,
+  sortable,
 };
 
-export type LocationSchema = {
+export type StoreWarehouseSchema = {
   Schema: Schema;
   GetAll: GetAll;
   Create: Create;
   Edit: Edit;
+  SortKeys: SortKeys;
+  Sortable: Sortable;
 };

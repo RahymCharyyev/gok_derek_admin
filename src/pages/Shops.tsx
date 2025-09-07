@@ -1,11 +1,9 @@
-import type { LocationSchema } from '@/api/schema';
 import { type UserSchema } from '@/api/schema/user';
 import ErrorComponent from '@/components/ErrorComponent';
-import { useLocations } from '@/components/Locations/hooks/useLocations';
 import Toolbar from '@/components/Products/Toolbar';
-import { useStores } from '@/components/Stores/hooks/useStores';
-import StoreModal from '@/components/Stores/StoreModal';
-import { useStoresTableColumn } from '@/components/Stores/useStoresTableColumn';
+import { useShops } from '@/components/Shops/hooks/useShops';
+import ShopModal from '@/components/Shops/ShopModal';
+import { useShopTableColumn } from '@/components/Shops/useShopTableColumn';
 import { useUsers } from '@/components/Users/hooks/useUsers';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { useFilters } from '@/hooks/useFilters';
@@ -16,7 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from 'use-debounce';
 
-const Stores = () => {
+const Shops = () => {
   const { t } = useTranslation();
   const {
     query,
@@ -24,15 +22,13 @@ const Stores = () => {
     setSearchParams,
     page,
     perPage,
-    storesQuery,
-    createStoreMutation,
-    updateStoreMutation,
-    deleteStoreMutation,
-  } = useStores();
+    shopsQuery,
+    createShopMutation,
+    updateShopMutation,
+    deleteShopMutation,
+  } = useShops();
 
   const { usersQuery, setSearchParams: setUserSearchParams } = useUsers();
-  const { locationsQuery, setSearchParams: setLocationSearchParams } =
-    useLocations();
 
   const { updateFilter, clearFilter, resetAllFilters } = useFilters(
     searchParams,
@@ -44,7 +40,7 @@ const Stores = () => {
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
     userId: '',
-    locationId: '',
+    geoLocation: '',
     type: '',
     creditLimit: '',
     address: '',
@@ -53,9 +49,7 @@ const Stores = () => {
   const confirmDelete = useDeleteConfirm();
 
   const [searchUserValue, setSearchUserValue] = useState('');
-  const [searchLocationValue, setSearchLocationValue] = useState('');
   const [debouncedSearchUserValue] = useDebounce(searchUserValue, 500);
-  const [debouncedSearchLocationValue] = useDebounce(searchLocationValue, 500);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -63,18 +57,9 @@ const Stores = () => {
       params.set('firstName', debouncedSearchUserValue.trim());
     }
 
-    if (debouncedSearchLocationValue.trim()) {
-      params.set('name', debouncedSearchLocationValue.trim());
-    }
     params.set('page', '1');
     setUserSearchParams(params);
-    setLocationSearchParams(params);
-  }, [
-    debouncedSearchLocationValue,
-    debouncedSearchUserValue,
-    setLocationSearchParams,
-    setUserSearchParams,
-  ]);
+  }, [debouncedSearchUserValue, setUserSearchParams]);
 
   const handleSearch = useCallback(() => {
     const params = new URLSearchParams(searchParams);
@@ -99,7 +84,7 @@ const Stores = () => {
     );
   }, [searchValues, query]);
 
-  const columns = useStoresTableColumn({
+  const columns = useShopTableColumn({
     t,
     searchValues,
     setSearchValues,
@@ -120,14 +105,14 @@ const Stores = () => {
     confirmDelete: ({ id }) => {
       confirmDelete({
         onConfirm: () => {
-          deleteStoreMutation.mutate(
+          deleteShopMutation.mutate(
             { id },
             {
               onSuccess: () => {
-                message.success(t('storeDeleted'));
-                storesQuery.refetch();
+                message.success(t('shopDeleted'));
+                shopsQuery.refetch();
               },
-              onError: () => message.error(t('storeDeleteError')),
+              onError: () => message.error(t('shopDeleteError')),
             }
           );
         },
@@ -145,38 +130,38 @@ const Stores = () => {
     [searchParams, setSearchParams]
   );
 
-  if (storesQuery.isError) {
-    return <ErrorComponent message={storesQuery.error || t('unknownError')} />;
+  if (shopsQuery.isError) {
+    return <ErrorComponent message={shopsQuery.error || t('unknownError')} />;
   }
 
   const data =
-    storesQuery.data?.body.data?.map((item, index) => ({
-      key: item.id,
+    shopsQuery.data?.body.data?.map((item, index) => ({
+      key: item.storeId,
       index: (page - 1) * perPage + (index + 1),
-      id: item.id,
+      id: item.storeId,
       user: item.user || '',
       type: item.type || '',
-      location: item.location || '',
+      geoLocation: item.geoLocation || '',
       address: item.address || '',
-      phone: item.user || '',
+      phone: item.user?.phone || '',
     })) || [];
 
   const handleSubmitModal = async (values: any) => {
     try {
       if (editingData) {
-        await updateStoreMutation.mutateAsync({
+        await updateShopMutation.mutateAsync({
           id: editingData.key,
           body: values,
         });
-        message.success(t('storeUpdated'));
+        message.success(t('shopUpdated'));
       } else {
-        await createStoreMutation.mutateAsync(values);
-        message.success(t('storeCreated'));
+        await createShopMutation.mutateAsync(values);
+        message.success(t('shopCreated'));
       }
       setIsModalOpen(false);
       setEditingData(null);
     } catch (error) {
-      message.error(t('storeCreateOrUpdateError'));
+      message.error(t('shopCreateOrUpdateError'));
     }
   };
 
@@ -185,7 +170,7 @@ const Stores = () => {
       <TableLayout
         title={() => (
           <Toolbar
-            title={t('createStore')}
+            title={t('createShop')}
             icon={<BankOutlined />}
             onCreate={() => {
               setEditingData(null);
@@ -193,19 +178,19 @@ const Stores = () => {
             }}
             onReset={resetAllFilters}
             resetDisabled={resetDisabled}
-            count={storesQuery.data?.body.count}
+            count={shopsQuery.data?.body.count}
           />
         )}
-        loading={storesQuery.isLoading}
+        loading={shopsQuery.isLoading}
         columns={columns}
         data={data}
         pagination={{
           current: page,
           pageSize: perPage,
-          total: storesQuery.data?.body?.count,
+          total: shopsQuery.data?.body?.count,
         }}
       />
-      <StoreModal
+      <ShopModal
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         onSubmit={handleSubmitModal}
@@ -216,17 +201,12 @@ const Stores = () => {
             'id' | 'firstName' | 'lastName'
           >[]) || []
         }
-        locations={
-          (locationsQuery.data?.body.data as LocationSchema['Schema'][]) || []
-        }
-        loading={usersQuery.isLoading || locationsQuery.isLoading}
+        loading={usersQuery.isLoading}
         onSearchUser={(value) => setSearchUserValue(value)}
-        onSearchLocation={(value) => setSearchLocationValue(value)}
         onClearUser={() => handleClearFilter('firstName')}
-        onClearLocation={() => handleClearFilter('name')}
       />
     </>
   );
 };
 
-export default Stores;
+export default Shops;
