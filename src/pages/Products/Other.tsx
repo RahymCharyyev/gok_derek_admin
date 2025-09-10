@@ -112,7 +112,6 @@ const OtherProducts = () => {
       index: (page - 1) * perPage + (index + 1),
       id: item.id,
       name: item.name || '',
-      code: item.code || '',
       price: item.price || '',
       priceNonCash: item.priceNonCash || '',
       priceSelection: item.priceSelection || '',
