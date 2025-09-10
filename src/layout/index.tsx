@@ -1,13 +1,10 @@
 import { tsr } from '@/api';
 import { useThemeStore } from '@/hooks/useThemeStore';
 import {
-  AppstoreOutlined,
-  BankOutlined,
   LoadingOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Button, Drawer, Image, Layout, Menu, Space, Spin, Switch } from 'antd';
@@ -16,6 +13,15 @@ import Sider from 'antd/es/layout/Sider';
 import Cookies from 'js-cookie';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  FaBox,
+  FaCalculator,
+  FaChartBar,
+  FaIndustry,
+  FaStore,
+  FaUsers,
+  FaWarehouse,
+} from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 interface LayoutComponentProps {
@@ -104,13 +110,18 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
 
   const items: MenuItem[] = [
     {
+      key: '/report',
+      icon: <FaChartBar />,
+      label: <div className='text-base'>{t('report')}</div>,
+    },
+    {
       key: '/',
-      icon: <TeamOutlined />,
+      icon: <FaUsers />,
       label: <div className='text-base'>{t('users')}</div>,
     },
     {
       key: '/products',
-      icon: <AppstoreOutlined />,
+      icon: <FaBox />,
       label: <div className='text-base'>{t('products')}</div>,
       children: [
         {
@@ -133,8 +144,33 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
     },
     {
       key: '/shops',
-      icon: <BankOutlined />,
+      icon: <FaStore />,
       label: <div className='text-base'>{t('shops')}</div>,
+    },
+    {
+      key: '/warehouse',
+      icon: <FaWarehouse />,
+      label: <div className='text-base'>{t('warehouse')}</div>,
+    },
+    {
+      key: '/workshops',
+      icon: <FaIndustry />,
+      label: <div className='text-base'>{t('workshops')}</div>,
+      children: [
+        {
+          key: '/workshops/wood',
+          label: <div className='text-base'>{t('woodWorkshops')}</div>,
+        },
+        {
+          key: '/workshops/furniture',
+          label: <div className='text-base'>{t('furnitureWorkshops')}</div>,
+        },
+      ],
+    },
+    {
+      key: '/accounting',
+      icon: <FaCalculator />,
+      label: <div className='text-base'>{t('accounting')}</div>,
     },
   ];
 

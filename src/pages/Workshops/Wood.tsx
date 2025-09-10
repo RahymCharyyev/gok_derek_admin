@@ -1,17 +1,17 @@
 import ErrorComponent from '@/components/ErrorComponent';
-import FurnitureProductsModal from '@/components/Products/FurnitureModal';
-import { useFurnitureTableColumn } from '@/components/Products/hooks/useFurnitureTableColumn';
 import { useProducts } from '@/components/Products/hooks/useProducts';
+import { useWoodTableColumn } from '@/components/Products/hooks/useWoodTableColumn';
 import Toolbar from '@/components/Products/Toolbar';
+import WoodModal from '@/components/Products/WoodModal';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { useFilters } from '@/hooks/useFilters';
 import TableLayout from '@/layout/TableLayout';
 import { ProductFilled } from '@ant-design/icons';
 import { message } from 'antd';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const FurnitureProducts = () => {
+const WoodWorkshops: FC = () => {
   const { t } = useTranslation();
 
   const {
@@ -21,10 +21,11 @@ const FurnitureProducts = () => {
     page,
     perPage,
     productsQuery,
+    woodTypesQuery,
     createProductMutation,
     updateProductMutation,
     deleteProductMutation,
-  } = useProducts('furniture');
+  } = useProducts('wood');
 
   const { updateFilter, clearFilter, resetAllFilters } = useFilters(
     searchParams,
@@ -35,7 +36,12 @@ const FurnitureProducts = () => {
   const [editingData, setEditingData] = useState<any | null>(null);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
-    code: '',
+    woodType: '',
+    woodThickness: '',
+    woodWidth: '',
+    woodLength: '',
+    woodQuality: '',
+    woodUnits: '',
   });
 
   const confirmDelete = useDeleteConfirm();
@@ -64,7 +70,7 @@ const FurnitureProducts = () => {
     );
   }, [searchValues, query]);
 
-  const columns = useFurnitureTableColumn({
+  const columns = useWoodTableColumn({
     t,
     searchValues,
     setSearchValues,
@@ -100,23 +106,30 @@ const FurnitureProducts = () => {
     },
   });
 
-  if (productsQuery.isError) {
+  if (productsQuery.isError || woodTypesQuery.isError) {
     return (
-      <ErrorComponent message={productsQuery.error || t('unknownError')} />
+      <ErrorComponent
+        message={
+          woodTypesQuery.error || productsQuery.error || t('unknownError')
+        }
+      />
     );
   }
 
   const data =
-    productsQuery.data?.body.data?.map((item, index) => ({
+    productsQuery.data?.body.data?.map((item: any, index: number) => ({
       key: item.id,
-      index: (page - 1) * perPage + (index + 1),
-      id: item.id,
-      name: item.name || '',
-      furniture: item.furniture || '',
-      price: item.price || '',
-      priceNonCash: item.priceNonCash || '',
-      priceSelection: item.priceSelection || '',
-      type: item.type || '',
+      index: (page - 1) * perPage + index + 1,
+      name: item.name,
+      woodType: item.wood?.woodType?.name || '',
+      woodThickness: item.wood?.thickness || '',
+      woodWidth: item.wood?.width || '',
+      woodLength: item.wood?.length || '',
+      woodQuality: item.wood?.quality || '',
+      woodUnits: item.wood?.units || [],
+      price: item.price,
+      priceSelection: item.priceSelection,
+      profit: item.profit,
     })) || [];
 
   const handleSubmitModal = async (values: any) => {
@@ -163,14 +176,18 @@ const FurnitureProducts = () => {
           total: productsQuery.data?.body?.count,
         }}
       />
-      <FurnitureProductsModal
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        onSubmit={handleSubmitModal}
-        initialValues={editingData}
-      />
+
+      {woodTypesQuery.data && (
+        <WoodModal
+          open={isModalOpen}
+          onCancel={() => setIsModalOpen(false)}
+          initialValues={editingData}
+          woodTypes={woodTypesQuery.data.body.data}
+          onSubmit={handleSubmitModal}
+        />
+      )}
     </>
   );
 };
 
-export default FurnitureProducts;
+export default WoodWorkshops;

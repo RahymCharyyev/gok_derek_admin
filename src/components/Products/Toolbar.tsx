@@ -13,6 +13,10 @@ interface ToolbarProps {
   onReset: () => void;
   resetDisabled: boolean;
   count: any;
+  hasSecondButton?: boolean;
+  secondTitle?: string;
+  secondIcon?: ReactNode;
+  secondCreate?: () => void;
 }
 
 const Toolbar: FC<ToolbarProps> = ({
@@ -22,6 +26,10 @@ const Toolbar: FC<ToolbarProps> = ({
   onReset,
   resetDisabled,
   count,
+  hasSecondButton,
+  secondTitle,
+  secondIcon,
+  secondCreate,
 }) => {
   const { t } = useTranslation();
   const screens = useBreakpoint();
@@ -31,6 +39,12 @@ const Toolbar: FC<ToolbarProps> = ({
         <Button icon={icon} type='primary' onClick={onCreate}>
           {title}
         </Button>
+        {hasSecondButton ? (
+          <Button icon={secondIcon} onClick={secondCreate}>
+            {secondTitle}
+          </Button>
+        ) : null}
+
         <Button
           icon={<UndoOutlined />}
           danger

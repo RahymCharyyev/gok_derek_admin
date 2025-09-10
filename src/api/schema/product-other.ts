@@ -2,23 +2,13 @@ import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
 
 const schema = z.object({
-  id: z.string().uuid(),
-  name: z.string(),
-  price: z.coerce.number().nullish(),
-  priceSelection: z.coerce.number().nullish(),
-  priceNonCash: z.coerce.number().nullish(),
-  createdAt: z.coerce.date(),
-  deletedAt: z.coerce.date().nullish(),
+  productId: z.string().uuid(),
+  unit: z.string().nullish(),
 });
 
-const sortable = schema
-  .pick({
-    name: true,
-    price: true,
-    priceSelection: true,
-    priceNonCash: true,
-  })
-  .keyof();
+const sortKeys = schema.pick({unit: true});
+
+const sortable = sortKeys.keyof();
 const sort = z.object({sortBy: sortable, sortDirection: sortDirection}).partial();
 
 const getAll = schema.partial().merge(sort).merge(commonQuery);
@@ -29,7 +19,7 @@ const getAllRes = z.object({
 
 const getOneRes = schema;
 
-const create = schema.omit({id: true, createdAt: true, deletedAt: true});
+const create = schema.pick({unit: true});
 
 const edit = create.partial();
 
@@ -37,19 +27,25 @@ type Schema = z.infer<typeof schema>;
 type GetAll = z.infer<typeof getAll>;
 type Create = z.infer<typeof create>;
 type Edit = z.infer<typeof edit>;
+type SortKeys = z.infer<typeof sortKeys>;
+type Sortable = z.infer<typeof sortable>;
 
-export const woodTypeSchema = {
+export const productOtherSchema = {
   schema,
   getAll,
   getAllRes,
   getOneRes,
   create,
   edit,
+  sortKeys,
+  sortable,
 };
 
-export type WoodTypeSchema = {
+export type ProductOtherSchema = {
   Schema: Schema;
   GetAll: GetAll;
   Create: Create;
   Edit: Edit;
+  SortKeys: SortKeys;
+  Sortable: Sortable;
 };

@@ -10,6 +10,8 @@ import WoodTypes from './pages/Products/WoodTypes';
 import Shops from './pages/Shops';
 import Users from './pages/Users';
 import { darkTheme, lightTheme, sharedTheme } from './theme';
+import Warehouse from './pages/Warehouse';
+import WoodWorkshops from './pages/Workshops/Wood';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -85,6 +87,30 @@ function App() {
             element={
               <LayoutComponent>
                 <Shops />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/warehouse'
+            element={
+              <LayoutComponent>
+                <Warehouse />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/workshops/wood'
+            element={
+              <LayoutComponent>
+                <WoodWorkshops />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/workshops/furniture'
+            element={
+              <LayoutComponent>
+                <div>1</div>
               </LayoutComponent>
             }
           />

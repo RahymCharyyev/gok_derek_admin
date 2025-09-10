@@ -1,13 +1,14 @@
 import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
-import {productWoodSchema} from './product-wood';
+import {productFurnitureSchema} from './product-furniture';
+import {productOtherSchema} from './product-other';
 import {productUnitsSchema} from './product-unit';
+import {productWoodSchema} from './product-wood';
 
 const schema = z.object({
   id: z.string().uuid(),
   type: z.enum(['wood', 'furniture', 'other']),
   name: z.string(),
-  code: z.string(),
   price: z.coerce.number().int().nullish(),
   priceSelection: z.coerce.number().int().nullish(),
   priceNonCash: z.coerce.number().int().nullish(),
@@ -15,6 +16,8 @@ const schema = z.object({
   deletedAt: z.coerce.date().nullish(),
 
   wood: productWoodSchema.schema.nullish(),
+  furniture: productFurnitureSchema.schema.nullish(),
+  other: productOtherSchema.schema.nullish(),
   units: productUnitsSchema.schema.partial().array().nullish(),
 });
 
@@ -37,7 +40,6 @@ const getOneRes = schema;
 
 const createItem = schema.pick({
   name: true,
-  code: true,
   price: true,
   priceSelection: true,
   priceNonCash: true,

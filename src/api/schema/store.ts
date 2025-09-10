@@ -1,5 +1,8 @@
 import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
+import {storeWarehouseSchema} from './store-warehouse';
+import {storeWorkshopSchema} from './store-workshop';
+import {storeShopSchema} from './store-shop';
 
 const schema = z.object({
   id: z.string().uuid(),
@@ -7,6 +10,10 @@ const schema = z.object({
 
   createdAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullish(),
+
+  warehouse: storeWarehouseSchema.schema.partial().nullish(),
+  workshop: storeWorkshopSchema.schema.partial().nullish(),
+  shop: storeShopSchema.schema.partial().nullish(),
 });
 
 const sortable = schema.pick({type: true, createdAt: true}).keyof();

@@ -55,7 +55,6 @@ const WoodTypeModal: FC<WoodTypeModalProps> = ({
         >
           <Input />
         </Form.Item>
-
         <Form.Item
           name='price'
           label={t('priceM3')}
@@ -63,15 +62,11 @@ const WoodTypeModal: FC<WoodTypeModalProps> = ({
         >
           <Input />
         </Form.Item>
-
         <Form.Item
           name='priceSelection'
           label={t('selectionPriceDollar')}
           rules={[{ required: !initialValues, message: t('notEmptyField') }]}
         >
-          <Input />
-        </Form.Item>
-        <Form.Item name='code' initialValue={Date.now().toString()} hidden>
           <Input />
         </Form.Item>
       </Form>

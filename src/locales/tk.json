@@ -164,5 +164,14 @@
   "loading": "Ýüklenilýär...",
   "noResults": "Maglumat ýok",
   "selectShopType": "Dükanyň görnüşini saýlaň",
-  "creditLimit": "Ýazgy limiti"
+  "creditLimit": "Ýazgy limiti",
+  "warehouse": "Ammar",
+  "productQuantity": "Mukdary",
+  "productTransaction": "Haryt geçirimler",
+  "addToWarehouse": "Ammara goşmak",
+  "woodWorkshops": "Agaç seh",
+  "furnitureWorkshops": "Mebel seh",
+  "accounting": "Buhgalteriýa",
+  "report": "Hasabat",
+  "workshops": "Sehlar"
 }

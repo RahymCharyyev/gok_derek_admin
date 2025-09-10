@@ -1,10 +1,13 @@
 import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
 import {productSchema} from './product';
+import {storeSchema} from './store';
+import {userSchema} from './user';
 
 const schema = z.object({
   id: z.string().uuid(),
   type: z.enum(['transfer', 'sale']),
+  createdById: z.string().uuid(),
   productId: z.string().uuid(),
   fromStoreId: z.string().uuid(),
   toStoreId: z.string().uuid().nullish(),
@@ -12,6 +15,11 @@ const schema = z.object({
   price: z.coerce.number().int().nullish(),
   createdAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullish(),
+
+  product: productSchema.schema.partial().nullish(),
+  fromStore: storeSchema.schema.partial().nullish(),
+  toStore: storeSchema.schema.partial().nullish(),
+  createdBy: userSchema.schema.partial().nullish(),
 });
 
 const sortKeys = schema.pick({
@@ -27,7 +35,11 @@ const sortKeys = schema.pick({
 const sortable = sortKeys.merge(productSchema.sortKeys).keyof();
 const sort = z.object({sortBy: sortable.default('createdAt'), sortDirection: sortDirection.default('desc')});
 
-const getAll = schema.partial().merge(sort).merge(commonQuery);
+const getAll = schema
+  .extend({storeType: storeSchema.schema.shape.type, storeId: storeSchema.schema.shape.id})
+  .partial()
+  .merge(sort)
+  .merge(commonQuery);
 const getAllRes = z.object({
   count: z.number(),
   data: schema.array(),

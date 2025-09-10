@@ -44,11 +44,11 @@ export const useFurnitureTableColumn = ({
     },
     {
       title: t('productCode'),
-      dataIndex: 'code',
-      key: 'code',
+      dataIndex: 'furniture',
+      key: 'furniture',
       filterDropdown: () =>
         renderFilterDropdown(
-          'code',
+          'furniture',
           t('productCode'),
           searchValues,
           setSearchValues,
@@ -62,6 +62,9 @@ export const useFurnitureTableColumn = ({
           'code'
         ),
       filterIcon: () => <SearchOutlined />,
+      render: (record) => {
+        return <div>{record?.code}</div>;
+      },
     },
     {
       title: t('name'),
