@@ -11,7 +11,8 @@ import Shops from './pages/Shops';
 import Users from './pages/Users';
 import { darkTheme, lightTheme, sharedTheme } from './theme';
 import Warehouse from './pages/Warehouse';
-import WoodWorkshops from './pages/Workshops/Wood';
+import WoodWorkshop from './pages/Workshops/Wood';
+import FurnitureWorkshop from './pages/Workshops/Furniture';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -102,7 +103,7 @@ function App() {
             path='/workshops/wood'
             element={
               <LayoutComponent>
-                <WoodWorkshops />
+                <WoodWorkshop />
               </LayoutComponent>
             }
           />
@@ -110,7 +111,7 @@ function App() {
             path='/workshops/furniture'
             element={
               <LayoutComponent>
-                <div>1</div>
+                <FurnitureWorkshop />
               </LayoutComponent>
             }
           />

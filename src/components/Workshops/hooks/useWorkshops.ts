@@ -1,14 +1,9 @@
 import { tsr } from '@/api';
-import {
-  productTransactionSchema,
-  type ProductTransactionSchema,
-} from '@/api/schema';
-import { queryClient } from '@/Providers';
+import type { ProductTransactionSchema } from '@/api/schema';
 import { getEnumParam } from '@/utils/getEnumParam';
-import { useMutation } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 
-export const useWarehouse = () => {
+export const useWorkshops = (workshopType: 'wood' | 'furniture') => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = Number(searchParams.get('page')) || 1;
@@ -44,7 +39,8 @@ export const useWarehouse = () => {
   const query: ProductTransactionSchema['GetAll'] = {
     page,
     perPage,
-    storeType: 'warehouse',
+    storeType: 'workshop',
+    workshopType,
     fromStoreId: searchParams.get('fromStoreId') ?? undefined,
     toStoreId: searchParams.get('toStoreId') ?? undefined,
     quantity: searchParams.get('quantity')
@@ -62,37 +58,10 @@ export const useWarehouse = () => {
     sortDirection,
   };
 
-  const warehouseQuery = tsr.productTransaction.getAll.useQuery({
-    queryKey: ['warehouse', Object.fromEntries(searchParams.entries())],
+  const workshopsQuery = tsr.productTransaction.getAll.useQuery({
+    queryKey: ['workshops', Object.fromEntries(searchParams.entries())],
     queryData: { query },
   });
-
-  //   const createWarehouseMutation = useMutation({
-  //     mutationFn: (body: any) => tsr.productTransaction.create.mutate({ body }),
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries({ queryKey: ['warehouse'] });
-  //     },
-  //   });
-
-  //   //
-
-  //   const updateShopMutation = useMutation({
-  //     mutationFn: ({ id, body }: { id: string; body: any }) =>
-  //       tsr.shop.edit.mutate({ params: { id }, body }),
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries({ queryKey: ['warehouse'] });
-  //     },
-  //   });
-
-  //   const deleteShopMutation = useMutation({
-  //     mutationFn: ({ id }: { id: string }) =>
-  //       tsr.shop.remove.mutate({ params: { id } }),
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries({ queryKey: ['warehouse'] });
-  //     },
-  //   });
-
-  // gokderek.com/admin/
 
   return {
     query,
@@ -100,6 +69,6 @@ export const useWarehouse = () => {
     setSearchParams,
     page,
     perPage,
-    warehouseQuery,
+    workshopsQuery,
   };
 };

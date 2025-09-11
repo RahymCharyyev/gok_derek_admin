@@ -118,6 +118,7 @@
   "woodQuality": "Sorty",
   "woodThickness": "Galyňlygy (mm)",
   "woodUnit": "Ölçeg birligi",
+  "woodUnitWide": "Ölçeg birligi (ştuk/metr)",
   "meter": "Metr",
   "piece": "Ştuk",
   "sqMeter": "m²",
@@ -173,5 +174,11 @@
   "furnitureWorkshops": "Mebel seh",
   "accounting": "Buhgalteriýa",
   "report": "Hasabat",
-  "workshops": "Sehlar"
+  "workshops": "Sehlar",
+  "inOutProduct": "Giden / gelen haryt",
+  "productGoods": "Haryt / önüm",
+  "oneItemPrice": "Ştuk/metr nyrhy (man)",
+  "profit": "Peýda (man)",
+  "dimensions": "Ölçegi (mm)",
+  "addToWorkshop": "Seha goşmak"
 }

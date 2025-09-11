@@ -3,6 +3,7 @@ import {commonQuery, sortDirection} from './common';
 import {productSchema} from './product';
 import {storeSchema} from './store';
 import {userSchema} from './user';
+import {storeWorkshopSchema} from './store-workshop';
 
 const schema = z.object({
   id: z.string().uuid(),
@@ -36,7 +37,11 @@ const sortable = sortKeys.merge(productSchema.sortKeys).keyof();
 const sort = z.object({sortBy: sortable.default('createdAt'), sortDirection: sortDirection.default('desc')});
 
 const getAll = schema
-  .extend({storeType: storeSchema.schema.shape.type, storeId: storeSchema.schema.shape.id})
+  .extend({
+    storeType: storeSchema.schema.shape.type,
+    storeId: storeSchema.schema.shape.id,
+    workshopType: storeWorkshopSchema.schema.shape.type,
+  })
   .partial()
   .merge(sort)
   .merge(commonQuery);

@@ -196,7 +196,7 @@ export const useWoodTableColumn = ({
       },
     },
     {
-      title: 'Ştuk/metr nyrhy (man)',
+      title: t('oneItemPrice'),
       children: [
         {
           title: t('actual'),
@@ -211,7 +211,7 @@ export const useWoodTableColumn = ({
       ],
     },
     {
-      title: 'Peýda (man)',
+      title: t('profit'),
       children: [
         {
           title: t('actual'),
