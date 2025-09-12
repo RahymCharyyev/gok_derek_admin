@@ -26,15 +26,21 @@ export const useUsers = () => {
   });
 
   const createUserMutation = useMutation({
-    mutationFn: (body: any) => tsr.user.create.mutate({ body }),
+    mutationFn: (body: any) => tsr.user.create.mutate(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
 
   const updateUserMutation = useMutation({
-    mutationFn: ({ id, body }: { id: string; body: any }) =>
-      tsr.user.edit.mutate({ params: { id }, body }),
+    mutationFn: ({ id, body }: { id: string; body: any }) => {
+      const cleanedBody = Object.fromEntries(
+        Object.entries(body).filter(
+          ([, v]) => v !== '' && v !== null && v !== undefined
+        )
+      );
+      return tsr.user.edit.mutate({ params: { id }, body: cleanedBody });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
     },
