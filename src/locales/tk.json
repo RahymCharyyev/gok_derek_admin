@@ -172,7 +172,7 @@
   "addProduct": "Haryt goşmak",
   "woodWorkshops": "Agaç seh",
   "furnitureWorkshops": "Mebel seh",
-  "accounting": "Kassa",
+  "cashier": "Kassa",
   "report": "Hasabat",
   "workshops": "Sehlar",
   "inOutProduct": "Giden / gelen haryt",
@@ -186,5 +186,6 @@
   "addProductError": "Haryt goşulanda ýalňyşlyk döredi",
   "productTransfered": "Haryt üstünlikli geçirildi",
   "transferProductError": "Haryt geçirilende ýalňyşlyk döredi",
-  "selectShop": "Dükan saýlaň"
+  "selectShop": "Dükan saýlaň",
+  "transferProduct": "Harydy geçirmek"
 }

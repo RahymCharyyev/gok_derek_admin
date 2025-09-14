@@ -14,6 +14,7 @@ import Warehouse from './pages/Warehouse';
 import FurnitureWorkshop from './pages/Workshops/Furniture';
 import WoodWorkshop from './pages/Workshops/Wood';
 import { darkTheme, lightTheme, sharedTheme } from './theme';
+import Cashier from './pages/Cashier';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -121,6 +122,14 @@ function App() {
             element={
               <LayoutComponent>
                 <FurnitureWorkshop />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/cashier'
+            element={
+              <LayoutComponent>
+                <Cashier />
               </LayoutComponent>
             }
           />

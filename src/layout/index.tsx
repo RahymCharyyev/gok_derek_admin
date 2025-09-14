@@ -168,9 +168,9 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
       ],
     },
     {
-      key: '/accounting',
+      key: '/cashier',
       icon: <FaCalculator />,
-      label: <div className='text-base'>{t('accounting')}</div>,
+      label: <div className='text-base'>{t('cashier')}</div>,
     },
   ];
 
