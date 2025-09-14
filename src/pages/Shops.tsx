@@ -6,7 +6,6 @@ import ShopModal from '@/components/Shops/ShopModal';
 import { useShopTableColumn } from '@/components/Shops/useShopTableColumn';
 import { useUsers } from '@/components/Users/hooks/useUsers';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
-import { useFilters } from '@/hooks/useFilters';
 import TableLayout from '@/layout/TableLayout';
 import { BankOutlined } from '@ant-design/icons';
 import { message } from 'antd';
@@ -18,22 +17,20 @@ const Shops = () => {
   const { t } = useTranslation();
   const {
     query,
-    searchParams,
-    setSearchParams,
     page,
     perPage,
     shopsQuery,
     createShopMutation,
     updateShopMutation,
     deleteShopMutation,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
+    searchParams,
   } = useShops();
 
   const { usersQuery, setSearchParams: setUserSearchParams } = useUsers();
-
-  const { updateFilter, clearFilter, resetAllFilters } = useFilters(
-    searchParams,
-    setSearchParams
-  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
@@ -52,29 +49,19 @@ const Shops = () => {
   const [debouncedSearchUserValue] = useDebounce(searchUserValue, 500);
 
   useEffect(() => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(searchParams);
     if (debouncedSearchUserValue.trim()) {
       params.set('firstName', debouncedSearchUserValue.trim());
     }
 
-    params.set('page', '1');
     setUserSearchParams(params);
-  }, [debouncedSearchUserValue, setUserSearchParams]);
+  }, [debouncedSearchUserValue, setUserSearchParams, searchParams]);
 
   const handleSearch = useCallback(() => {
-    const params = new URLSearchParams(searchParams);
-
     Object.entries(searchValues).forEach(([key, value]) => {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
+      setFilter(key, value);
     });
-
-    params.set('page', '1');
-    setSearchParams(params);
-  }, [searchValues, searchParams, setSearchParams]);
+  }, [searchValues, setFilter]);
 
   const resetDisabled = useMemo(() => {
     return (
@@ -89,9 +76,9 @@ const Shops = () => {
     searchValues,
     setSearchValues,
     sortBy: query.sortBy || '',
-    setSortBy: (value) => updateFilter('sortBy', value),
+    setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
-    setSortDirectionParam: (value) => updateFilter('sortDirection', value),
+    setSortDirectionParam: (value) => setFilter('sortDirection', value),
     handleSearch,
     clearFilter: (key) => {
       setSearchValues((prev) => ({ ...prev, [key]: '' }));
@@ -119,16 +106,6 @@ const Shops = () => {
       });
     },
   });
-
-  const handleClearFilter = useCallback(
-    (key: string) => {
-      const params = new URLSearchParams(searchParams);
-      params.delete(key);
-      params.set('page', '1');
-      setSearchParams(params);
-    },
-    [searchParams, setSearchParams]
-  );
 
   if (shopsQuery.isError) {
     return <ErrorComponent message={shopsQuery.error || t('unknownError')} />;
@@ -176,7 +153,7 @@ const Shops = () => {
               setEditingData(null);
               setIsModalOpen(true);
             }}
-            onReset={resetAllFilters}
+            onReset={resetFilters}
             resetDisabled={resetDisabled}
             count={shopsQuery.data?.body.count}
           />
@@ -188,6 +165,7 @@ const Shops = () => {
           current: page,
           pageSize: perPage,
           total: shopsQuery.data?.body?.count,
+          onChange: handleTableChange,
         }}
       />
       <ShopModal
@@ -203,7 +181,7 @@ const Shops = () => {
         }
         loading={usersQuery.isLoading}
         onSearchUser={(value) => setSearchUserValue(value)}
-        onClearUser={() => handleClearFilter('firstName')}
+        onClearUser={() => clearFilter('firstName')}
       />
     </>
   );

@@ -11,9 +11,13 @@ const schema = z.object({
   createdAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullish(),
 
-  warehouse: storeWarehouseSchema.schema.partial().nullish(),
-  workshop: storeWorkshopSchema.schema.partial().nullish(),
-  shop: storeShopSchema.schema.partial().nullish(),
+  // warehouse: storeWarehouseSchema.schema.partial().nullish(),
+  // workshop: storeWorkshopSchema.schema.partial().nullish(),
+  // shop: storeShopSchema.schema.partial().nullish(),
+
+  warehouse: z.lazy(() => storeWarehouseSchema.schema.partial().nullish()),
+  workshop: z.lazy(() => storeWorkshopSchema.schema.partial().nullish()),
+  shop: z.lazy(() => storeShopSchema.schema.partial().nullish()),
 });
 
 const sortable = schema.pick({type: true, createdAt: true}).keyof();

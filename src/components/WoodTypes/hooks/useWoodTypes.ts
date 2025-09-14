@@ -1,22 +1,44 @@
 import { tsr } from '@/api';
+import { usePagination } from '@/hooks/usePagination';
 import { queryClient } from '@/Providers';
+import { getEnumParam } from '@/utils/getEnumParam';
 import { useMutation } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 
 export const useWoodTypes = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const {
+    page,
+    perPage,
+    searchParams,
+    setSearchParams,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
+  } = usePagination();
 
-  const page = Number(searchParams.get('page')) || 1;
-  const perPage = Number(searchParams.get('perPage')) || 10;
+  const sortBy = getEnumParam(
+    searchParams,
+    'sortBy',
+    ['name', 'price', 'priceSelection'] as const,
+    'name'
+  );
 
-  const query: Record<string, any> = {
+  const sortDirection = getEnumParam(
+    searchParams,
+    'sortDirection',
+    ['asc', 'desc'] as const,
+    'desc'
+  );
+
+  const query = {
     page,
     perPage,
     name: searchParams.get('name') || undefined,
-    price: searchParams.get('price') || undefined,
-    priceSelection: searchParams.get('priceSelection') || undefined,
-    sortBy: searchParams.get('sortBy') || undefined,
-    sortDirection: searchParams.get('sortDirection') || undefined,
+    price: Number(searchParams.get('price')) || null,
+    priceSelection: Number(searchParams.get('priceSelection')) || null,
+    sortBy,
+    sortDirection,
   };
 
   const woodTypesQuery = tsr.woodType.getAll.useQuery({
@@ -57,5 +79,9 @@ export const useWoodTypes = () => {
     createWoodTypeMutation,
     updateWoodTypeMutation,
     deleteWoodTypeMutation,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
   };
 };

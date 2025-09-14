@@ -1,13 +1,20 @@
 import { tsr } from '@/api';
 import type { ProductTransactionSchema } from '@/api/schema';
+import { usePagination } from '@/hooks/usePagination';
 import { getEnumParam } from '@/utils/getEnumParam';
 import { useSearchParams } from 'react-router-dom';
 
 export const useWorkshops = (workshopType: 'wood' | 'furniture') => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const page = Number(searchParams.get('page')) || 1;
-  const perPage = Number(searchParams.get('perPage')) || 10;
+  const {
+    page,
+    perPage,
+    searchParams,
+    setSearchParams,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
+  } = usePagination();
 
   const typeParam = searchParams.get('type');
   const type =
@@ -17,8 +24,6 @@ export const useWorkshops = (workshopType: 'wood' | 'furniture') => {
     searchParams,
     'sortBy',
     [
-      'type',
-      'productId',
       'fromStoreId',
       'toStoreId',
       'quantity',
@@ -70,5 +75,9 @@ export const useWorkshops = (workshopType: 'wood' | 'furniture') => {
     page,
     perPage,
     workshopsQuery,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
   };
 };

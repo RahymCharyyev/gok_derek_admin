@@ -7,7 +7,7 @@ import {storeWorkshopSchema} from './store-workshop';
 
 const schema = z.object({
   id: z.string().uuid(),
-  type: z.enum(['transfer', 'sale']),
+  type: z.enum(['transfer', 'sale', 'production', 'receipt']),
   createdById: z.string().uuid(),
   productId: z.string().uuid(),
   fromStoreId: z.string().uuid(),
@@ -17,10 +17,15 @@ const schema = z.object({
   createdAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullish(),
 
-  product: productSchema.schema.partial().nullish(),
-  fromStore: storeSchema.schema.partial().nullish(),
-  toStore: storeSchema.schema.partial().nullish(),
-  createdBy: userSchema.schema.partial().nullish(),
+  // product: productSchema.schema.partial().nullish(),
+  // fromStore: storeSchema.schema.partial().nullish(),
+  // toStore: storeSchema.schema.partial().nullish(),
+  // createdBy: userSchema.schema.partial().nullish(),
+
+  product: z.lazy(() => productSchema.schema.partial().nullish()),
+  fromStore: z.lazy(() => storeSchema.schema.partial().nullish()),
+  toStore: z.lazy(() => storeSchema.schema.partial().nullish()),
+  createdBy: z.lazy(() => userSchema.schema.partial().nullish()),
 });
 
 const sortKeys = schema.pick({

@@ -34,17 +34,16 @@ const Toolbar: FC<ToolbarProps> = ({
   const { t } = useTranslation();
   const screens = useBreakpoint();
   return (
-    <div className='flex gap-4 items-center justify-between'>
-      <div className='flex gap-2'>
+    <div className='flex flex-col xs:flex-row gap-4'>
+      <div className='flex flex-wrap gap-2 items-center'>
         <Button icon={icon} type='primary' onClick={onCreate}>
           {title}
         </Button>
-        {hasSecondButton ? (
+        {hasSecondButton && (
           <Button icon={secondIcon} onClick={secondCreate}>
             {secondTitle}
           </Button>
-        ) : null}
-
+        )}
         <Button
           icon={<UndoOutlined />}
           danger
@@ -53,11 +52,14 @@ const Toolbar: FC<ToolbarProps> = ({
         >
           {!screens.xs ? t('resetAllFilters') : ''}
         </Button>
-        <PrintButtons />
       </div>
-      <span className='font-medium text-xl'>
-        {t('allCount')}: {count}
-      </span>
+
+      <div className='flex justify-between items-center'>
+        <PrintButtons />
+        <span className='font-medium text-xl mt-2 xs:mt-0'>
+          {t('allCount')}: {count}
+        </span>
+      </div>
     </div>
   );
 };

@@ -1,13 +1,34 @@
 import { tsr } from '@/api';
+import { usePagination } from '@/hooks/usePagination';
 import { queryClient } from '@/Providers';
+import { getEnumParam } from '@/utils/getEnumParam';
 import { useMutation } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
 
 export const useShops = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const {
+    page,
+    perPage,
+    searchParams,
+    setSearchParams,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
+  } = usePagination();
 
-  const page = Number(searchParams.get('page')) || 1;
-  const perPage = Number(searchParams.get('perPage')) || 10;
+  const sortBy = getEnumParam(
+    searchParams,
+    'sortBy',
+    ['name', 'userId', 'locationId', 'type'] as const,
+    'storeId'
+  );
+
+  const sortDirection = getEnumParam(
+    searchParams,
+    'sortDirection',
+    ['asc', 'desc'] as const,
+    'desc'
+  );
 
   const query: Record<string, any> = {
     page,
@@ -16,8 +37,8 @@ export const useShops = () => {
     userId: searchParams.get('userId') || undefined,
     locationId: searchParams.get('locationId') || undefined,
     type: searchParams.get('type') || undefined,
-    sortBy: searchParams.get('sortBy') || undefined,
-    sortDirection: searchParams.get('sortDirection') || undefined,
+    sortBy,
+    sortDirection,
   };
 
   const shopsQuery = tsr.shop.getAll.useQuery({
@@ -58,5 +79,9 @@ export const useShops = () => {
     createShopMutation,
     updateShopMutation,
     deleteShopMutation,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
   };
 };

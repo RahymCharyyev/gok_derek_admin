@@ -168,11 +168,11 @@
   "creditLimit": "Ýazgy limiti",
   "warehouse": "Ammar",
   "productQuantity": "Mukdary",
-  "productTransaction": "Haryt geçirimler",
-  "addToWarehouse": "Ammara goşmak",
+  "productTransaction": "Haryt geçirimek",
+  "addProduct": "Haryt goşmak",
   "woodWorkshops": "Agaç seh",
   "furnitureWorkshops": "Mebel seh",
-  "accounting": "Buhgalteriýa",
+  "accounting": "Kassa",
   "report": "Hasabat",
   "workshops": "Sehlar",
   "inOutProduct": "Giden / gelen haryt",
@@ -180,5 +180,11 @@
   "oneItemPrice": "Ştuk/metr nyrhy (man)",
   "profit": "Peýda (man)",
   "dimensions": "Ölçegi (mm)",
-  "addToWorkshop": "Seha goşmak"
+  "addToWorkshop": "Seha goşmak",
+  "selectProduct": "Harydy saýlaň",
+  "productAdded": "Haryt üstünlikli goşuldy",
+  "addProductError": "Haryt goşulanda ýalňyşlyk döredi",
+  "productTransfered": "Haryt üstünlikli geçirildi",
+  "transferProductError": "Haryt geçirilende ýalňyşlyk döredi",
+  "selectShop": "Dükan saýlaň"
 }

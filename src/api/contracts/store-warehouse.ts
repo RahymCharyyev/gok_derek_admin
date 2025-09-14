@@ -1,7 +1,7 @@
 import {initContract} from '@ts-rest/core';
 import {z} from 'zod';
 import {storeWarehouseSchema as schema} from '../schema';
-import {paramsId} from '../schema/common';
+import {common, paramsId} from '../schema/common';
 
 const c = initContract();
 
@@ -23,6 +23,24 @@ export const storeWarehouseContract = c.router(
         201: schema.getOneRes,
       },
     },
+
+    addProduct: {
+      method: 'POST',
+      path: '/product-add',
+      body: schema.addProduct,
+      responses: {
+        201: common.result,
+      },
+    },
+    transferProduct: {
+      method: 'POST',
+      path: '/product-transfer',
+      body: schema.transferProduct,
+      responses: {
+        201: common.result,
+      },
+    },
+
     getOne: {
       method: 'GET',
       path: '/:id',

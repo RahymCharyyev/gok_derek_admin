@@ -4,6 +4,7 @@ import {
   DownOutlined,
   EditOutlined,
   SearchOutlined,
+  TransactionOutlined,
 } from '@ant-design/icons';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -19,8 +20,7 @@ interface UseWarehouseTableColumnProps {
   handleSearch: () => void;
   clearFilter: (key: string) => void;
   sortOptions: string[];
-  handleOpenEditModal: (record: any) => void;
-  confirmDelete: (options: { id: string }) => void;
+  handleOpenTransferModal: (record: any) => void;
 }
 
 export const useWarehouseTableColumn = ({
@@ -33,8 +33,7 @@ export const useWarehouseTableColumn = ({
   handleSearch,
   clearFilter,
   sortOptions,
-  handleOpenEditModal,
-  confirmDelete,
+  handleOpenTransferModal,
 }: UseWarehouseTableColumnProps): ColumnsType<any> => {
   return [
     {
@@ -256,16 +255,11 @@ export const useWarehouseTableColumn = ({
           <Button
             size='small'
             type='primary'
-            icon={<EditOutlined />}
-            onClick={() => handleOpenEditModal(record)}
-          />
-          <Button
-            size='small'
-            type='primary'
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => confirmDelete({ id: record.key })}
-          />
+            icon={<TransactionOutlined />}
+            onClick={() => handleOpenTransferModal(record)}
+          >
+            {t('productTransaction')}
+          </Button>
         </div>
       ),
     },

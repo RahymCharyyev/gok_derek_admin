@@ -4,7 +4,6 @@ import WoodTypeModal from '@/components/WoodTypes/WoodTypeModal';
 import { useWoodTypes } from '@/components/WoodTypes/hooks/useWoodTypes';
 import { useWoodTypesTableColumn } from '@/components/WoodTypes/hooks/useWoodTypesTableColumn';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
-import { useFilters } from '@/hooks/useFilters';
 import TableLayout from '@/layout/TableLayout';
 import { ProductOutlined } from '@ant-design/icons';
 import { message } from 'antd';
@@ -15,20 +14,18 @@ const WoodTypes = () => {
   const { t } = useTranslation();
   const {
     query,
-    searchParams,
-    setSearchParams,
     page,
     perPage,
     woodTypesQuery,
     createWoodTypeMutation,
     updateWoodTypeMutation,
     deleteWoodTypeMutation,
-  } = useWoodTypes();
-
-  const { updateFilter, clearFilter, resetAllFilters } = useFilters(
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
     searchParams,
-    setSearchParams
-  );
+  } = useWoodTypes();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
@@ -41,20 +38,10 @@ const WoodTypes = () => {
   const confirmDelete = useDeleteConfirm();
 
   const handleSearch = useCallback(() => {
-    const params = new URLSearchParams(searchParams);
-
     Object.entries(searchValues).forEach(([key, value]) => {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
+      setFilter(key, value);
     });
-
-    params.set('page', '1');
-
-    setSearchParams(params);
-  }, [searchValues, searchParams, setSearchParams]);
+  }, [searchValues, setFilter]);
 
   const resetDisabled = useMemo(() => {
     return (
@@ -69,9 +56,9 @@ const WoodTypes = () => {
     searchValues,
     setSearchValues,
     sortBy: query.sortBy || '',
-    setSortBy: (value) => updateFilter('sortBy', value),
+    setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
-    setSortDirectionParam: (value) => updateFilter('sortDirection', value),
+    setSortDirectionParam: (value) => setFilter('sortDirection', value),
     handleSearch,
     clearFilter: (key) => {
       setSearchValues((prev) => ({ ...prev, [key]: '' }));
@@ -146,7 +133,7 @@ const WoodTypes = () => {
               setEditingData(null);
               setIsModalOpen(true);
             }}
-            onReset={resetAllFilters}
+            onReset={resetFilters}
             resetDisabled={resetDisabled}
             count={woodTypesQuery.data?.body.count}
           />
@@ -158,6 +145,7 @@ const WoodTypes = () => {
           current: page,
           pageSize: perPage,
           total: woodTypesQuery.data?.body?.count,
+          onChange: handleTableChange,
         }}
       />
       <WoodTypeModal

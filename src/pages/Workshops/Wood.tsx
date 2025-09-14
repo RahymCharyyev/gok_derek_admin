@@ -3,7 +3,6 @@ import Toolbar from '@/components/Products/Toolbar';
 import { useWorkshops } from '@/components/Workshops/hooks/useWorkshops';
 import { useWorkshopTableColumn } from '@/components/Workshops/hooks/useWorkshopTableColumn';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
-import { useFilters } from '@/hooks/useFilters';
 import TableLayout from '@/layout/TableLayout';
 import { PlusOutlined, TransactionOutlined } from '@ant-design/icons';
 import { useCallback, useMemo, useState, type FC } from 'react';
@@ -14,17 +13,15 @@ const WoodWorkshop: FC = () => {
 
   const {
     query,
-    searchParams,
-    setSearchParams,
     page,
     perPage,
     workshopsQuery,
-  } = useWorkshops('wood');
-
-  const { updateFilter, clearFilter, resetAllFilters } = useFilters(
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
     searchParams,
-    setSearchParams
-  );
+  } = useWorkshops('wood');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
@@ -48,19 +45,10 @@ const WoodWorkshop: FC = () => {
   //   }, [debouncedSearchUserValue, setUserSearchParams]);
 
   const handleSearch = useCallback(() => {
-    const params = new URLSearchParams(searchParams);
-
     Object.entries(searchValues).forEach(([key, value]) => {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
+      setFilter(key, value);
     });
-
-    params.set('page', '1');
-    setSearchParams(params);
-  }, [searchValues, searchParams, setSearchParams]);
+  }, [searchValues, setFilter]);
 
   const resetDisabled = useMemo(() => {
     return (
@@ -75,9 +63,9 @@ const WoodWorkshop: FC = () => {
     searchValues,
     setSearchValues,
     sortBy: query.sortBy || '',
-    setSortBy: (value) => updateFilter('sortBy', value),
+    setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
-    setSortDirectionParam: (value) => updateFilter('sortDirection', value),
+    setSortDirectionParam: (value) => setFilter('sortDirection', value),
     handleSearch,
     clearFilter: (key) => {
       setSearchValues((prev) => ({ ...prev, [key]: '' }));
@@ -117,16 +105,6 @@ const WoodWorkshop: FC = () => {
       'actions',
     ],
   });
-
-  const handleClearFilter = useCallback(
-    (key: string) => {
-      const params = new URLSearchParams(searchParams);
-      params.delete(key);
-      params.set('page', '1');
-      setSearchParams(params);
-    },
-    [searchParams, setSearchParams]
-  );
 
   if (workshopsQuery.isError) {
     return (
@@ -180,7 +158,7 @@ const WoodWorkshop: FC = () => {
               setEditingData(null);
               setIsModalOpen(true);
             }}
-            onReset={resetAllFilters}
+            onReset={resetFilters}
             resetDisabled={resetDisabled}
             count={workshopsQuery.data?.body.count}
             hasSecondButton
@@ -199,6 +177,7 @@ const WoodWorkshop: FC = () => {
           current: page,
           pageSize: perPage,
           total: workshopsQuery.data?.body?.count,
+          onChange: handleTableChange,
         }}
       />
       {/* <ShopModal

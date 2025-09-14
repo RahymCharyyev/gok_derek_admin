@@ -4,7 +4,6 @@ import { useProducts } from '@/components/Products/hooks/useProducts';
 import OtherProductsModal from '@/components/Products/OtherModal';
 import Toolbar from '@/components/Products/Toolbar';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
-import { useFilters } from '@/hooks/useFilters';
 import TableLayout from '@/layout/TableLayout';
 import { ProductFilled } from '@ant-design/icons';
 import { message } from 'antd';
@@ -16,20 +15,18 @@ const OtherProducts = () => {
 
   const {
     query,
-    searchParams,
-    setSearchParams,
     page,
     perPage,
     productsQuery,
     createProductMutation,
     updateProductMutation,
     deleteProductMutation,
-  } = useProducts('other');
-
-  const { updateFilter, clearFilter, resetAllFilters } = useFilters(
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
     searchParams,
-    setSearchParams
-  );
+  } = useProducts('other');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
@@ -41,20 +38,10 @@ const OtherProducts = () => {
   const confirmDelete = useDeleteConfirm();
 
   const handleSearch = useCallback(() => {
-    const params = new URLSearchParams(searchParams);
-
     Object.entries(searchValues).forEach(([key, value]) => {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
+      setFilter(key, value);
     });
-
-    params.set('page', '1');
-
-    setSearchParams(params);
-  }, [searchValues, searchParams, setSearchParams]);
+  }, [searchValues, setFilter]);
 
   const resetDisabled = useMemo(() => {
     return (
@@ -69,9 +56,9 @@ const OtherProducts = () => {
     searchValues,
     setSearchValues,
     sortBy: query.sortBy || '',
-    setSortBy: (value) => updateFilter('sortBy', value),
+    setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
-    setSortDirectionParam: (value) => updateFilter('sortDirection', value),
+    setSortDirectionParam: (value) => setFilter('sortDirection', value),
     handleSearch,
     clearFilter: (key) => {
       setSearchValues((prev) => ({ ...prev, [key]: '' }));
@@ -148,7 +135,7 @@ const OtherProducts = () => {
               setEditingData(null);
               setIsModalOpen(true);
             }}
-            onReset={resetAllFilters}
+            onReset={resetFilters}
             resetDisabled={resetDisabled}
             count={productsQuery.data?.body.count}
           />
@@ -160,6 +147,7 @@ const OtherProducts = () => {
           current: page,
           pageSize: perPage,
           total: productsQuery.data?.body?.count,
+          onChange: handleTableChange,
         }}
       />
       <OtherProductsModal

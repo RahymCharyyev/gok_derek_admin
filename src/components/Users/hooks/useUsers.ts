@@ -1,23 +1,44 @@
 import { tsr } from '@/api';
+import { usePagination } from '@/hooks/usePagination';
 import { queryClient } from '@/Providers';
+import { getEnumParam } from '@/utils/getEnumParam';
 import { useMutation } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
 
 export const useUsers = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const {
+    page,
+    perPage,
+    searchParams,
+    setSearchParams,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
+  } = usePagination();
 
-  const page = Number(searchParams.get('page')) || 1;
-  const perPage = Number(searchParams.get('perPage')) || 10;
+  const sortBy = getEnumParam(
+    searchParams,
+    'sortBy',
+    ['firstName', 'lastName', 'email', 'phone'] as const,
+    'createdAt'
+  );
 
-  const query: Record<string, any> = {
+  const sortDirection = getEnumParam(
+    searchParams,
+    'sortDirection',
+    ['asc', 'desc'] as const,
+    'desc'
+  );
+
+  const query = {
     page,
     perPage,
     firstName: searchParams.get('firstName') || undefined,
     lastName: searchParams.get('lastName') || undefined,
     email: searchParams.get('email') || undefined,
     phone: searchParams.get('phone') || undefined,
-    sortBy: searchParams.get('sortBy') || undefined,
-    sortDirection: searchParams.get('sortDirection') || undefined,
+    sortBy,
+    sortDirection,
   };
 
   const usersQuery = tsr.user.getAll.useQuery({
@@ -64,5 +85,9 @@ export const useUsers = () => {
     createUserMutation,
     updateUserMutation,
     deleteUserMutation,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
   };
 };

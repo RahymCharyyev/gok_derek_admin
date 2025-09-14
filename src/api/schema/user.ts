@@ -31,7 +31,7 @@ const sort = z.object({sortBy: userSort.default('createdAt'), sortDirection: sor
 export const userGetAll = user.extend({text: z.string()}).partial().merge(sort).merge(commonQuery);
 export const userGetAllRes = z.object({count: z.number(), data: user.omit({password: true}).merge(userExtra).array()});
 
-export const userGetOneRes = user.omit({password: true}).merge(userExtra);
+export const userGetOneRes = user.omit({password: true}).merge(userExtra).partial().nullish();
 
 export const userCreate = user.pick({
   username: true,
@@ -54,6 +54,8 @@ export type UserEdit = z.infer<typeof userEdit>;
 export const userSchema = {
   schema: user,
   getAll: userGetAll,
+  getAllRes: userGetAllRes,
+  getOneRes: userGetOneRes,
   create: userCreate,
   edit: userEdit,
 };

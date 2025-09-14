@@ -15,10 +15,15 @@ const schema = z.object({
   createdAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullish(),
 
-  wood: productWoodSchema.schema.nullish(),
-  furniture: productFurnitureSchema.schema.nullish(),
-  other: productOtherSchema.schema.nullish(),
-  units: productUnitsSchema.schema.partial().array().nullish(),
+  // wood: productWoodSchema.schema.nullish(),
+  // furniture: productFurnitureSchema.schema.nullish(),
+  // other: productOtherSchema.schema.nullish(),
+  // units: productUnitsSchema.schema.partial().array().nullish(),
+
+  wood: z.lazy(() => productWoodSchema.schema.nullish()),
+  furniture: z.lazy(() => productFurnitureSchema.schema.nullish()),
+  other: z.lazy(() => productOtherSchema.schema.nullish()),
+  units: z.lazy(() => productUnitsSchema.schema.partial().array().nullish()),
 });
 
 const sortKeys = schema.pick({

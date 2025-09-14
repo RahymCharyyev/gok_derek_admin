@@ -22,7 +22,7 @@ import {
   FaUsers,
   FaWarehouse,
 } from 'react-icons/fa';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 interface LayoutComponentProps {
   children: React.ReactNode;
@@ -223,11 +223,13 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
               darkMode ? 'text-[#0ade41]' : 'text-[#007e2b]'
             }`}
           >
-            {collapsed ? (
-              <Image src='/gokderek/logo_2.webp' width={50} preview={false} />
-            ) : (
-              `Gök Derek H.J.`
-            )}
+            <Link to={'/report'}>
+              {collapsed ? (
+                <Image src='/gokderek/logo_2.webp' width={50} preview={false} />
+              ) : (
+                `Gök Derek H.J.`
+              )}
+            </Link>
           </div>
           {SidebarMenu}
         </Sider>
@@ -265,7 +267,8 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
             )}
             <UserOutlined />
             <span className='text-sm md:text-base'>
-              {userData?.firstName} {userData?.lastName}
+              {userData?.firstName} {userData?.lastName} |{' '}
+              {userData?.roles.map((e: any) => e.role)}
             </span>
           </div>
           <div className='flex gap-2 items-center'>

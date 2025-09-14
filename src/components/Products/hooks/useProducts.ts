@@ -1,15 +1,43 @@
 import { tsr } from '@/api';
+import { usePagination } from '@/hooks/usePagination';
 import { queryClient } from '@/Providers';
+import { getEnumParam } from '@/utils/getEnumParam';
 import { useMutation } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
 
-export const useProducts = (productType: 'wood' | 'furniture' | 'other') => {
-  const [searchParams, setSearchParams] = useSearchParams();
+export const useProducts = (productType?: 'wood' | 'furniture' | 'other') => {
+  const {
+    page,
+    perPage,
+    searchParams,
+    setSearchParams,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
+  } = usePagination();
 
-  const page = Number(searchParams.get('page')) || 1;
-  const perPage = Number(searchParams.get('perPage')) || 10;
+  const sortBy = getEnumParam(
+    searchParams,
+    'sortBy',
+    ['name', 'thickness', 'width', 'length', 'woodTypeId'] as const,
+    'createdAt'
+  );
 
-  const query: Record<string, any> = {
+  const sortDirection = getEnumParam(
+    searchParams,
+    'sortDirection',
+    ['asc', 'desc'] as const,
+    'desc'
+  );
+
+  const units = searchParams.get('units')
+    ? searchParams
+        .get('units')
+        ?.split(',')
+        .map((unit) => ({ unit: unit as 'piece' | 'meter' | 'sqMeter' }))
+    : undefined;
+
+  const query = {
     page,
     perPage,
     name: searchParams.get('name') || undefined,
@@ -18,10 +46,10 @@ export const useProducts = (productType: 'wood' | 'furniture' | 'other') => {
     width: searchParams.get('width') || undefined,
     length: searchParams.get('length') || undefined,
     quality: searchParams.get('quality') || undefined,
-    units: searchParams.get('units') || undefined,
+    units,
     type: productType,
-    sortBy: searchParams.get('sortBy') || undefined,
-    sortDirection: searchParams.get('sortDirection') || undefined,
+    sortBy,
+    sortDirection,
     code: searchParams.get('code') || undefined,
   };
 
@@ -32,7 +60,6 @@ export const useProducts = (productType: 'wood' | 'furniture' | 'other') => {
 
   const woodTypesQuery = tsr.woodType.getAll.useQuery({
     queryKey: ['wood-types'],
-    queryData: {},
   });
 
   const createProductMutation = useMutation({
@@ -69,5 +96,9 @@ export const useProducts = (productType: 'wood' | 'furniture' | 'other') => {
     createProductMutation,
     updateProductMutation,
     deleteProductMutation,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
   };
 };

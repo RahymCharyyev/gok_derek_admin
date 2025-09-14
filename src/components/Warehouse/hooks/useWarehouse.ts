@@ -1,18 +1,21 @@
 import { tsr } from '@/api';
-import {
-  productTransactionSchema,
-  type ProductTransactionSchema,
-} from '@/api/schema';
+import { type ProductTransactionSchema } from '@/api/schema';
 import { queryClient } from '@/Providers';
 import { getEnumParam } from '@/utils/getEnumParam';
 import { useMutation } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
+import { usePagination } from '@/hooks/usePagination'; // подключаем новый хук
 
 export const useWarehouse = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const page = Number(searchParams.get('page')) || 1;
-  const perPage = Number(searchParams.get('perPage')) || 10;
+  const {
+    page,
+    perPage,
+    searchParams,
+    setSearchParams,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
+  } = usePagination();
 
   const typeParam = searchParams.get('type');
   const type =
@@ -67,32 +70,19 @@ export const useWarehouse = () => {
     queryData: { query },
   });
 
-  //   const createWarehouseMutation = useMutation({
-  //     mutationFn: (body: any) => tsr.productTransaction.create.mutate({ body }),
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries({ queryKey: ['warehouse'] });
-  //     },
-  //   });
+  const addProductMutation = useMutation({
+    mutationFn: (body: any) => tsr.warehouse.addProduct.mutate({ body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['warehouse'] });
+    },
+  });
 
-  //   //
-
-  //   const updateShopMutation = useMutation({
-  //     mutationFn: ({ id, body }: { id: string; body: any }) =>
-  //       tsr.shop.edit.mutate({ params: { id }, body }),
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries({ queryKey: ['warehouse'] });
-  //     },
-  //   });
-
-  //   const deleteShopMutation = useMutation({
-  //     mutationFn: ({ id }: { id: string }) =>
-  //       tsr.shop.remove.mutate({ params: { id } }),
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries({ queryKey: ['warehouse'] });
-  //     },
-  //   });
-
-  // gokderek.com/admin/
+  const transferProductMutation = useMutation({
+    mutationFn: (body: any) => tsr.warehouse.transferProduct.mutate({ body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['warehouse'] });
+    },
+  });
 
   return {
     query,
@@ -101,5 +91,11 @@ export const useWarehouse = () => {
     page,
     perPage,
     warehouseQuery,
+    addProductMutation,
+    transferProductMutation,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
   };
 };
