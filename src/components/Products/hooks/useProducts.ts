@@ -4,7 +4,10 @@ import { queryClient } from '@/Providers';
 import { getEnumParam } from '@/utils/getEnumParam';
 import { useMutation } from '@tanstack/react-query';
 
-export const useProducts = (productType?: 'wood' | 'furniture' | 'other') => {
+export const useProducts = (
+  productType?: 'wood' | 'furniture' | 'other',
+  productTypes?: Array<'wood' | 'other'>
+) => {
   const {
     page,
     perPage,
@@ -48,6 +51,7 @@ export const useProducts = (productType?: 'wood' | 'furniture' | 'other') => {
     quality: searchParams.get('quality') || undefined,
     units,
     type: productType,
+    types: productTypes,
     sortBy,
     sortDirection,
     code: searchParams.get('code') || undefined,

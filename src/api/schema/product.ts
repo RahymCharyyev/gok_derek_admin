@@ -35,7 +35,11 @@ const sortKeys = schema.pick({
 const sortable = sortKeys.merge(productWoodSchema.sortKeys).keyof();
 const sort = z.object({sortBy: sortable.default('createdAt'), sortDirection: sortDirection.default('desc')});
 
-const getAll = schema.extend({text: z.string()}).partial().merge(sort).merge(commonQuery);
+const getAll = schema
+  .extend({text: z.string(), types: schema.shape.type.array()})
+  .partial()
+  .merge(sort)
+  .merge(commonQuery);
 const getAllRes = z.object({
   count: z.number(),
   data: schema.array(),

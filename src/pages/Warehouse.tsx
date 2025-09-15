@@ -31,7 +31,7 @@ const Warehouse = () => {
   const { shopsQuery, setSearchParams: setShopsSearchParams } = useShops();
 
   const { productsQuery, setSearchParams: setProductsSearchParams } =
-    useProducts();
+    useProducts(undefined, ['wood', 'other']);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
