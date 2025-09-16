@@ -1,7 +1,7 @@
-import {initContract} from '@ts-rest/core';
-import {z} from 'zod';
-import {storeWarehouseSchema as schema} from '../schema';
-import {common, paramsId} from '../schema/common';
+import { initContract } from '@ts-rest/core';
+import { z } from 'zod';
+import { storeWarehouseSchema as schema } from '../schema';
+import { common, paramsId } from '../schema/common';
 
 const c = initContract();
 
@@ -68,5 +68,5 @@ export const storeWarehouseContract = c.router(
       },
     },
   },
-  {pathPrefix: '/api/store-warehouses'},
+  { pathPrefix: '/api/store-warehouses' }
 );

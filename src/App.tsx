@@ -8,13 +8,14 @@ import OtherProducts from './pages/Products/Other';
 import Wood from './pages/Products/Wood';
 import WoodTypes from './pages/Products/WoodTypes';
 import Report from './pages/Report';
-import Shops from './pages/Shops';
+import Shops from './pages/Shops/Shops';
 import Users from './pages/Users';
 import Warehouse from './pages/Warehouse';
 import FurnitureWorkshop from './pages/Workshops/Furniture';
 import WoodWorkshop from './pages/Workshops/Wood';
-import { darkTheme, lightTheme, sharedTheme } from './theme';
+import { darkTheme, lightTheme, sharedTheme } from '@/theme';
 import Cashier from './pages/Cashier';
+import ShopProducts from './pages/Shops/ShopProducts';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -98,6 +99,14 @@ function App() {
             element={
               <LayoutComponent>
                 <Shops />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/shops/:id/products'
+            element={
+              <LayoutComponent>
+                <ShopProducts />
               </LayoutComponent>
             }
           />

@@ -3,9 +3,10 @@ import { type ProductTransactionSchema } from '@/api/schema';
 import { queryClient } from '@/Providers';
 import { getEnumParam } from '@/utils/getEnumParam';
 import { useMutation } from '@tanstack/react-query';
-import { usePagination } from '@/hooks/usePagination'; // подключаем новый хук
+import { usePagination } from '@/hooks/usePagination';
+import { useState } from 'react';
 
-export const useWarehouse = () => {
+export const useWarehouse = (storeId?: string) => {
   const {
     page,
     perPage,
@@ -18,8 +19,26 @@ export const useWarehouse = () => {
   } = usePagination();
 
   const typeParam = searchParams.get('type');
-  const type =
-    typeParam === 'transfer' || typeParam === 'sale' ? typeParam : undefined;
+  const [type, setType] = useState<
+    'order' | 'transfer' | 'sale' | 'receipt' | 'production' | undefined
+  >(
+    typeParam === 'transfer' ||
+      typeParam === 'order' ||
+      typeParam === 'sale' ||
+      typeParam === 'receipt' ||
+      typeParam === 'production'
+      ? typeParam
+      : undefined
+  );
+
+  const handleTypeChange = (
+    value: 'order' | 'transfer' | 'sale' | 'receipt' | 'production'
+  ) => {
+    setType(value);
+    const params = new URLSearchParams(searchParams);
+    params.set('type', value);
+    setSearchParams(params);
+  };
 
   const sortBy = getEnumParam(
     searchParams,
@@ -47,6 +66,7 @@ export const useWarehouse = () => {
   const query: ProductTransactionSchema['GetAll'] = {
     page,
     perPage,
+    storeId,
     storeType: 'warehouse',
     fromStoreId: searchParams.get('fromStoreId') ?? undefined,
     toStoreId: searchParams.get('toStoreId') ?? undefined,
@@ -88,6 +108,8 @@ export const useWarehouse = () => {
     query,
     searchParams,
     setSearchParams,
+    type,
+    handleTypeChange,
     page,
     perPage,
     warehouseQuery,

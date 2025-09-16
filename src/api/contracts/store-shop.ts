@@ -1,7 +1,6 @@
-import {initContract} from '@ts-rest/core';
-import {z} from 'zod';
-import {storeShopSchema as schema} from '../schema';
-import {paramsId} from '../schema/common';
+import { initContract } from '@ts-rest/core';
+import { z } from 'zod';
+import { storeShopSchema as schema, common } from '../schema';
 
 const c = initContract();
 
@@ -23,10 +22,20 @@ export const storeShopContract = c.router(
         201: schema.getOneRes,
       },
     },
+
+    addOrder: {
+      method: 'POST',
+      path: '/order',
+      body: schema.addOrder,
+      responses: {
+        201: common.result,
+      },
+    },
+
     getOne: {
       method: 'GET',
       path: '/:id',
-      pathParams: paramsId,
+      pathParams: common.paramsId,
       responses: {
         200: schema.getOneRes,
         404: z.null(),
@@ -35,7 +44,7 @@ export const storeShopContract = c.router(
     edit: {
       method: 'PUT',
       path: '/:id',
-      pathParams: paramsId,
+      pathParams: common.paramsId,
       body: schema.edit,
       responses: {
         201: schema.getOneRes,
@@ -44,11 +53,11 @@ export const storeShopContract = c.router(
     remove: {
       method: 'DELETE',
       path: '/:id',
-      pathParams: paramsId,
+      pathParams: common.paramsId,
       responses: {
         201: schema.getOneRes,
       },
     },
   },
-  {pathPrefix: '/api/store-shops'},
+  { pathPrefix: '/api/store-shops' }
 );

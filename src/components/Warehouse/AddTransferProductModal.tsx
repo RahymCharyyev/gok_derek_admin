@@ -1,5 +1,4 @@
 import type { ProductSchema } from '@/api/schema';
-import { type UserEdit } from '@/api/schema/user';
 import { Form, InputNumber, Modal, Select } from 'antd';
 import { useEffect, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -44,6 +43,8 @@ const AddTransferProductModal: FC<
       form.resetFields();
     }
   }, [initialValues]);
+
+  console.log(products);
 
   return (
     <Modal

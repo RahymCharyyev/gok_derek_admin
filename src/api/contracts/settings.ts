@@ -1,6 +1,12 @@
-import {initContract} from '@ts-rest/core';
-import {z} from 'zod';
-import {settings, settingsAdd, settingsEdit, settingsGetAll, settingsGetAllRes} from '../schema/settings';
+import { initContract } from '@ts-rest/core';
+import { z } from 'zod';
+import {
+  settings,
+  settingsAdd,
+  settingsEdit,
+  settingsGetAll,
+  settingsGetAllRes,
+} from '../schema/settings';
 
 const c = initContract();
 
@@ -25,7 +31,7 @@ export const settingsContract = c.router(
     getOne: {
       method: 'GET',
       path: '/:key',
-      pathParams: settings.pick({key: true}),
+      pathParams: settings.pick({ key: true }),
       responses: {
         200: settings.partial(),
         404: z.null(),
@@ -34,12 +40,12 @@ export const settingsContract = c.router(
     edit: {
       method: 'PUT',
       path: '/:key',
-      pathParams: settings.pick({key: true}),
+      pathParams: settings.pick({ key: true }),
       body: settingsEdit,
       responses: {
         201: settings.nullish(),
       },
     },
   },
-  {pathPrefix: '/api/settings'},
+  { pathPrefix: '/api/settings' }
 );

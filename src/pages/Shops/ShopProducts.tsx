@@ -1,57 +1,43 @@
 import ErrorComponent from '@/components/ErrorComponent';
-import { useProducts } from '@/components/Products/hooks/useProducts';
 import Toolbar from '@/components/Products/Toolbar';
+import AddOrderModal from '@/components/Shops/AddOrderModal';
 import { useShops } from '@/components/Shops/hooks/useShops';
-import AddTransferProductModal from '@/components/Warehouse/AddTransferProductModal';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import { useWarehouseTableColumn } from '@/components/Warehouse/hooks/useWarehouseTableColumn';
 import TableLayout from '@/layout/TableLayout';
-import { PlusOutlined } from '@ant-design/icons';
-import { message, Segmented } from 'antd';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { BankOutlined } from '@ant-design/icons';
+import { message } from 'antd';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDebounce } from 'use-debounce';
+import { useParams } from 'react-router-dom';
 
-const Warehouse = () => {
+const ShopProducts = () => {
   const { t } = useTranslation();
+  const { id } = useParams();
   const {
     query,
     page,
     perPage,
     warehouseQuery,
-    addProductMutation,
-    transferProductMutation,
     handleTableChange,
     setFilter,
     clearFilter,
     resetFilters,
     searchParams,
-    setSearchParams,
-    type,
-    handleTypeChange,
-  } = useWarehouse();
+  } = useWarehouse(id);
 
-  const { shopsQuery, setSearchParams: setShopsSearchParams } = useShops();
-
-  const { productsQuery, setSearchParams: setProductsSearchParams } =
-    useProducts(undefined, ['wood', 'other']);
+  const { addOrder } = useShops();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
+    userId: '',
+    geoLocation: '',
+    type: '',
+    creditLimit: '',
+    address: '',
   });
-  const [isTransfer, setIsTransfer] = useState(false);
-  const [searchProductValue, setSearchProductValue] = useState('');
-  const [debouncedSearchProductValue] = useDebounce(searchProductValue, 500);
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    if (debouncedSearchProductValue.trim()) {
-      params.set('name', debouncedSearchProductValue.trim());
-    }
-    setProductsSearchParams(params);
-  }, [debouncedSearchProductValue, setProductsSearchParams, searchParams]);
 
   const handleSearch = useCallback(() => {
     Object.entries(searchValues).forEach(([key, value]) => {
@@ -67,15 +53,8 @@ const Warehouse = () => {
     );
   }, [searchValues, query]);
 
-  const handleOpenTransferModal = (record: any) => {
-    setEditingData(record);
-    setIsTransfer(true);
-    setIsModalOpen(true);
-  };
-
   const handleOpenAddModal = () => {
     setEditingData(null);
-    setIsTransfer(false);
     setIsModalOpen(true);
   };
 
@@ -93,7 +72,7 @@ const Warehouse = () => {
       clearFilter(key);
     },
     sortOptions: ['asc', 'desc'],
-    handleOpenTransferModal,
+    handleOpenTransferModal: handleOpenAddModal,
   });
 
   if (warehouseQuery.isError) {
@@ -120,7 +99,7 @@ const Warehouse = () => {
 
   const handleAddProduct = async (values: any) => {
     try {
-      const response = await addProductMutation.mutateAsync(values);
+      const response = await addOrder.mutateAsync(values);
       if (response.status == 200) {
         message.success(t('productAdded'));
       } else if (response.status == 404) {
@@ -136,42 +115,17 @@ const Warehouse = () => {
     }
   };
 
-  const handleTansferProduct = async (values: any) => {
-    try {
-      const response = await transferProductMutation.mutateAsync(values);
-      if (response.status == 200 || response.status == 201) {
-        message.success(t('productTransfered'));
-      } else if (response.status == 404) {
-        const errorBody = response.body as { message: string };
-        message.error(errorBody.message);
-      } else {
-        message.error(t('transferProductError'));
-      }
-      setIsModalOpen(false);
-      setEditingData(null);
-    } catch {
-      message.error(t('transferProductError'));
-    }
-  };
-
   return (
     <>
-      <div className='mb-4'>
-        <Segmented
-          options={[
-            { label: t('Sargalan harytlar'), value: 'order' },
-            { label: t('Iberilen harytlar'), value: 'transfer' },
-          ]}
-          value={type}
-          onChange={handleTypeChange}
-        />
-      </div>
       <TableLayout
         title={() => (
           <Toolbar
-            title={t('addProduct')}
-            icon={<PlusOutlined />}
-            onCreate={handleOpenAddModal}
+            title={t('createShop')}
+            icon={<BankOutlined />}
+            onCreate={() => {
+              setEditingData(null);
+              setIsModalOpen(true);
+            }}
             onReset={resetFilters}
             resetDisabled={resetDisabled}
             count={warehouseQuery.data?.body.count}
@@ -187,20 +141,16 @@ const Warehouse = () => {
           onChange: handleTableChange,
         }}
       />
-      <AddTransferProductModal
+      <AddOrderModal
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
-        onSubmit={isTransfer ? handleTansferProduct : handleAddProduct}
+        onSubmit={handleAddProduct}
         initialValues={editingData}
-        products={productsQuery.data?.body.data || []}
-        shops={shopsQuery.data?.body.data || []}
-        loading={productsQuery.isLoading || shopsQuery.isLoading}
-        onSearchProduct={(value) => setSearchProductValue(value)}
-        onClearProduct={() => clearFilter('name')}
-        isTransfer={isTransfer}
+        products={warehouseQuery.data?.body.data || []}
+        loading={warehouseQuery.isLoading}
       />
     </>
   );
 };
 
-export default Warehouse;
+export default ShopProducts;

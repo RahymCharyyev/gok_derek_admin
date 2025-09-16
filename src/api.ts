@@ -1,5 +1,5 @@
 import { initTsrReactQuery } from '@ts-rest/react-query/v5';
-import { contract } from '@contracts/contracts/index';
+import { contract } from '@/api/contracts/index';
 import Cookies from 'js-cookie';
 
 export const API_URL = import.meta.env.VITE_API_URL;

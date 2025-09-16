@@ -7,12 +7,12 @@ import {storeWorkshopSchema} from './store-workshop';
 
 const schema = z.object({
   id: z.string().uuid(),
-  type: z.enum(['transfer', 'sale', 'production', 'receipt']),
+  type: z.enum(['transfer', 'sale', 'production', 'receipt', 'order']),
   createdById: z.string().uuid(),
   productId: z.string().uuid(),
   fromStoreId: z.string().uuid(),
   toStoreId: z.string().uuid().nullish(),
-  quantity: z.coerce.number().int(),
+  quantity: z.coerce.number().int().nullish(),
   price: z.coerce.number().int().nullish(),
   createdAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullish(),

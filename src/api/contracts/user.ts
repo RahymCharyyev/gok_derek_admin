@@ -1,7 +1,7 @@
-import {initContract} from '@ts-rest/core';
-import {z} from 'zod';
-import {paramsId} from '../schema';
-import {userSchema} from '../schema/user';
+import { initContract } from '@ts-rest/core';
+import { z } from 'zod';
+import { paramsId } from '../schema';
+import { userSchema } from '../schema/user';
 
 const c = initContract();
 
@@ -50,5 +50,5 @@ export const userContract = c.router(
       },
     },
   },
-  {pathPrefix: '/api/users'},
+  { pathPrefix: '/api/users' }
 );

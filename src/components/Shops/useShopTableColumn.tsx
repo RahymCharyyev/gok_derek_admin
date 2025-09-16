@@ -2,11 +2,13 @@ import {
   DeleteOutlined,
   DownOutlined,
   EditOutlined,
+  EyeOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { renderFilterDropdown } from '../renderFilterDropdown';
+import { useNavigate, useNavigation } from 'react-router-dom';
 
 interface UseShopTableColumnProps {
   t: (key: string) => string;
@@ -36,6 +38,8 @@ export const useShopTableColumn = ({
   handleOpenEditModal,
   confirmDelete,
 }: UseShopTableColumnProps): ColumnsType<any> => {
+  const navigate = useNavigate();
+
   return [
     {
       title: '№',
@@ -165,9 +169,16 @@ export const useShopTableColumn = ({
           <Button
             size='small'
             type='primary'
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/shops/${record.key}/products`)}
+          />
+          <Button
+            size='small'
+            type='primary'
             icon={<EditOutlined />}
             onClick={() => handleOpenEditModal(record)}
           />
+
           <Button
             size='small'
             type='primary'
