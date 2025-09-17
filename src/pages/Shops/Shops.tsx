@@ -7,7 +7,7 @@ import { useShopTableColumn } from '@/components/Shops/useShopTableColumn';
 import { useUsers } from '@/components/Users/hooks/useUsers';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
-import { BankOutlined } from '@ant-design/icons';
+import { BankOutlined, TransactionOutlined } from '@ant-design/icons';
 import { message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -2,6 +2,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   SearchOutlined,
+  TransactionOutlined,
 } from '@ant-design/icons';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -20,6 +21,7 @@ interface UseFurnitureTableColumnProps {
   sortOptions: string[];
   handleOpenEditModal: (record: any) => void;
   confirmDelete: (options: { id: string }) => void;
+  handleOpenAddModal?: (record: any) => void;
 }
 
 export const useFurnitureTableColumn = ({
@@ -34,6 +36,7 @@ export const useFurnitureTableColumn = ({
   sortOptions,
   handleOpenEditModal,
   confirmDelete,
+  handleOpenAddModal,
 }: UseFurnitureTableColumnProps): ColumnsType<any> => {
   return [
     {
@@ -121,6 +124,14 @@ export const useFurnitureTableColumn = ({
             icon={<DeleteOutlined />}
             onClick={() => confirmDelete({ id: record.key })}
           />
+          <Button
+            size='small'
+            type='primary'
+            icon={<TransactionOutlined />}
+            onClick={() => handleOpenAddModal?.(record)}
+          >
+            {t('addOrder')}
+          </Button>
         </div>
       ),
     },

@@ -1,4 +1,5 @@
 import ErrorComponent from '@/components/ErrorComponent';
+import AddOrderModal from '@/components/Products/AddOrderModal';
 import { useOtherTableColumn } from '@/components/Products/hooks/useOtherTableColumn';
 import { useProducts } from '@/components/Products/hooks/useProducts';
 import OtherProductsModal from '@/components/Products/OtherModal';
@@ -21,6 +22,7 @@ const OtherProducts = () => {
     createProductMutation,
     updateProductMutation,
     deleteProductMutation,
+    addOrder,
     handleTableChange,
     setFilter,
     clearFilter,
@@ -29,6 +31,7 @@ const OtherProducts = () => {
   } = useProducts('other');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
@@ -50,6 +53,10 @@ const OtherProducts = () => {
       !query.sortDirection
     );
   }, [searchValues, query]);
+
+  const handleOpenAddModal = () => {
+    setIsOrderModalOpen(true);
+  };
 
   const columns = useOtherTableColumn({
     t,
@@ -85,6 +92,7 @@ const OtherProducts = () => {
         },
       });
     },
+    handleOpenAddModal,
   });
 
   if (productsQuery.isError) {
@@ -124,6 +132,22 @@ const OtherProducts = () => {
     }
   };
 
+  const handleAddProduct = async (values: any) => {
+    try {
+      const response = await addOrder.mutateAsync(values);
+      if (response.status == 200) {
+        message.success(t('productAdded'));
+      } else if (response.status == 404) {
+        const errorBody = response.body as { message: string };
+        message.error(errorBody.message);
+      } else {
+        message.error(t('addProductError'));
+      }
+      setIsOrderModalOpen(false);
+    } catch {
+      message.error(t('addProductError'));
+    }
+  };
   return (
     <>
       <TableLayout
@@ -155,6 +179,13 @@ const OtherProducts = () => {
         onCancel={() => setIsModalOpen(false)}
         onSubmit={handleSubmitModal}
         initialValues={editingData}
+      />
+      <AddOrderModal
+        open={isOrderModalOpen}
+        onCancel={() => setIsOrderModalOpen(false)}
+        onSubmit={handleAddProduct}
+        products={productsQuery.data?.body.data || []}
+        loading={productsQuery.isLoading}
       />
     </>
   );

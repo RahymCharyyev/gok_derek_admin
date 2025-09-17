@@ -187,5 +187,6 @@
   "productTransfered": "Haryt üstünlikli geçirildi",
   "transferProductError": "Haryt geçirilende ýalňyşlyk döredi",
   "selectShop": "Dükan saýlaň",
-  "transferProduct": "Harydy geçirmek"
+  "transferProduct": "Harydy geçirmek",
+  "addOrder": "Haryt sargamak"
 }

@@ -2,6 +2,7 @@ import {
   DeleteOutlined,
   SearchOutlined,
   EditOutlined,
+  TransactionOutlined,
 } from '@ant-design/icons';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -20,6 +21,7 @@ interface UseWoodTableColumnProps {
   sortOptions: string[];
   handleOpenEditModal: (record: any) => void;
   confirmDelete: (options: { id: string }) => void;
+  handleOpenAddModal?: (record: any) => void;
 }
 
 export const useWoodTableColumn = ({
@@ -34,6 +36,7 @@ export const useWoodTableColumn = ({
   sortOptions,
   handleOpenEditModal,
   confirmDelete,
+  handleOpenAddModal,
 }: UseWoodTableColumnProps): ColumnsType<any> => {
   return [
     {
@@ -239,6 +242,15 @@ export const useWoodTableColumn = ({
             icon={<DeleteOutlined />}
             onClick={() => confirmDelete({ id: record.key })}
           />
+
+          <Button
+            size='small'
+            type='primary'
+            icon={<TransactionOutlined />}
+            onClick={() => handleOpenAddModal?.(record)}
+          >
+            {t('addOrder')}
+          </Button>
         </div>
       ),
     },

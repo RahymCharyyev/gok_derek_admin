@@ -89,6 +89,13 @@ export const useProducts = (
     },
   });
 
+  const addOrder = useMutation({
+    mutationFn: (body: any) => tsr.shop.addOrder.mutate({ body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+
   return {
     query,
     searchParams,
@@ -100,6 +107,7 @@ export const useProducts = (
     createProductMutation,
     updateProductMutation,
     deleteProductMutation,
+    addOrder,
     handleTableChange,
     setFilter,
     clearFilter,

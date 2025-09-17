@@ -1,4 +1,5 @@
 import ErrorComponent from '@/components/ErrorComponent';
+import AddOrderModal from '@/components/Products/AddOrderModal';
 import FurnitureProductsModal from '@/components/Products/FurnitureModal';
 import { useFurnitureTableColumn } from '@/components/Products/hooks/useFurnitureTableColumn';
 import { useProducts } from '@/components/Products/hooks/useProducts';
@@ -21,6 +22,7 @@ const FurnitureProducts = () => {
     createProductMutation,
     updateProductMutation,
     deleteProductMutation,
+    addOrder,
     handleTableChange,
     setFilter,
     clearFilter,
@@ -29,6 +31,7 @@ const FurnitureProducts = () => {
   } = useProducts('furniture');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
@@ -50,6 +53,10 @@ const FurnitureProducts = () => {
       !query.sortDirection
     );
   }, [searchValues, query]);
+
+  const handleOpenAddModal = () => {
+    setIsOrderModalOpen(true);
+  };
 
   const columns = useFurnitureTableColumn({
     t,
@@ -85,6 +92,7 @@ const FurnitureProducts = () => {
         },
       });
     },
+    handleOpenAddModal,
   });
 
   if (productsQuery.isError) {
@@ -125,6 +133,23 @@ const FurnitureProducts = () => {
     }
   };
 
+  const handleAddProduct = async (values: any) => {
+    try {
+      const response = await addOrder.mutateAsync(values);
+      if (response.status == 200) {
+        message.success(t('productAdded'));
+      } else if (response.status == 404) {
+        const errorBody = response.body as { message: string };
+        message.error(errorBody.message);
+      } else {
+        message.error(t('addProductError'));
+      }
+      setIsOrderModalOpen(false);
+    } catch {
+      message.error(t('addProductError'));
+    }
+  };
+
   return (
     <>
       <TableLayout
@@ -156,6 +181,13 @@ const FurnitureProducts = () => {
         onCancel={() => setIsModalOpen(false)}
         onSubmit={handleSubmitModal}
         initialValues={editingData}
+      />
+      <AddOrderModal
+        open={isOrderModalOpen}
+        onCancel={() => setIsOrderModalOpen(false)}
+        onSubmit={handleAddProduct}
+        products={productsQuery.data?.body.data || []}
+        loading={productsQuery.isLoading}
       />
     </>
   );

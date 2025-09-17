@@ -20,7 +20,8 @@ interface UseWarehouseTableColumnProps {
   handleSearch: () => void;
   clearFilter: (key: string) => void;
   sortOptions: string[];
-  handleOpenTransferModal: (record: any) => void;
+  isShopProducts?: boolean;
+  handleOpenTransferModal?: (record: any) => void;
 }
 
 export const useWarehouseTableColumn = ({
@@ -33,6 +34,7 @@ export const useWarehouseTableColumn = ({
   handleSearch,
   clearFilter,
   sortOptions,
+  isShopProducts,
   handleOpenTransferModal,
 }: UseWarehouseTableColumnProps): ColumnsType<any> => {
   return [
@@ -247,21 +249,25 @@ export const useWarehouseTableColumn = ({
       filterIcon: () => <DownOutlined />,
       render: (record) => <div>{record}</div>,
     },
-    {
-      title: t('actions'),
-      key: 'actions',
-      render: (_, record) => (
-        <div className='flex items-center gap-2'>
-          <Button
-            size='small'
-            type='primary'
-            icon={<TransactionOutlined />}
-            onClick={() => handleOpenTransferModal(record)}
-          >
-            {t('productTransaction')}
-          </Button>
-        </div>
-      ),
-    },
+    ...(!isShopProducts
+      ? [
+          {
+            title: t('actions'),
+            key: 'actions',
+            render: (_: any, record: any) => (
+              <div className='flex items-center gap-2'>
+                <Button
+                  size='small'
+                  type='primary'
+                  icon={<TransactionOutlined />}
+                  onClick={() => handleOpenTransferModal?.(record)}
+                >
+                  {t('productTransaction')}
+                </Button>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 };

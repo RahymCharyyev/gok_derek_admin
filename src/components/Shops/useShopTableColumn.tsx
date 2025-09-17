@@ -4,6 +4,7 @@ import {
   EditOutlined,
   EyeOutlined,
   SearchOutlined,
+  TransactionOutlined,
 } from '@ant-design/icons';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -164,30 +165,39 @@ export const useShopTableColumn = ({
     {
       title: t('actions'),
       key: 'actions',
-      render: (_, record) => (
-        <div className='flex items-center gap-2'>
-          <Button
-            size='small'
-            type='primary'
-            icon={<EyeOutlined />}
-            onClick={() => navigate(`/shops/${record.key}/products`)}
-          />
-          <Button
-            size='small'
-            type='primary'
-            icon={<EditOutlined />}
-            onClick={() => handleOpenEditModal(record)}
-          />
-
-          <Button
-            size='small'
-            type='primary'
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => confirmDelete({ id: record.key })}
-          />
-        </div>
-      ),
+      render: (_, record) => {
+        console.log(record);
+        return (
+          <div className='flex items-center gap-2'>
+            <Button
+              size='small'
+              type='primary'
+              icon={<EyeOutlined />}
+              onClick={() => navigate(`/shops/${record.key}/products`)}
+            />
+            <Button
+              size='small'
+              type='primary'
+              icon={<EditOutlined />}
+              onClick={() => handleOpenEditModal(record)}
+            />
+            <Button
+              size='small'
+              type='primary'
+              danger
+              icon={<DeleteOutlined />}
+              onClick={() => confirmDelete({ id: record.key })}
+            />
+            <Button
+              size='small'
+              icon={<TransactionOutlined />}
+              onClick={() => navigate(`/products/${record.type}`)}
+            >
+              {t('addOrder')}
+            </Button>
+          </div>
+        );
+      },
     },
   ];
 };

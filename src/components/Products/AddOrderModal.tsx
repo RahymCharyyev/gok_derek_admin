@@ -1,6 +1,6 @@
-import type { ProductTransactionSchema } from '@/api/schema';
+import type { ProductSchema } from '@/api/schema';
 import { Form, InputNumber, Modal, Select } from 'antd';
-import { useEffect, type FC } from 'react';
+import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const { useForm } = Form;
@@ -9,8 +9,7 @@ interface AddOrderModalProps {
   open: boolean;
   onCancel: () => void;
   onSubmit: (values: any) => void;
-  initialValues?: any | null;
-  products: ProductTransactionSchema['Schema'][];
+  products: ProductSchema['Schema'][];
   loading: boolean;
 }
 
@@ -18,24 +17,11 @@ const AddOrderModal: FC<AddOrderModalProps> = ({
   open,
   onCancel,
   onSubmit,
-  initialValues,
   products,
   loading,
 }) => {
   const [form] = useForm();
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (initialValues) {
-      form.setFieldsValue({
-        ...initialValues,
-      });
-    } else {
-      form.resetFields();
-    }
-  }, [initialValues]);
-
-  console.log(products);
 
   return (
     <Modal
@@ -44,7 +30,7 @@ const AddOrderModal: FC<AddOrderModalProps> = ({
       onOk={() => form.submit()}
       okText={t('okText')}
       cancelText={t('cancelText')}
-      title={t('addProduct')}
+      title={t('addOrder')}
       width='100%'
       style={{ maxWidth: 500 }}
       styles={{ body: { padding: 16 } }}
@@ -56,11 +42,7 @@ const AddOrderModal: FC<AddOrderModalProps> = ({
         onFinish={onSubmit}
         className='max-h-[70vh] overflow-y-auto'
       >
-        <Form.Item
-          name='productId'
-          label={t('products')}
-          rules={[{ required: !initialValues, message: t('notEmptyField') }]}
-        >
+        <Form.Item name='productId' label={t('products')}>
           <Select
             showSearch
             allowClear
@@ -71,17 +53,13 @@ const AddOrderModal: FC<AddOrderModalProps> = ({
             optionLabelProp='label'
             options={products.map((e) => {
               return {
-                label: e.product?.name,
-                value: e.product?.id,
+                label: e?.name,
+                value: e?.id,
               };
             })}
           />
         </Form.Item>
-        <Form.Item
-          name='quantity'
-          label={t('productQuantity')}
-          rules={[{ required: !initialValues, message: t('notEmptyField') }]}
-        >
+        <Form.Item name='quantity' label={t('productQuantity')}>
           <InputNumber className='w-full' />
         </Form.Item>
       </Form>
