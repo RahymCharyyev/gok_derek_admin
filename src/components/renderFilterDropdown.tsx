@@ -43,9 +43,11 @@ export const renderFilterDropdown = (
         }}
       />
       <div className='flex justify-between'>
-        <Button size='small' type='primary' onClick={handleSearch}>
-          {t('search')}
-        </Button>
+        {showSearch && (
+          <Button size='small' type='primary' onClick={handleSearch}>
+            {t('search')}
+          </Button>
+        )}
         <Button size='small' danger onClick={() => clearFilter(key)}>
           {t('clearFilter')}
         </Button>

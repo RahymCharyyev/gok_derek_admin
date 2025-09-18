@@ -203,13 +203,13 @@ export const useWoodTableColumn = ({
       children: [
         {
           title: t('actual'),
-          dataIndex: 'price',
-          key: 'price',
+          // dataIndex: 'price',
+          // key: 'price',
         },
         {
           title: t('priceSelection'),
-          dataIndex: 'priceSelection',
-          key: 'priceSelection',
+          // dataIndex: 'priceSelection',
+          // key: 'priceSelection',
         },
       ],
     },

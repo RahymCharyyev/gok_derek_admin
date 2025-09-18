@@ -163,6 +163,28 @@ export const useShopTableColumn = ({
       render: (record) => <div>{record.phone}</div>,
     },
     {
+      title: t('creditLimit'),
+      dataIndex: 'creditLimit',
+      key: 'creditLimit',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'creditLimit',
+          t('creditLimit'),
+          searchValues,
+          setSearchValues,
+          sortOptions,
+          sortDirectionParam,
+          setSortBy,
+          setSortDirectionParam,
+          handleSearch,
+          clearFilter,
+          t,
+          'creditLimit',
+          false
+        ),
+      filterIcon: () => <DownOutlined />,
+    },
+    {
       title: t('actions'),
       key: 'actions',
       render: (_, record) => {

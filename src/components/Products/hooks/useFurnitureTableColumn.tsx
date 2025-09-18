@@ -97,7 +97,7 @@ export const useFurnitureTableColumn = ({
       render: (value) => <div>{t(value)}</div>,
     },
     {
-      title: t('selectedPrice'),
+      title: t('sellPrice'),
       dataIndex: 'priceSelection',
       key: 'priceSelection',
     },

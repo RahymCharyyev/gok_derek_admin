@@ -73,7 +73,7 @@ export const useOtherTableColumn = ({
       render: (value) => <div>{t(value)}</div>,
     },
     {
-      title: t('selectedPrice'),
+      title: t('sellPrice'),
       dataIndex: 'priceSelection',
       key: 'priceSelection',
     },

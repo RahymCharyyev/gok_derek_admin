@@ -268,7 +268,11 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
             <UserOutlined />
             <span className='text-sm md:text-base'>
               {userData?.firstName} {userData?.lastName} |{' '}
-              {userData?.roles.map((e: any) => e.role)}
+              {userData?.roles
+                .map(
+                  (e: any) => e.role.charAt(0).toUpperCase() + e.role.slice(1)
+                )
+                .join(', ')}
             </span>
           </div>
           <div className='flex gap-2 items-center'>

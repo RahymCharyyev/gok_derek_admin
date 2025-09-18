@@ -121,6 +121,7 @@ const Shops = () => {
       geoLocation: item.geoLocation || '',
       address: item.address || '',
       phone: item.user?.phone || '',
+      creditLimit: item.creditLimit || '',
     })) || [];
 
   const handleSubmitModal = async (values: any) => {

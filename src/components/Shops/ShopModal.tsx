@@ -10,7 +10,9 @@ interface ShopModalProps {
   onCancel: () => void;
   onSubmit: (values: UserEdit) => void;
   initialValues?: UserEdit | null;
-  users: Pick<UserSchema['Schema'], 'id' | 'firstName' | 'lastName'>[];
+  // users: Pick<UserSchema['Schema'], 'id' | 'firstName' | 'lastName'>[];
+  // TODO add type
+  users: any;
   loading: boolean;
   onSearchUser: (value: string) => void;
   onClearUser: () => void;
@@ -69,8 +71,10 @@ const ShopModal: FC<ShopModalProps> = ({
             onSearch={onSearchUser}
             loading={loading}
             notFoundContent={loading ? t('loading') : t('noResults')}
-            options={users.map((e) => ({
-              label: `${e.firstName} ${e.lastName}`,
+            options={users.map((e: any) => ({
+              label: `${e.firstName} ${e.lastName} | Roly: ${e.roles.map(
+                (e: any) => t(e.role)
+              )}`,
               value: e.id,
             }))}
             onClear={() => onClearUser()}
