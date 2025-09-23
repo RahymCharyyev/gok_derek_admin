@@ -1,5 +1,5 @@
 import ErrorComponent from '@/components/ErrorComponent';
-import Toolbar from '@/components/Products/Toolbar';
+import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import { useWarehouseTableColumn } from '@/components/Warehouse/hooks/useWarehouseTableColumn';
 import TableLayout from '@/layout/TableLayout';

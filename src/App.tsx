@@ -16,6 +16,9 @@ import WoodWorkshop from './pages/Workshops/Wood';
 import { darkTheme, lightTheme, sharedTheme } from '@/theme';
 import Cashier from './pages/Cashier';
 import ShopProducts from './pages/Shops/ShopProducts';
+import WoodOrder from './pages/Order/Wood';
+import FurnitureOrder from './pages/Order/Furniture';
+import OtherOrder from './pages/Order/Other';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -107,6 +110,30 @@ function App() {
             element={
               <LayoutComponent>
                 <ShopProducts />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/shops/order/wood'
+            element={
+              <LayoutComponent>
+                <WoodOrder />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/shops/order/furniture'
+            element={
+              <LayoutComponent>
+                <FurnitureOrder />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/shops/order/other'
+            element={
+              <LayoutComponent>
+                <OtherOrder />
               </LayoutComponent>
             }
           />

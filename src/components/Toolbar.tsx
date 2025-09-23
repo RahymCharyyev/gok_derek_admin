@@ -2,14 +2,14 @@ import { UndoOutlined } from '@ant-design/icons';
 import { Button, Grid } from 'antd';
 import type { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PrintButtons } from '../PrintButtons';
+import { PrintButtons } from './PrintButtons';
 
 const { useBreakpoint } = Grid;
 
 interface ToolbarProps {
-  icon: ReactNode;
-  title: string;
-  onCreate: () => void;
+  icon?: ReactNode;
+  title?: string;
+  onCreate?: () => void;
   onReset: () => void;
   resetDisabled: boolean;
   count: any;
@@ -53,7 +53,6 @@ const Toolbar: FC<ToolbarProps> = ({
           {!screens.xs ? t('resetAllFilters') : ''}
         </Button>
       </div>
-
       <div className='flex justify-between items-center'>
         <PrintButtons />
         <span className='font-medium text-xl mt-2 xs:mt-0'>

@@ -189,5 +189,8 @@
   "selectShop": "Dükan saýlaň",
   "transferProduct": "Harydy geçirmek",
   "addOrder": "Haryt sargamak",
-  "store": "Ammar"
+  "store": "Ammar",
+  "orderWoodProduct": "Agaç haryt sargamak",
+  "orderFurnitureProduct": "Mebel haryt sargamak",
+  "orderOtherProduct": "Beýleki haryt sargamak"
 }

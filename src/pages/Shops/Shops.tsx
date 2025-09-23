@@ -1,6 +1,6 @@
 import { type UserSchema } from '@/api/schema/user';
 import ErrorComponent from '@/components/ErrorComponent';
-import Toolbar from '@/components/Products/Toolbar';
+import Toolbar from '@/components/Toolbar';
 import { useShops } from '@/components/Shops/hooks/useShops';
 import ShopModal from '@/components/Shops/ShopModal';
 import { useShopTableColumn } from '@/components/Shops/useShopTableColumn';

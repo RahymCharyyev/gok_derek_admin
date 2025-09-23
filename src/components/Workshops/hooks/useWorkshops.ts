@@ -2,7 +2,6 @@ import { tsr } from '@/api';
 import type { ProductTransactionSchema } from '@/api/schema';
 import { usePagination } from '@/hooks/usePagination';
 import { getEnumParam } from '@/utils/getEnumParam';
-import { useSearchParams } from 'react-router-dom';
 
 export const useWorkshops = (workshopType: 'wood' | 'furniture') => {
   const {

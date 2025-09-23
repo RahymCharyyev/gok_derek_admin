@@ -1,16 +1,15 @@
 import ErrorComponent from '@/components/ErrorComponent';
+import AddOrderModal from '@/components/Order/AddOrderModal';
+import { useWoodOrderTableColumn } from '@/components/Order/hooks/useWoodOrderTableColumn';
 import { useProducts } from '@/components/Products/hooks/useProducts';
-import { useWoodTableColumn } from '@/components/Products/hooks/useWoodTableColumn';
+import SecondToolbar from '@/components/SecondToolbar';
 import Toolbar from '@/components/Toolbar';
-import WoodModal from '@/components/Products/WoodModal';
-import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
-import { ProductFilled } from '@ant-design/icons';
 import { message } from 'antd';
 import { useCallback, useMemo, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const WoodProducts: FC = () => {
+const WoodOrder: FC = () => {
   const { t } = useTranslation();
 
   const {
@@ -19,9 +18,7 @@ const WoodProducts: FC = () => {
     perPage,
     productsQuery,
     woodTypesQuery,
-    createProductMutation,
-    updateProductMutation,
-    deleteProductMutation,
+    addOrder,
     handleTableChange,
     setFilter,
     clearFilter,
@@ -29,8 +26,8 @@ const WoodProducts: FC = () => {
     searchParams,
   } = useProducts('wood');
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingData, setEditingData] = useState<any | null>(null);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
     woodType: '',
@@ -40,8 +37,6 @@ const WoodProducts: FC = () => {
     woodQuality: '',
     woodUnits: '',
   });
-
-  const confirmDelete = useDeleteConfirm();
 
   const handleSearch = useCallback(() => {
     Object.entries(searchValues).forEach(([key, value]) => {
@@ -57,7 +52,12 @@ const WoodProducts: FC = () => {
     );
   }, [searchValues, query]);
 
-  const columns = useWoodTableColumn({
+  const handleOpenAddModal = (record: any) => {
+    setSelectedProductId(record.key);
+    setIsOrderModalOpen(true);
+  };
+
+  const columns = useWoodOrderTableColumn({
     t,
     searchValues,
     setSearchValues,
@@ -71,26 +71,7 @@ const WoodProducts: FC = () => {
       clearFilter(key);
     },
     sortOptions: ['asc', 'desc'],
-    handleOpenEditModal: (record) => {
-      setEditingData(record);
-      setIsModalOpen(true);
-    },
-    confirmDelete: ({ id }) => {
-      confirmDelete({
-        onConfirm: () => {
-          deleteProductMutation.mutate(
-            { id },
-            {
-              onSuccess: () => {
-                message.success(t('productDeleted'));
-                productsQuery.refetch();
-              },
-              onError: () => message.error(t('productDeleteError')),
-            }
-          );
-        },
-      });
-    },
+    handleOpenAddModal,
   });
 
   if (productsQuery.isError || woodTypesQuery.isError) {
@@ -119,22 +100,20 @@ const WoodProducts: FC = () => {
       profit: item.profit,
     })) || [];
 
-  const handleSubmitModal = async (values: any) => {
+  const handleAddProduct = async (values: any) => {
     try {
-      if (editingData) {
-        await updateProductMutation.mutateAsync({
-          id: editingData.key,
-          body: values,
-        });
-        message.success(t('productUpdated'));
+      const response = await addOrder.mutateAsync(values);
+      if (response.status == 200) {
+        message.success(t('productAdded'));
+      } else if (response.status == 404) {
+        const errorBody = response.body as { message: string };
+        message.error(errorBody.message);
       } else {
-        await createProductMutation.mutateAsync(values);
-        message.success(t('productCreated'));
+        message.error(t('addProductError'));
       }
-      setIsModalOpen(false);
-      setEditingData(null);
-    } catch (error) {
-      message.error(t('productCreateOrUpdateError'));
+      setIsOrderModalOpen(false);
+    } catch {
+      message.error(t('addProductError'));
     }
   };
 
@@ -142,13 +121,8 @@ const WoodProducts: FC = () => {
     <>
       <TableLayout
         title={() => (
-          <Toolbar
-            title={t('createProduct')}
-            icon={<ProductFilled />}
-            onCreate={() => {
-              setEditingData(null);
-              setIsModalOpen(true);
-            }}
+          <SecondToolbar
+            title={t('orderWoodProduct')}
             onReset={resetFilters}
             resetDisabled={resetDisabled}
             count={productsQuery.data?.body.count}
@@ -164,17 +138,14 @@ const WoodProducts: FC = () => {
           onChange: handleTableChange,
         }}
       />
-      {woodTypesQuery.data && (
-        <WoodModal
-          open={isModalOpen}
-          onCancel={() => setIsModalOpen(false)}
-          initialValues={editingData}
-          woodTypes={woodTypesQuery.data.body.data}
-          onSubmit={handleSubmitModal}
-        />
-      )}
+      <AddOrderModal
+        open={isOrderModalOpen}
+        productId={selectedProductId}
+        onCancel={() => setIsOrderModalOpen(false)}
+        onSubmit={handleAddProduct}
+      />
     </>
   );
 };
 
-export default WoodProducts;
+export default WoodOrder;

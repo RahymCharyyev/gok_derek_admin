@@ -1,5 +1,5 @@
 import ErrorComponent from '@/components/ErrorComponent';
-import Toolbar from '@/components/Products/Toolbar';
+import Toolbar from '@/components/Toolbar';
 import { useUsers } from '@/components/Users/hooks/useUsers';
 import { useUsersTableColumn } from '@/components/Users/hooks/useUsersTableColumn';
 import UserModal from '@/components/Users/UserModal';

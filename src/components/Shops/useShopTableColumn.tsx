@@ -6,7 +6,7 @@ import {
   SearchOutlined,
   TransactionOutlined,
 } from '@ant-design/icons';
-import { Button } from 'antd';
+import { Button, Dropdown, type MenuProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { renderFilterDropdown } from '../renderFilterDropdown';
 import { useNavigate, useNavigation } from 'react-router-dom';
@@ -40,6 +40,26 @@ export const useShopTableColumn = ({
   confirmDelete,
 }: UseShopTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
+
+  const getMenuItems = (): MenuProps['items'] => {
+    return [
+      {
+        key: 'furniture',
+        label: t('furnitureProducts'),
+        onClick: () => navigate(`/shops/order/furniture`),
+      },
+      {
+        key: 'wood',
+        label: t('woodProducts'),
+        onClick: () => navigate(`/shops/order/wood`),
+      },
+      {
+        key: 'other',
+        label: t('otherProducts'),
+        onClick: () => navigate(`/shops/order/other`),
+      },
+    ];
+  };
 
   return [
     {
@@ -210,13 +230,16 @@ export const useShopTableColumn = ({
               icon={<DeleteOutlined />}
               onClick={() => confirmDelete({ id: record.key })}
             />
-            <Button
-              size='small'
-              icon={<TransactionOutlined />}
-              onClick={() => navigate(`/products/${record.type}`)}
-            >
-              {t('addOrder')}
-            </Button>
+
+            <Dropdown menu={{ items: getMenuItems() }} trigger={['click']}>
+              <Button
+                size='small'
+                type='primary'
+                icon={<TransactionOutlined />}
+              >
+                {t('addOrder')}
+              </Button>
+            </Dropdown>
           </div>
         );
       },

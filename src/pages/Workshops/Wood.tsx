@@ -1,5 +1,5 @@
 import ErrorComponent from '@/components/ErrorComponent';
-import Toolbar from '@/components/Products/Toolbar';
+import Toolbar from '@/components/Toolbar';
 import { useWorkshops } from '@/components/Workshops/hooks/useWorkshops';
 import { useWorkshopTableColumn } from '@/components/Workshops/hooks/useWorkshopTableColumn';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';

@@ -8,7 +8,7 @@ import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { renderFilterDropdown } from '../../renderFilterDropdown';
 
-interface UseWoodTableColumnProps {
+interface UseWoodOrderTableColumnProps {
   t: (key: string) => string;
   searchValues: { [key: string]: string };
   setSearchValues: (values: { [key: string]: string }) => void;
@@ -19,11 +19,10 @@ interface UseWoodTableColumnProps {
   handleSearch: () => void;
   clearFilter: (key: string) => void;
   sortOptions: string[];
-  handleOpenEditModal: (record: any) => void;
-  confirmDelete: (options: { id: string }) => void;
+  handleOpenAddModal?: (record: any) => void;
 }
 
-export const useWoodTableColumn = ({
+export const useWoodOrderTableColumn = ({
   t,
   searchValues,
   setSearchValues,
@@ -33,9 +32,8 @@ export const useWoodTableColumn = ({
   handleSearch,
   clearFilter,
   sortOptions,
-  handleOpenEditModal,
-  confirmDelete,
-}: UseWoodTableColumnProps): ColumnsType<any> => {
+  handleOpenAddModal,
+}: UseWoodOrderTableColumnProps): ColumnsType<any> => {
   return [
     {
       title: '№',
@@ -230,16 +228,11 @@ export const useWoodTableColumn = ({
           <Button
             size='small'
             type='primary'
-            icon={<EditOutlined />}
-            onClick={() => handleOpenEditModal(record)}
-          />
-          <Button
-            size='small'
-            type='primary'
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => confirmDelete({ id: record.key })}
-          />
+            icon={<TransactionOutlined />}
+            onClick={() => handleOpenAddModal?.(record)}
+          >
+            {t('addOrder')}
+          </Button>
         </div>
       ),
     },

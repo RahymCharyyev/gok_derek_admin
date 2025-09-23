@@ -1,6 +1,6 @@
 import ErrorComponent from '@/components/ErrorComponent';
 import { useProducts } from '@/components/Products/hooks/useProducts';
-import Toolbar from '@/components/Products/Toolbar';
+import Toolbar from '@/components/Toolbar';
 import { useShops } from '@/components/Shops/hooks/useShops';
 import AddTransferProductModal from '@/components/Warehouse/AddTransferProductModal';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';

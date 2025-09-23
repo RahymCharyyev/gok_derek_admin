@@ -1,14 +1,14 @@
 import {
   DeleteOutlined,
-  EditOutlined,
   SearchOutlined,
+  EditOutlined,
   TransactionOutlined,
 } from '@ant-design/icons';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { renderFilterDropdown } from '../../renderFilterDropdown';
 
-interface UseFurnitureTableColumnProps {
+interface UseOtherOrderTableColumnProps {
   t: (key: string) => string;
   searchValues: { [key: string]: string };
   setSearchValues: (values: { [key: string]: string }) => void;
@@ -19,11 +19,10 @@ interface UseFurnitureTableColumnProps {
   handleSearch: () => void;
   clearFilter: (key: string) => void;
   sortOptions: string[];
-  handleOpenEditModal: (record: any) => void;
-  confirmDelete: (options: { id: string }) => void;
+  handleOpenAddModal?: (record: any) => void;
 }
 
-export const useFurnitureTableColumn = ({
+export const useOtherOrderTableColumn = ({
   t,
   searchValues,
   setSearchValues,
@@ -33,39 +32,14 @@ export const useFurnitureTableColumn = ({
   handleSearch,
   clearFilter,
   sortOptions,
-  handleOpenEditModal,
-  confirmDelete,
-}: UseFurnitureTableColumnProps): ColumnsType<any> => {
+  handleOpenAddModal,
+}: UseOtherOrderTableColumnProps): ColumnsType<any> => {
   return [
     {
       title: '№',
       dataIndex: 'index',
       key: 'index',
       fixed: 'left',
-    },
-    {
-      title: t('productCode'),
-      dataIndex: 'furniture',
-      key: 'furniture',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'furniture',
-          t('productCode'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'code'
-        ),
-      filterIcon: () => <SearchOutlined />,
-      render: (record) => {
-        return <div>{record?.code}</div>;
-      },
     },
     {
       title: t('name'),
@@ -100,6 +74,15 @@ export const useFurnitureTableColumn = ({
       key: 'priceSelection',
     },
     {
+      title: t('woodUnit'),
+      dataIndex: 'units',
+      key: 'units',
+      render: (value) => {
+        if (!Array.isArray(value)) return null;
+        return value.map((e) => t(e.unit)).join(' / ');
+      },
+    },
+    {
       title: t('benefit'),
       dataIndex: 'benefit',
       key: 'benefit',
@@ -112,16 +95,11 @@ export const useFurnitureTableColumn = ({
           <Button
             size='small'
             type='primary'
-            icon={<EditOutlined />}
-            onClick={() => handleOpenEditModal(record)}
-          />
-          <Button
-            size='small'
-            type='primary'
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => confirmDelete({ id: record.key })}
-          />
+            icon={<TransactionOutlined />}
+            onClick={() => handleOpenAddModal?.(record)}
+          >
+            {t('addOrder')}
+          </Button>
         </div>
       ),
     },

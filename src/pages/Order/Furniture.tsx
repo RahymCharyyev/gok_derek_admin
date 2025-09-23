@@ -1,16 +1,15 @@
 import ErrorComponent from '@/components/ErrorComponent';
-import FurnitureProductsModal from '@/components/Products/FurnitureModal';
-import { useFurnitureTableColumn } from '@/components/Products/hooks/useFurnitureTableColumn';
+import AddOrderModal from '@/components/Order/AddOrderModal';
+import { useFurnitureOtherTableColumn } from '@/components/Order/hooks/useFurnitureOtherTableColumn';
 import { useProducts } from '@/components/Products/hooks/useProducts';
+import SecondToolbar from '@/components/SecondToolbar';
 import Toolbar from '@/components/Toolbar';
-import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
-import { ProductFilled } from '@ant-design/icons';
 import { message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const FurnitureProducts = () => {
+const FurnitureOrder = () => {
   const { t } = useTranslation();
 
   const {
@@ -18,9 +17,7 @@ const FurnitureProducts = () => {
     page,
     perPage,
     productsQuery,
-    createProductMutation,
-    updateProductMutation,
-    deleteProductMutation,
+    addOrder,
     handleTableChange,
     setFilter,
     clearFilter,
@@ -28,14 +25,12 @@ const FurnitureProducts = () => {
     searchParams,
   } = useProducts('furniture');
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingData, setEditingData] = useState<any | null>(null);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
     code: '',
   });
-
-  const confirmDelete = useDeleteConfirm();
 
   const handleSearch = useCallback(() => {
     Object.entries(searchValues).forEach(([key, value]) => {
@@ -51,7 +46,12 @@ const FurnitureProducts = () => {
     );
   }, [searchValues, query]);
 
-  const columns = useFurnitureTableColumn({
+  const handleOpenAddModal = (record: any) => {
+    setSelectedProductId(record.key);
+    setIsOrderModalOpen(true);
+  };
+
+  const columns = useFurnitureOtherTableColumn({
     t,
     searchValues,
     setSearchValues,
@@ -65,26 +65,7 @@ const FurnitureProducts = () => {
       clearFilter(key);
     },
     sortOptions: ['asc', 'desc'],
-    handleOpenEditModal: (record) => {
-      setEditingData(record);
-      setIsModalOpen(true);
-    },
-    confirmDelete: ({ id }) => {
-      confirmDelete({
-        onConfirm: () => {
-          deleteProductMutation.mutate(
-            { id },
-            {
-              onSuccess: () => {
-                message.success(t('productDeleted'));
-                productsQuery.refetch();
-              },
-              onError: () => message.error(t('productDeleteError')),
-            }
-          );
-        },
-      });
-    },
+    handleOpenAddModal,
   });
 
   if (productsQuery.isError) {
@@ -106,22 +87,20 @@ const FurnitureProducts = () => {
       type: item.type || '',
     })) || [];
 
-  const handleSubmitModal = async (values: any) => {
+  const handleAddProduct = async (values: any) => {
     try {
-      if (editingData) {
-        await updateProductMutation.mutateAsync({
-          id: editingData.key,
-          body: values,
-        });
-        message.success(t('productUpdated'));
+      const response = await addOrder.mutateAsync(values);
+      if (response.status == 200) {
+        message.success(t('productAdded'));
+      } else if (response.status == 404) {
+        const errorBody = response.body as { message: string };
+        message.error(errorBody.message);
       } else {
-        await createProductMutation.mutateAsync(values);
-        message.success(t('productCreated'));
+        message.error(t('addProductError'));
       }
-      setIsModalOpen(false);
-      setEditingData(null);
-    } catch (error) {
-      message.error(t('productCreateOrUpdateError'));
+      setIsOrderModalOpen(false);
+    } catch {
+      message.error(t('addProductError'));
     }
   };
 
@@ -129,13 +108,8 @@ const FurnitureProducts = () => {
     <>
       <TableLayout
         title={() => (
-          <Toolbar
-            title={t('createProduct')}
-            icon={<ProductFilled />}
-            onCreate={() => {
-              setEditingData(null);
-              setIsModalOpen(true);
-            }}
+          <SecondToolbar
+            title={t('orderFurnitureProduct')}
             onReset={resetFilters}
             resetDisabled={resetDisabled}
             count={productsQuery.data?.body.count}
@@ -151,14 +125,14 @@ const FurnitureProducts = () => {
           onChange: handleTableChange,
         }}
       />
-      <FurnitureProductsModal
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        onSubmit={handleSubmitModal}
-        initialValues={editingData}
+      <AddOrderModal
+        open={isOrderModalOpen}
+        productId={selectedProductId}
+        onCancel={() => setIsOrderModalOpen(false)}
+        onSubmit={handleAddProduct}
       />
     </>
   );
 };
 
-export default FurnitureProducts;
+export default FurnitureOrder;

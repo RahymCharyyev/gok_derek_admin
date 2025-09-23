@@ -1,5 +1,4 @@
-import type { ProductSchema } from '@/api/schema';
-import { Form, InputNumber, Modal, Select } from 'antd';
+import { Form, Input, InputNumber, Modal } from 'antd';
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,16 +8,14 @@ interface AddOrderModalProps {
   open: boolean;
   onCancel: () => void;
   onSubmit: (values: any) => void;
-  products: ProductSchema['Schema'][];
-  loading: boolean;
+  productId: string;
 }
 
 const AddOrderModal: FC<AddOrderModalProps> = ({
   open,
   onCancel,
   onSubmit,
-  products,
-  loading,
+  productId,
 }) => {
   const [form] = useForm();
   const { t } = useTranslation();
@@ -39,26 +36,9 @@ const AddOrderModal: FC<AddOrderModalProps> = ({
       <Form
         form={form}
         layout='vertical'
-        onFinish={onSubmit}
+        onFinish={(values) => onSubmit({ ...values, productId })}
         className='max-h-[70vh] overflow-y-auto'
       >
-        <Form.Item name='productId' label={t('products')}>
-          <Select
-            showSearch
-            allowClear
-            placeholder={t('selectProduct')}
-            filterOption={false}
-            loading={loading}
-            notFoundContent={loading ? t('loading') : t('noResults')}
-            optionLabelProp='label'
-            options={products.map((e) => {
-              return {
-                label: e?.name,
-                value: e?.id,
-              };
-            })}
-          />
-        </Form.Item>
         <Form.Item name='quantity' label={t('productQuantity')}>
           <InputNumber className='w-full' />
         </Form.Item>

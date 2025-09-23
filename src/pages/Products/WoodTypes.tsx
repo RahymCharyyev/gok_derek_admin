@@ -1,5 +1,5 @@
 import ErrorComponent from '@/components/ErrorComponent';
-import Toolbar from '@/components/Products/Toolbar';
+import Toolbar from '@/components/Toolbar';
 import WoodTypeModal from '@/components/WoodTypes/WoodTypeModal';
 import { useWoodTypes } from '@/components/WoodTypes/hooks/useWoodTypes';
 import { useWoodTypesTableColumn } from '@/components/WoodTypes/hooks/useWoodTypesTableColumn';
