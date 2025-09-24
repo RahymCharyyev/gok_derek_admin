@@ -1,4 +1,4 @@
-import { Form, Input, InputNumber, Modal } from 'antd';
+import { Form, InputNumber, Modal } from 'antd';
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 

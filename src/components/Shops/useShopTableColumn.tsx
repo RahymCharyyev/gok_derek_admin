@@ -41,24 +41,38 @@ export const useShopTableColumn = ({
 }: UseShopTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
 
-  const getMenuItems = (): MenuProps['items'] => {
-    return [
-      {
-        key: 'furniture',
-        label: t('furnitureProducts'),
-        onClick: () => navigate(`/shops/order/furniture`),
-      },
-      {
-        key: 'wood',
-        label: t('woodProducts'),
-        onClick: () => navigate(`/shops/order/wood`),
-      },
-      {
-        key: 'other',
-        label: t('otherProducts'),
-        onClick: () => navigate(`/shops/order/other`),
-      },
-    ];
+  const getMenuItems = (record: any): MenuProps['items'] => {
+    switch (record.type) {
+      case 'furniture':
+        return [
+          {
+            key: 'furniture',
+            label: t('furnitureProducts'),
+            onClick: () => navigate(`/shops/order/furniture`),
+          },
+        ];
+      case 'wood':
+        return [
+          {
+            key: 'wood',
+            label: t('woodProducts'),
+            onClick: () => navigate(`/shops/order/wood`),
+          },
+          {
+            key: 'other',
+            label: t('otherProducts'),
+            onClick: () => navigate(`/shops/order/other`),
+          },
+        ];
+      default:
+        return [
+          {
+            key: 'other',
+            label: t('otherOrder'),
+            onClick: () => navigate(`/shops/other/order?shop=${record.key}`),
+          },
+        ];
+    }
   };
 
   return [
@@ -231,7 +245,10 @@ export const useShopTableColumn = ({
               onClick={() => confirmDelete({ id: record.key })}
             />
 
-            <Dropdown menu={{ items: getMenuItems() }} trigger={['click']}>
+            <Dropdown
+              menu={{ items: getMenuItems(record) }}
+              trigger={['click']}
+            >
               <Button
                 size='small'
                 type='primary'

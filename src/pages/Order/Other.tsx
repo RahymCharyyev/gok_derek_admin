@@ -91,7 +91,7 @@ const OtherOrder = () => {
   const handleAddProduct = async (values: any) => {
     try {
       const response = await addOrder.mutateAsync(values);
-      if (response.status == 200) {
+      if (response.status == 200 || response.status == 201) {
         message.success(t('productAdded'));
       } else if (response.status == 404) {
         const errorBody = response.body as { message: string };
