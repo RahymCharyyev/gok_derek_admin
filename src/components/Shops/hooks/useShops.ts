@@ -69,6 +69,13 @@ export const useShops = () => {
     },
   });
 
+  const transferProductMutation = useMutation({
+    mutationFn: (body: any) => tsr.shop.transferProduct.mutate({ body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shops'] });
+    },
+  });
+
   return {
     query,
     searchParams,
@@ -79,6 +86,7 @@ export const useShops = () => {
     createShopMutation,
     updateShopMutation,
     deleteShopMutation,
+    transferProductMutation,
     handleTableChange,
     setFilter,
     clearFilter,

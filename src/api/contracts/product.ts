@@ -1,7 +1,7 @@
-import { initContract } from '@ts-rest/core';
-import { z } from 'zod';
-import { productSchema } from '../schema';
-import { paramsId } from '../schema/common';
+import {initContract} from '@ts-rest/core';
+import {z} from 'zod';
+import {productSchema} from '../schema';
+import {paramsId} from '../schema/common';
 
 const c = initContract();
 
@@ -50,5 +50,5 @@ export const productContract = c.router(
       },
     },
   },
-  { pathPrefix: '/api/products' }
+  {pathPrefix: '/api/products'},
 );

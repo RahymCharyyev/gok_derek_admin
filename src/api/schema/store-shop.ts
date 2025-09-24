@@ -31,6 +31,11 @@ const create = schema.pick({userId: true, address: true, geoLocation: true, cred
 const edit = create.partial();
 
 const addOrder = z.object({productId: z.string().uuid(), quantity: z.coerce.number().int().nullish()});
+const transferProduct = z.object({
+  productId: z.string().uuid(),
+  toStoreId: z.string().uuid(),
+  quantity: z.number().int(),
+});
 
 type Schema = z.infer<typeof schema>;
 type GetAll = z.infer<typeof getAll>;
@@ -39,6 +44,7 @@ type Edit = z.infer<typeof edit>;
 type SortKeys = z.infer<typeof sortKeys>;
 type Sortable = z.infer<typeof sortable>;
 type AddOrder = z.infer<typeof addOrder>;
+type TransferProduct = z.infer<typeof transferProduct>;
 
 export const storeShopSchema = {
   schema,
@@ -50,6 +56,7 @@ export const storeShopSchema = {
   sortKeys,
   sortable,
   addOrder,
+  transferProduct,
 };
 
 export type StoreShopSchema = {
@@ -60,4 +67,5 @@ export type StoreShopSchema = {
   SortKeys: SortKeys;
   Sortable: Sortable;
   AddOrder: AddOrder;
+  TransferProduct: TransferProduct;
 };

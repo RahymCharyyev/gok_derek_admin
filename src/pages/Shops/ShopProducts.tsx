@@ -1,12 +1,15 @@
 import ErrorComponent from '@/components/ErrorComponent';
+import { useShops } from '@/components/Shops/hooks/useShops';
 import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import { useWarehouseTableColumn } from '@/components/Warehouse/hooks/useWarehouseTableColumn';
 import TableLayout from '@/layout/TableLayout';
 import { BankOutlined } from '@ant-design/icons';
+import { message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+import TransferShopProductModal from '../../components/Shops/TransferShopProductModal';
 
 const ShopProducts = () => {
   const { t } = useTranslation();
@@ -23,10 +26,12 @@ const ShopProducts = () => {
     searchParams,
   } = useWarehouse(id);
 
-  // const { addOrder } = useShops();
+  const { shopsQuery, transferProductMutation } = useShops();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchProductValue, setSearchProductValue] = useState('');
   const [editingData, setEditingData] = useState<any | null>(null);
+  const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
     userId: '',
@@ -50,9 +55,10 @@ const ShopProducts = () => {
     );
   }, [searchValues, query]);
 
-  const handleOpenAddModal = () => {
+  const handleOpenAddModal = (record: any) => {
     setEditingData(null);
     setIsModalOpen(true);
+    setSelectedProductId(record.productId);
   };
 
   const columns = useWarehouseTableColumn({
@@ -69,7 +75,6 @@ const ShopProducts = () => {
       clearFilter(key);
     },
     sortOptions: ['asc', 'desc'],
-    isShopProducts: true,
     handleOpenTransferModal: handleOpenAddModal,
   });
 
@@ -84,6 +89,7 @@ const ShopProducts = () => {
       key: item.id,
       index: (page - 1) * perPage + (index + 1),
       id: item.id,
+      productId: item.productId,
       productName: item.product?.name || '',
       productThickness: item.product?.wood?.thickness || '',
       productWidth: item.product?.wood?.width || '',
@@ -95,23 +101,23 @@ const ShopProducts = () => {
       quantity: item.quantity || '',
     })) || [];
 
-  // const handleAddProduct = async (values: any) => {
-  //   try {
-  //     const response = await addOrder.mutateAsync(values);
-  //     if (response.status == 200) {
-  //       message.success(t('productAdded'));
-  //     } else if (response.status == 404) {
-  //       const errorBody = response.body as { message: string };
-  //       message.error(errorBody.message);
-  //     } else {
-  //       message.error(t('addProductError'));
-  //     }
-  //     setIsModalOpen(false);
-  //     setEditingData(null);
-  //   } catch {
-  //     message.error(t('addProductError'));
-  //   }
-  // };
+  const handleTansferProduct = async (values: any) => {
+    try {
+      const response = await transferProductMutation.mutateAsync(values);
+      if (response.status == 200 || response.status == 201) {
+        message.success(t('productTransfered'));
+      } else if (response.status == 404) {
+        const errorBody = response.body as { message: string };
+        message.error(errorBody.message);
+      } else {
+        message.error(t('transferProductError'));
+      }
+      setIsModalOpen(false);
+      setEditingData(null);
+    } catch {
+      message.error(t('transferProductError'));
+    }
+  };
 
   return (
     <>
@@ -139,14 +145,16 @@ const ShopProducts = () => {
           onChange: handleTableChange,
         }}
       />
-      {/* <AddOrderModal
+      <TransferShopProductModal
         open={isModalOpen}
+        productId={selectedProductId}
         onCancel={() => setIsModalOpen(false)}
-        onSubmit={handleAddProduct}
-        initialValues={editingData}
-        products={warehouseQuery.data?.body.data || []}
-        loading={warehouseQuery.isLoading}
-      /> */}
+        onSubmit={handleTansferProduct}
+        shops={shopsQuery.data?.body.data || []}
+        loading={shopsQuery.isLoading}
+        onSearchProduct={(value) => setSearchProductValue(value)}
+        onClearProduct={() => clearFilter('name')}
+      />
     </>
   );
 };

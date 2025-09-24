@@ -1,6 +1,6 @@
-import { initContract } from '@ts-rest/core';
-import { z } from 'zod';
-import { userRole } from '../schema/user-role';
+import {initContract} from '@ts-rest/core';
+import {z} from 'zod';
+import {userRole} from '../schema/user-role';
 
 const c = initContract();
 
@@ -25,5 +25,5 @@ export const userRoleContract = c.router(
       },
     },
   },
-  { pathPrefix: '/api/user-roles' }
+  {pathPrefix: '/api/user-roles'},
 );

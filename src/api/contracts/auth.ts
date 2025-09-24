@@ -1,6 +1,6 @@
-import { initContract } from '@ts-rest/core';
-import { login, loginRes, meRes } from '../schema/auth';
-import { z } from 'zod';
+import {initContract} from '@ts-rest/core';
+import {login, loginRes, meRes} from '../schema/auth';
+import {z} from 'zod';
 
 const c = initContract();
 
@@ -29,5 +29,5 @@ export const authContract = c.router(
       },
     },
   },
-  { pathPrefix: '/api/auth' }
+  {pathPrefix: '/api/auth'},
 );

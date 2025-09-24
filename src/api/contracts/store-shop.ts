@@ -1,6 +1,6 @@
-import { initContract } from '@ts-rest/core';
-import { z } from 'zod';
-import { storeShopSchema as schema, common } from '../schema';
+import {initContract} from '@ts-rest/core';
+import {z} from 'zod';
+import {storeShopSchema as schema, common} from '../schema';
 
 const c = initContract();
 
@@ -27,6 +27,14 @@ export const storeShopContract = c.router(
       method: 'POST',
       path: '/order',
       body: schema.addOrder,
+      responses: {
+        201: common.result,
+      },
+    },
+    transferProduct: {
+      method: 'POST',
+      path: '/product-transfer',
+      body: schema.transferProduct,
       responses: {
         201: common.result,
       },
@@ -59,5 +67,5 @@ export const storeShopContract = c.router(
       },
     },
   },
-  { pathPrefix: '/api/store-shops' }
+  {pathPrefix: '/api/store-shops'},
 );
