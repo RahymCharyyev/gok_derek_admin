@@ -192,5 +192,15 @@
   "store": "Ammar",
   "orderWoodProduct": "Agaç haryt sargamak",
   "orderFurnitureProduct": "Mebel haryt sargamak",
-  "orderOtherProduct": "Beýleki haryt sargamak"
+  "orderOtherProduct": "Beýleki haryt sargamak",
+  "addIncome": "Gaýry girdeji goşmak",
+  "addExpense": "Gaýry çykdajy goşmak",
+  "amount": "Mukdary",
+  "note": "Bellik",
+  "incomeAdded": "Girdeji üstünlikli goşuldy",
+  "expenseAdded": "Çykdajy üstünlikli goşuldy",
+  "incomeOrExpenseAddError": "Girdeji ýa-da çykdajy goşulanda ýalňyşlyk döredi",
+  "saleProduct": "Haryt satmak",
+  "productSold": "Haryt üstünlikli satyldy",
+  "saleProductError": "Haryt satylanda ýalňyşlyk döredi"
 }

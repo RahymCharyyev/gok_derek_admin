@@ -19,9 +19,14 @@ export const sortDirection = z.enum(['asc', 'desc']);
 
 export const paramsId = z.object({id: z.string().uuid()});
 
+const boolStr = z
+  .union([z.enum(['true', 'false']), z.coerce.boolean()])
+  .transform(v => (v === 'true' || v === true ? true : false));
+
 export const common = {
   result,
   paramsId,
   sortDirection,
   query: commonQuery,
+  boolStr,
 };

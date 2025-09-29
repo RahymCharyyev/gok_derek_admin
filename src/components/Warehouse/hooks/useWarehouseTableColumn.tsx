@@ -1,9 +1,8 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
 import {
-  DeleteOutlined,
   DownOutlined,
-  EditOutlined,
   SearchOutlined,
+  ShoppingCartOutlined,
   TransactionOutlined,
 } from '@ant-design/icons';
 import { Button } from 'antd';
@@ -22,6 +21,7 @@ interface UseWarehouseTableColumnProps {
   sortOptions: string[];
   isShopProducts?: boolean;
   handleOpenTransferModal?: (record: any) => void;
+  handleOpenSaleModal?: (record: any) => void;
 }
 
 export const useWarehouseTableColumn = ({
@@ -36,6 +36,7 @@ export const useWarehouseTableColumn = ({
   sortOptions,
   isShopProducts,
   handleOpenTransferModal,
+  handleOpenSaleModal,
 }: UseWarehouseTableColumnProps): ColumnsType<any> => {
   return [
     {
@@ -263,6 +264,14 @@ export const useWarehouseTableColumn = ({
                   onClick={() => handleOpenTransferModal?.(record)}
                 >
                   {t('productTransaction')}
+                </Button>
+                <Button
+                  size='small'
+                  type='primary'
+                  icon={<ShoppingCartOutlined />}
+                  onClick={() => handleOpenSaleModal?.(record)}
+                >
+                  {t('saleProduct')}
                 </Button>
               </div>
             ),

@@ -17,6 +17,10 @@ interface ToolbarProps {
   secondTitle?: string;
   secondIcon?: ReactNode;
   secondCreate?: () => void;
+  hasThirdButton?: boolean;
+  thirdTitle?: string;
+  thirdIcon?: ReactNode;
+  thirdCreate?: () => void;
 }
 
 const Toolbar: FC<ToolbarProps> = ({
@@ -30,6 +34,10 @@ const Toolbar: FC<ToolbarProps> = ({
   secondTitle,
   secondIcon,
   secondCreate,
+  hasThirdButton,
+  thirdTitle,
+  thirdIcon,
+  thirdCreate,
 }) => {
   const { t } = useTranslation();
   const screens = useBreakpoint();
@@ -42,6 +50,11 @@ const Toolbar: FC<ToolbarProps> = ({
         {hasSecondButton && (
           <Button icon={secondIcon} onClick={secondCreate}>
             {secondTitle}
+          </Button>
+        )}
+        {hasThirdButton && (
+          <Button icon={thirdIcon} onClick={thirdCreate}>
+            {thirdTitle}
           </Button>
         )}
         <Button

@@ -76,6 +76,27 @@ export const useShops = () => {
     },
   });
 
+  const addExpenseMutation = useMutation({
+    mutationFn: (body: any) => tsr.shop.addExpense.mutate({ body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shops'] });
+    },
+  });
+
+  const addIncomeMutation = useMutation({
+    mutationFn: (body: any) => tsr.shop.addIncome.mutate({ body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shops'] });
+    },
+  });
+
+  const saleMutation = useMutation({
+    mutationFn: (body: any) => tsr.shop.sale.mutate({ body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shops'] });
+    },
+  });
+
   return {
     query,
     searchParams,
@@ -87,6 +108,9 @@ export const useShops = () => {
     updateShopMutation,
     deleteShopMutation,
     transferProductMutation,
+    addExpenseMutation,
+    addIncomeMutation,
+    saleMutation,
     handleTableChange,
     setFilter,
     clearFilter,

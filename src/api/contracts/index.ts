@@ -1,5 +1,6 @@
 import {initContract} from '@ts-rest/core';
 import {authContract} from './auth';
+import {paymentTransactionContract} from './payment-transaction';
 import {productContract} from './product';
 import {productTransactionContract} from './product-transaction';
 import {settingsContract} from './settings';
@@ -25,4 +26,5 @@ export const contract = c.router({
   shop: storeShopContract,
   workshop: storeWorkshopContract,
   productTransaction: productTransactionContract,
+  paymentTransaction: paymentTransactionContract,
 });

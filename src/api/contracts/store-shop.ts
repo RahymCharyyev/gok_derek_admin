@@ -39,6 +39,30 @@ export const storeShopContract = c.router(
         201: common.result,
       },
     },
+    addExpense: {
+      method: 'POST',
+      path: '/expense',
+      body: schema.addExpense,
+      responses: {
+        201: common.result,
+      },
+    },
+    addIncome: {
+      method: 'POST',
+      path: '/income',
+      body: schema.addIncome,
+      responses: {
+        201: common.result,
+      },
+    },
+    sale: {
+      method: 'POST',
+      path: '/sale',
+      body: schema.sale,
+      responses: {
+        201: common.result,
+      },
+    },
 
     getOne: {
       method: 'GET',

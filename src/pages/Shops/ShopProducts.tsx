@@ -4,12 +4,18 @@ import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import { useWarehouseTableColumn } from '@/components/Warehouse/hooks/useWarehouseTableColumn';
 import TableLayout from '@/layout/TableLayout';
-import { BankOutlined } from '@ant-design/icons';
+import {
+  BankOutlined,
+  MinusCircleOutlined,
+  TransactionOutlined,
+} from '@ant-design/icons';
 import { message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import TransferShopProductModal from '../../components/Shops/TransferShopProductModal';
+import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
+import SaleProductModal from '@/components/Shops/SaleProductModal';
 
 const ShopProducts = () => {
   const { t } = useTranslation();
@@ -26,9 +32,19 @@ const ShopProducts = () => {
     searchParams,
   } = useWarehouse(id);
 
-  const { shopsQuery, transferProductMutation } = useShops();
+  const {
+    shopsQuery,
+    transferProductMutation,
+    addIncomeMutation,
+    addExpenseMutation,
+    saleMutation,
+  } = useShops();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
+  const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+  const [isIncome, setIsIncome] = useState(false);
   const [searchProductValue, setSearchProductValue] = useState('');
   const [editingData, setEditingData] = useState<any | null>(null);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
@@ -61,6 +77,12 @@ const ShopProducts = () => {
     setSelectedProductId(record.productId);
   };
 
+  const handleOpenSaleModal = (record: any) => {
+    setEditingData(null);
+    setIsSaleModalOpen(true);
+    setSelectedProductId(record.productId);
+  };
+
   const columns = useWarehouseTableColumn({
     t,
     searchValues,
@@ -76,6 +98,7 @@ const ShopProducts = () => {
     },
     sortOptions: ['asc', 'desc'],
     handleOpenTransferModal: handleOpenAddModal,
+    handleOpenSaleModal: handleOpenSaleModal,
   });
 
   if (warehouseQuery.isError) {
@@ -119,6 +142,46 @@ const ShopProducts = () => {
     }
   };
 
+  const handleSaleProduct = async (values: any) => {
+    try {
+      const response = await saleMutation.mutateAsync(values);
+      if (response.status == 200 || response.status == 201) {
+        message.success(t('productSold'));
+      } else if (response.status == 404) {
+        const errorBody = response.body as { message: string };
+        message.error(errorBody.message);
+      } else {
+        message.error(t('saleProductError'));
+      }
+      setIsSaleModalOpen(false);
+      setEditingData(null);
+    } catch {
+      message.error(t('saleProductError'));
+    }
+  };
+
+  const handleAddExpenseOrIncome = async (values: any) => {
+    try {
+      if (isIncome) {
+        await addIncomeMutation.mutateAsync({
+          // id: editingData.key,
+          body: values,
+        });
+        message.success(t('incomeAdded'));
+      } else {
+        await addExpenseMutation.mutateAsync({
+          // id: editingData.key,
+          body: values,
+        });
+        message.success(t('expenseAdded'));
+      }
+      setIsIncomeModalOpen(false);
+      setIsExpenseModalOpen(false);
+    } catch (error) {
+      message.error(t('incomeOrExpenseAddError'));
+    }
+  };
+
   return (
     <>
       <TableLayout
@@ -130,9 +193,23 @@ const ShopProducts = () => {
               setEditingData(null);
               setIsModalOpen(true);
             }}
+            secondTitle={t('addIncome')}
+            secondIcon={<TransactionOutlined />}
+            secondCreate={() => {
+              setIsIncome(true);
+              setIsIncomeModalOpen(true);
+            }}
+            thirdTitle={t('addExpense')}
+            thirdIcon={<MinusCircleOutlined />}
+            thirdCreate={() => {
+              setIsIncome(false);
+              setIsExpenseModalOpen(true);
+            }}
             onReset={resetFilters}
             resetDisabled={resetDisabled}
             count={warehouseQuery.data?.body.count}
+            hasSecondButton={true}
+            hasThirdButton={true}
           />
         )}
         loading={warehouseQuery.isLoading}
@@ -144,6 +221,20 @@ const ShopProducts = () => {
           total: warehouseQuery.data?.body?.count,
           onChange: handleTableChange,
         }}
+      />
+      <IncomeExpenseModal
+        open={isIncome ? isIncomeModalOpen : isExpenseModalOpen}
+        onCancel={() =>
+          isIncome ? setIsIncomeModalOpen(false) : setIsExpenseModalOpen(false)
+        }
+        onSubmit={handleAddExpenseOrIncome}
+        isIncome={isIncome}
+      />
+      <SaleProductModal
+        open={isSaleModalOpen}
+        productId={selectedProductId}
+        onCancel={() => setIsSaleModalOpen(false)}
+        onSubmit={handleSaleProduct}
       />
       <TransferShopProductModal
         open={isModalOpen}

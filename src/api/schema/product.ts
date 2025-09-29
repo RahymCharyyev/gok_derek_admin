@@ -1,5 +1,5 @@
 import {z} from 'zod';
-import {commonQuery, sortDirection} from './common';
+import {common, commonQuery, sortDirection} from './common';
 import {productFurnitureSchema} from './product-furniture';
 import {productOtherSchema} from './product-other';
 import {productUnitsSchema} from './product-unit';
@@ -36,7 +36,13 @@ const sortable = sortKeys.merge(productWoodSchema.sortKeys).keyof();
 const sort = z.object({sortBy: sortable.default('createdAt'), sortDirection: sortDirection.default('desc')});
 
 const getAll = schema
-  .extend({text: z.string(), types: schema.shape.type.array()})
+  .pick({type: true, name: true, price: true, createdAt: true})
+  .extend({
+    text: z.string(),
+    types: schema.shape.type.array(),
+    storeId: z.string().uuid().optional(),
+    isAvailable: common.boolStr,
+  })
   .partial()
   .merge(sort)
   .merge(commonQuery);

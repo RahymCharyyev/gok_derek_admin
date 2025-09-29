@@ -1,3 +1,4 @@
+import { renderFilterDropdown } from '@/components/renderFilterDropdown';
 import {
   DeleteOutlined,
   DownOutlined,
@@ -8,8 +9,7 @@ import {
 } from '@ant-design/icons';
 import { Button, Dropdown, type MenuProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { renderFilterDropdown } from '../renderFilterDropdown';
-import { useNavigate, useNavigation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface UseShopTableColumnProps {
   t: (key: string) => string;

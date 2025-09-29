@@ -10,3 +10,4 @@ export * from './store-workshop';
 export * from './product-transactions';
 export * from './product-furniture';
 export * from './product-other';
+export * from './payment-transaction';

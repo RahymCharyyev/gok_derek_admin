@@ -1,13 +1,13 @@
 import { type UserSchema } from '@/api/schema/user';
 import ErrorComponent from '@/components/ErrorComponent';
-import Toolbar from '@/components/Toolbar';
 import { useShops } from '@/components/Shops/hooks/useShops';
+import { useShopTableColumn } from '@/components/Shops/hooks/useShopTableColumn';
 import ShopModal from '@/components/Shops/ShopModal';
-import { useShopTableColumn } from '@/components/Shops/useShopTableColumn';
+import Toolbar from '@/components/Toolbar';
 import { useUsers } from '@/components/Users/hooks/useUsers';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
-import { BankOutlined, TransactionOutlined } from '@ant-design/icons';
+import { BankOutlined } from '@ant-design/icons';
 import { message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +23,8 @@ const Shops = () => {
     createShopMutation,
     updateShopMutation,
     deleteShopMutation,
+    addExpenseMutation,
+    addIncomeMutation,
     handleTableChange,
     setFilter,
     clearFilter,
@@ -169,6 +171,7 @@ const Shops = () => {
           onChange: handleTableChange,
         }}
       />
+
       <ShopModal
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}

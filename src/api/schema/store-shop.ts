@@ -36,6 +36,19 @@ const transferProduct = z.object({
   toStoreId: z.string().uuid(),
   quantity: z.number().int(),
 });
+const addExpense = z.object({
+  amount: z.coerce.number().int(),
+  note: z.string().nullish(),
+});
+const addIncome = z.object({
+  amount: z.coerce.number().int(),
+  note: z.string().nullish(),
+});
+
+const sale = z.object({
+  productId: z.string().uuid(),
+  quantity: z.coerce.number().int(),
+});
 
 type Schema = z.infer<typeof schema>;
 type GetAll = z.infer<typeof getAll>;
@@ -45,6 +58,9 @@ type SortKeys = z.infer<typeof sortKeys>;
 type Sortable = z.infer<typeof sortable>;
 type AddOrder = z.infer<typeof addOrder>;
 type TransferProduct = z.infer<typeof transferProduct>;
+type AddExpense = z.infer<typeof addExpense>;
+type AddIncome = z.infer<typeof addIncome>;
+type Sale = z.infer<typeof sale>;
 
 export const storeShopSchema = {
   schema,
@@ -57,6 +73,9 @@ export const storeShopSchema = {
   sortable,
   addOrder,
   transferProduct,
+  addExpense,
+  addIncome,
+  sale,
 };
 
 export type StoreShopSchema = {
@@ -68,4 +87,7 @@ export type StoreShopSchema = {
   Sortable: Sortable;
   AddOrder: AddOrder;
   TransferProduct: TransferProduct;
+  AddExpense: AddExpense;
+  AddIncome: AddIncome;
+  Sale: Sale;
 };
