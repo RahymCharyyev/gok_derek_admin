@@ -1,24 +1,25 @@
 import LayoutComponent from '@/layout';
 import Login from '@/pages/Login';
+import { darkTheme, lightTheme, sharedTheme } from '@/theme';
 import { ConfigProvider } from 'antd';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useThemeStore } from './hooks/useThemeStore';
+import Income from './pages/Cashier/Income';
+import Outcome from './pages/Cashier/Outcome';
+import FurnitureOrder from './pages/Order/Furniture';
+import OtherOrder from './pages/Order/Other';
+import WoodOrder from './pages/Order/Wood';
 import FurnitureProducts from './pages/Products/Furniture';
 import OtherProducts from './pages/Products/Other';
 import Wood from './pages/Products/Wood';
 import WoodTypes from './pages/Products/WoodTypes';
 import Report from './pages/Report';
+import ShopProducts from './pages/Shops/ShopProducts';
 import Shops from './pages/Shops/Shops';
 import Users from './pages/Users';
 import Warehouse from './pages/Warehouse';
 import FurnitureWorkshop from './pages/Workshops/Furniture';
 import WoodWorkshop from './pages/Workshops/Wood';
-import { darkTheme, lightTheme, sharedTheme } from '@/theme';
-import Cashier from './pages/Cashier';
-import ShopProducts from './pages/Shops/ShopProducts';
-import WoodOrder from './pages/Order/Wood';
-import FurnitureOrder from './pages/Order/Furniture';
-import OtherOrder from './pages/Order/Other';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -162,10 +163,18 @@ function App() {
             }
           />
           <Route
-            path='/cashier'
+            path='/cashier/income'
             element={
               <LayoutComponent>
-                <Cashier />
+                <Income />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/cashier/outcome'
+            element={
+              <LayoutComponent>
+                <Outcome />
               </LayoutComponent>
             }
           />

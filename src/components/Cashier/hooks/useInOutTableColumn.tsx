@@ -3,14 +3,13 @@ import {
   DeleteOutlined,
   DownOutlined,
   EditOutlined,
-  EyeOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 
-interface UseCashierTableColumnProps {
+interface UseInOutTableColumnProps {
   t: (key: string) => string;
   searchValues: { [key: string]: string };
   setSearchValues: (values: { [key: string]: string }) => void;
@@ -22,9 +21,10 @@ interface UseCashierTableColumnProps {
   clearFilter: (key: string) => void;
   sortOptions: string[];
   handleOpenEditModal: (record: any) => void;
+  isIncome: boolean;
 }
 
-export const useCashierTableColumn = ({
+export const useInOutTableColumn = ({
   t,
   searchValues,
   setSearchValues,
@@ -35,7 +35,8 @@ export const useCashierTableColumn = ({
   clearFilter,
   sortOptions,
   handleOpenEditModal,
-}: UseCashierTableColumnProps): ColumnsType<any> => {
+  isIncome,
+}: UseInOutTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
 
   return [
@@ -46,13 +47,13 @@ export const useCashierTableColumn = ({
       fixed: 'left',
     },
     {
-      title: t('shopSeller'),
-      dataIndex: 'user',
-      key: 'user',
+      title: isIncome ? t('giver') : t('borrower'),
+      dataIndex: 'name',
+      key: 'name',
       filterDropdown: () =>
         renderFilterDropdown(
-          'user',
-          t('shopSeller'),
+          'name',
+          isIncome ? t('giver') : t('borrower'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -62,7 +63,7 @@ export const useCashierTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'user'
+          'name'
         ),
       filterIcon: () => <SearchOutlined />,
       render: (record) => (
@@ -72,13 +73,13 @@ export const useCashierTableColumn = ({
       ),
     },
     {
-      title: t('shopType'),
-      dataIndex: 'type',
-      key: 'type',
+      title: t('reason'),
+      dataIndex: 'reason',
+      key: 'reason',
       filterDropdown: () =>
         renderFilterDropdown(
-          'type',
-          t('type'),
+          'reason',
+          t('reason'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -88,40 +89,18 @@ export const useCashierTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'type'
-        ),
-      filterIcon: () => <SearchOutlined />,
-      render: (record) => <div>{t(record)}</div>,
-    },
-    {
-      title: t('shopLocation'),
-      dataIndex: 'geoLocation',
-      key: 'geoLocation',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'geoLocation',
-          t('shopLocation'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'geoLocation'
+          'reason'
         ),
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('shopAddress'),
-      dataIndex: 'address',
-      key: 'address',
+      title: t('amount'),
+      dataIndex: 'amount',
+      key: 'amount',
       filterDropdown: () =>
         renderFilterDropdown(
-          'address',
-          t('shopAddress'),
+          'amount',
+          t('amount'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -131,19 +110,18 @@ export const useCashierTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'address',
-          false
+          'amount'
         ),
-      filterIcon: () => <DownOutlined />,
+      filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('phone'),
-      dataIndex: 'user',
-      key: 'user',
+      title: t('moneyCurrency'),
+      dataIndex: 'currency',
+      key: 'currency',
       filterDropdown: () =>
         renderFilterDropdown(
-          'user',
-          t('phone'),
+          'currency',
+          t('moneyCurrency'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -153,51 +131,29 @@ export const useCashierTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'user',
+          'currency',
           false
         ),
       filterIcon: () => <DownOutlined />,
-      render: (record) => <div>{record.phone}</div>,
-    },
-    {
-      title: t('creditLimit'),
-      dataIndex: 'creditLimit',
-      key: 'creditLimit',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'creditLimit',
-          t('creditLimit'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'creditLimit',
-          false
-        ),
-      filterIcon: () => <DownOutlined />,
+      render: () => <div>Manat</div>,
     },
     {
       title: t('actions'),
       key: 'actions',
       render: (_, record) => {
-        console.log(record);
         return (
           <div className='flex items-center gap-2'>
             <Button
               size='small'
               type='primary'
-              icon={<EyeOutlined />}
-              onClick={() => navigate(`/shops/${record.key}/products`)}
+              icon={<EditOutlined />}
+              onClick={() => handleOpenEditModal(record)}
             />
             <Button
+              danger
               size='small'
               type='primary'
-              icon={<EditOutlined />}
+              icon={<DeleteOutlined />}
               onClick={() => handleOpenEditModal(record)}
             />
           </div>
