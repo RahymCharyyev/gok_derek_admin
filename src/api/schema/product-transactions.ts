@@ -17,11 +17,6 @@ const schema = z.object({
   createdAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullish(),
 
-  // product: productSchema.schema.partial().nullish(),
-  // fromStore: storeSchema.schema.partial().nullish(),
-  // toStore: storeSchema.schema.partial().nullish(),
-  // createdBy: userSchema.schema.partial().nullish(),
-
   product: z.lazy(() => productSchema.schema.partial().nullish()),
   fromStore: z.lazy(() => storeSchema.schema.partial().nullish()),
   toStore: z.lazy(() => storeSchema.schema.partial().nullish()),

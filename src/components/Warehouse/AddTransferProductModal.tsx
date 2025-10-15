@@ -15,6 +15,8 @@ interface AddTransferProductModalProps {
   loading: boolean;
   onSearchProduct: (value: string) => void;
   onClearProduct: () => void;
+  productType?: 'wood' | 'other';
+  onChangeProductType?: (value: 'wood' | 'other') => void;
 }
 
 const AddTransferProductModal: FC<
@@ -30,6 +32,8 @@ const AddTransferProductModal: FC<
   onSearchProduct,
   onClearProduct,
   isTransfer,
+  productType,
+  onChangeProductType,
 }) => {
   const [form] = useForm();
   const { t } = useTranslation();
@@ -43,8 +47,6 @@ const AddTransferProductModal: FC<
       form.resetFields();
     }
   }, [initialValues]);
-
-  console.log(products);
 
   return (
     <Modal
@@ -71,6 +73,22 @@ const AddTransferProductModal: FC<
         onFinish={onSubmit}
         className='max-h-[70vh] overflow-y-auto'
       >
+        <Form.Item label={t('productType')}>
+          <Select
+            allowClear
+            placeholder={t('selectType')}
+            value={productType}
+            options={[
+              { label: t('wood'), value: 'wood' },
+              { label: t('other'), value: 'other' },
+            ]}
+            onChange={(val) => {
+              onChangeProductType?.(val as 'wood' | 'other');
+              // Reset selected product when type changes
+              form.setFieldValue('productId', undefined);
+            }}
+          />
+        </Form.Item>
         <Form.Item
           name='productId'
           label={t('products')}

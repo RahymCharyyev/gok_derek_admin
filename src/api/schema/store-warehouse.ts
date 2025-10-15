@@ -1,5 +1,6 @@
 import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
+import {productSchema} from './product';
 
 const schema = z.object({
   storeId: z.string().uuid(),
@@ -29,6 +30,8 @@ const transferProduct = z.object({
   quantity: z.coerce.number().int(),
   toStoreId: z.string().uuid(),
 });
+const getProducts = productSchema.getAll;
+const getProductsRes = productSchema.getAllRes;
 
 type Schema = z.infer<typeof schema>;
 type GetAll = z.infer<typeof getAll>;
@@ -38,6 +41,8 @@ type SortKeys = z.infer<typeof sortKeys>;
 type Sortable = z.infer<typeof sortable>;
 type AddProduct = z.infer<typeof addProduct>;
 type TransferProduct = z.infer<typeof transferProduct>;
+type GetProducts = z.infer<typeof getProducts>;
+type GetProductsRes = z.infer<typeof getProductsRes>;
 
 export const storeWarehouseSchema = {
   schema,
@@ -50,6 +55,8 @@ export const storeWarehouseSchema = {
   sortable,
   addProduct,
   transferProduct,
+  getProducts,
+  getProductsRes
 };
 
 export type StoreWarehouseSchema = {
@@ -61,4 +68,6 @@ export type StoreWarehouseSchema = {
   Sortable: Sortable;
   AddProduct: AddProduct;
   TransferProduct: TransferProduct;
+  GetProducts: GetProducts;
+  GetProductsRes: GetProductsRes;
 };

@@ -2,7 +2,7 @@ import ErrorComponent from '@/components/ErrorComponent';
 import { useShops } from '@/components/Shops/hooks/useShops';
 import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
-import { useWarehouseTableColumn } from '@/components/Warehouse/hooks/useWarehouseTableColumn';
+import { useWoodWarehouseTableColumn } from '@/components/Warehouse/hooks/useWoodWarehouseTableColumn';
 import TableLayout from '@/layout/TableLayout';
 import {
   BankOutlined,
@@ -83,7 +83,7 @@ const ShopProducts = () => {
     setSelectedProductId(record.productId);
   };
 
-  const columns = useWarehouseTableColumn({
+  const columns = useWoodWarehouseTableColumn({
     t,
     searchValues,
     setSearchValues,

@@ -209,5 +209,12 @@
   "giver": "Beren",
   "borrower": "Alan",
   "moneyCurrency": "Pul birligi (man/dollar)",
-  "reason": "Esas"
+  "reason": "Esas",
+  "productType": "Harydyň görnüşi",
+  "selectType": "Görnüşi saýlaň",
+  "widthAndLength": "Ini × Boýy",
+  "M3": "Harydyň jemi metr kuby (M3)",
+  "history": "Ýagdaýy",
+  "sendProduct": "Haryt ibermek",
+  "allPrice": "Jemi M3 bahasy:"
 }

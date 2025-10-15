@@ -17,9 +17,10 @@ import Report from './pages/Report';
 import ShopProducts from './pages/Shops/ShopProducts';
 import Shops from './pages/Shops/Shops';
 import Users from './pages/Users';
-import Warehouse from './pages/Warehouse';
 import FurnitureWorkshop from './pages/Workshops/Furniture';
 import WoodWorkshop from './pages/Workshops/Wood';
+import WoodProductsWarehouse from './pages/Warehouse/WoodProductsWarehouse';
+import OtherProductsWarehouse from './pages/Warehouse/OtherProductsWarehouse';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -139,10 +140,18 @@ function App() {
             }
           />
           <Route
-            path='/warehouse'
+            path='/warehouse/wood'
             element={
               <LayoutComponent>
-                <Warehouse />
+                <WoodProductsWarehouse />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/warehouse/other'
+            element={
+              <LayoutComponent>
+                <OtherProductsWarehouse />
               </LayoutComponent>
             }
           />

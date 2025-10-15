@@ -151,6 +151,16 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
       key: '/warehouse',
       icon: <FaWarehouse />,
       label: <div className='text-base'>{t('warehouse')}</div>,
+      children: [
+        {
+          key: '/warehouse/wood',
+          label: <div className='text-base'>{t('woodProducts')}</div>,
+        },
+        {
+          key: '/warehouse/other',
+          label: <div className='text-base'>{t('otherProducts')}</div>,
+        },
+      ],
     },
     {
       key: '/workshops',

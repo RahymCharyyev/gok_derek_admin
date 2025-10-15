@@ -222,7 +222,6 @@ export const useShopTableColumn = ({
       title: t('actions'),
       key: 'actions',
       render: (_, record) => {
-        console.log(record);
         return (
           <div className='flex items-center gap-2'>
             <Button

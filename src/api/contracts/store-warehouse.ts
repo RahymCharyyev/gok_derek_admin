@@ -40,6 +40,14 @@ export const storeWarehouseContract = c.router(
         201: common.result,
       },
     },
+    getProducts: {
+      method: 'GET',
+      path: '/product-get',
+      query: schema.getProducts,
+      responses: {
+        200: schema.getProductsRes,
+      },
+    },
 
     getOne: {
       method: 'GET',

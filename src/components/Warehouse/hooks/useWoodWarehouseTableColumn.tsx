@@ -1,6 +1,7 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
 import {
   DownOutlined,
+  HistoryOutlined,
   SearchOutlined,
   ShoppingCartOutlined,
   TransactionOutlined,
@@ -8,7 +9,7 @@ import {
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
-interface UseWarehouseTableColumnProps {
+interface UseWoodWarehouseTableColumnProps {
   t: (key: string) => string;
   searchValues: { [key: string]: string };
   setSearchValues: (values: { [key: string]: string }) => void;
@@ -24,7 +25,7 @@ interface UseWarehouseTableColumnProps {
   handleOpenSaleModal?: (record: any) => void;
 }
 
-export const useWarehouseTableColumn = ({
+export const useWoodWarehouseTableColumn = ({
   t,
   searchValues,
   setSearchValues,
@@ -37,7 +38,7 @@ export const useWarehouseTableColumn = ({
   isShopProducts,
   handleOpenTransferModal,
   handleOpenSaleModal,
-}: UseWarehouseTableColumnProps): ColumnsType<any> => {
+}: UseWoodWarehouseTableColumnProps): ColumnsType<any> => {
   return [
     {
       title: '№',
@@ -133,6 +134,30 @@ export const useWarehouseTableColumn = ({
       filterIcon: () => <DownOutlined />,
     },
     {
+      title: t('woodType'),
+      dataIndex: 'productWoodType',
+      key: 'productWoodType',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'productWoodType',
+          t('woodType'),
+          searchValues,
+          setSearchValues,
+          sortOptions,
+          sortDirectionParam,
+          setSortBy,
+          setSortDirectionParam,
+          handleSearch,
+          clearFilter,
+          t,
+          'productWoodType',
+          false
+        ),
+      filterIcon: () => <DownOutlined />,
+      render: (record) => <div>{record}</div>,
+    },
+
+    {
       title: t('woodQuality'),
       dataIndex: 'productQuality',
       key: 'productQuality',
@@ -181,29 +206,7 @@ export const useWarehouseTableColumn = ({
         return value.map((e) => t(e.unit)).join(' / ');
       },
     },
-    {
-      title: t('woodType'),
-      dataIndex: 'productWoodType',
-      key: 'productWoodType',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'productWoodType',
-          t('woodType'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'productWoodType',
-          false
-        ),
-      filterIcon: () => <DownOutlined />,
-      render: (record) => <div>{record}</div>,
-    },
+
     {
       title: t('M3'),
       dataIndex: 'm3',
@@ -263,15 +266,15 @@ export const useWarehouseTableColumn = ({
                   icon={<TransactionOutlined />}
                   onClick={() => handleOpenTransferModal?.(record)}
                 >
-                  {t('productTransaction')}
+                  {t('sendProduct')}
                 </Button>
                 <Button
                   size='small'
                   type='primary'
-                  icon={<ShoppingCartOutlined />}
-                  onClick={() => handleOpenSaleModal?.(record)}
+                  icon={<HistoryOutlined />}
+                  // onClick={() => handleOpenSaleModal?.(record)}
                 >
-                  {t('saleProduct')}
+                  {t('history')}
                 </Button>
               </div>
             ),

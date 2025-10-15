@@ -1,10 +1,10 @@
 import ErrorComponent from '@/components/ErrorComponent';
 import { useProducts } from '@/components/Products/hooks/useProducts';
-import Toolbar from '@/components/Toolbar';
 import { useShops } from '@/components/Shops/hooks/useShops';
+import Toolbar from '@/components/Toolbar';
 import AddTransferProductModal from '@/components/Warehouse/AddTransferProductModal';
+import { useOtherWarehouseTableColumn } from '@/components/Warehouse/hooks/useOtherWarehouseTableColumn';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
-import { useWarehouseTableColumn } from '@/components/Warehouse/hooks/useWarehouseTableColumn';
 import TableLayout from '@/layout/TableLayout';
 import { PlusOutlined } from '@ant-design/icons';
 import { message, Segmented } from 'antd';
@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from 'use-debounce';
 
-const Warehouse = () => {
+const OtherProductsWarehouse = () => {
   const { t } = useTranslation();
   const {
     query,
@@ -33,8 +33,14 @@ const Warehouse = () => {
 
   const { shopsQuery, setSearchParams: setShopsSearchParams } = useShops();
 
+  const [selectedProductType, setSelectedProductType] = useState<
+    'wood' | 'other' | undefined
+  >(undefined);
   const { productsQuery, setSearchParams: setProductsSearchParams } =
-    useProducts(undefined, ['wood', 'other']);
+    useProducts(
+      selectedProductType,
+      selectedProductType ? undefined : ['wood', 'other']
+    );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
@@ -47,11 +53,21 @@ const Warehouse = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
+    if (selectedProductType) {
+      params.set('type', selectedProductType);
+    } else {
+      params.delete('type');
+    }
     if (debouncedSearchProductValue.trim()) {
       params.set('name', debouncedSearchProductValue.trim());
     }
     setProductsSearchParams(params);
-  }, [debouncedSearchProductValue, setProductsSearchParams, searchParams]);
+  }, [
+    debouncedSearchProductValue,
+    setProductsSearchParams,
+    searchParams,
+    selectedProductType,
+  ]);
 
   const handleSearch = useCallback(() => {
     Object.entries(searchValues).forEach(([key, value]) => {
@@ -79,7 +95,7 @@ const Warehouse = () => {
     setIsModalOpen(true);
   };
 
-  const columns = useWarehouseTableColumn({
+  const columns = useOtherWarehouseTableColumn({
     t,
     searchValues,
     setSearchValues,
@@ -154,9 +170,11 @@ const Warehouse = () => {
     }
   };
 
+  console.log(type);
+
   return (
     <>
-      <div className='mb-4'>
+      <div className='flex gap-2 items-center'>
         <Segmented
           options={[
             { label: t('Sargalan harytlar'), value: 'order' },
@@ -165,6 +183,7 @@ const Warehouse = () => {
           value={type}
           onChange={handleTypeChange}
         />
+        <div>{t('allPrice')}</div>
       </div>
       <TableLayout
         title={() => (
@@ -198,9 +217,11 @@ const Warehouse = () => {
         onSearchProduct={(value) => setSearchProductValue(value)}
         onClearProduct={() => clearFilter('name')}
         isTransfer={isTransfer}
+        productType={selectedProductType}
+        onChangeProductType={(val) => setSelectedProductType(val)}
       />
     </>
   );
 };
 
-export default Warehouse;
+export default OtherProductsWarehouse;
