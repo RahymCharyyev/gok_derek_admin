@@ -38,9 +38,9 @@ const sort = z.object({sortBy: sortable.default('createdAt'), sortDirection: sor
 
 const getAll = schema
   .extend({
-    storeType: storeSchema.schema.shape.type,
-    storeId: storeSchema.schema.shape.id,
-    workshopType: storeWorkshopSchema.schema.shape.type,
+    storeType: z.lazy(() => storeSchema.schema.shape.type),
+    storeId: z.lazy(() => storeSchema.schema.shape.id),
+    workshopType: z.lazy(() => storeWorkshopSchema.schema.shape.type),
   })
   .partial()
   .merge(sort)

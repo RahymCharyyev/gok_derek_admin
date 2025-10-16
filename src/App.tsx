@@ -23,6 +23,9 @@ import WoodProductsWarehouse from './pages/Warehouse/WoodProductsWarehouse';
 import OtherProductsWarehouse from './pages/Warehouse/OtherProductsWarehouse';
 import WoodProductsWarehouseHistory from './pages/Warehouse/History/WoodProductsWarehouseHistory';
 import OtherProductsWarehouseHistory from './pages/Warehouse/History/OtherProductsWarehouseHistory';
+import OrderedWarehouseWoodProducts from './pages/Warehouse/OrderedWarehouseWoodProducts';
+import OrderedWarehouseOtherProducts from './pages/Warehouse/OrderedWarehouseOtherProducts';
+// import OrderedWarehouseOtherProducts from './pages/Warehouse/OrderedWarehouseOtherProducts';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -170,6 +173,22 @@ function App() {
             element={
               <LayoutComponent>
                 <OtherProductsWarehouseHistory />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/warehouse/orders/wood'
+            element={
+              <LayoutComponent>
+                <OrderedWarehouseWoodProducts />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/warehouse/orders/other'
+            element={
+              <LayoutComponent>
+                <OrderedWarehouseOtherProducts />
               </LayoutComponent>
             }
           />

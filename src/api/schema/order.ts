@@ -21,7 +21,11 @@ const sortable = schema.pick({status: true, createdAt: true}).keyof();
 
 const sort = z.object({sortBy: sortable.default('createdAt'), sortDirection: sortDirection.default('desc')});
 
-const getAll = schema.partial().merge(sort).merge(commonQuery);
+const getAll = schema
+  .extend({productType: z.lazy(() => productSchema.schema.shape.type)})
+  .partial()
+  .merge(sort)
+  .merge(commonQuery);
 const getAllRes = z.object({
   count: z.number(),
   data: schema.array(),

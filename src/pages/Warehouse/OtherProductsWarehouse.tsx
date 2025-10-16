@@ -7,7 +7,7 @@ import { useOtherWarehouseTableColumn } from '@/components/Warehouse/hooks/useOt
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import TableLayout from '@/layout/TableLayout';
 import { PlusOutlined } from '@ant-design/icons';
-import { message, Segmented } from 'antd';
+import { Button, message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from 'use-debounce';
@@ -27,8 +27,6 @@ const OtherProductsWarehouse = () => {
     resetFilters,
     searchParams,
     setSearchParams,
-    type,
-    handleTypeChange,
   } = useWarehouse(undefined, 'other');
 
   const { shopsQuery, setSearchParams: setShopsSearchParams } = useShops();
@@ -123,7 +121,7 @@ const OtherProductsWarehouse = () => {
       index: (page - 1) * perPage + (index + 1),
       id: item.id,
       productName: item?.name || '',
-      quantity: item?.availableProductCount || 0,
+      quantity: item?.productQuantity || 0,
       productUnits: item?.wood?.units || [],
     })) || [];
 
@@ -165,15 +163,11 @@ const OtherProductsWarehouse = () => {
 
   return (
     <>
-      <div className='flex gap-2 items-center'>
-        <Segmented
-          options={[
-            { label: t('Sargalan harytlar'), value: 'order' },
-            { label: t('Iberilen harytlar'), value: 'transfer' },
-          ]}
-          value={type}
-          onChange={handleTypeChange}
-        />
+      <div className='flex gap-2 items-center m-4'>
+        <Button href='/gokderek/warehouse/orders/other'>
+          {t('Sargalan harytlar')}
+        </Button>
+        <Button href='/'>{t('Iberilen harytlar')}</Button>
         <div>{t('allPrice')}</div>
       </div>
       <TableLayout

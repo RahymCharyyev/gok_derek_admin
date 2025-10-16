@@ -25,6 +25,7 @@ const schema = z.object({
   other: z.lazy(() => productOtherSchema.schema.nullish()),
   units: z.lazy(() => productUnitsSchema.schema.partial().array().nullish()),
   availableProductCount: z.coerce.number().int().nullish(),
+  productQuantity: z.coerce.number().int().nullish(),
 });
 
 const sortKeys = schema.pick({

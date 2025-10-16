@@ -218,5 +218,11 @@
   "sendProduct": "Haryt ibermek",
   "allPrice": "Jemi M3 bahasy:",
   "fromStore": "Nireden",
-  "toStore": "Nirä"
+  "toStore": "Nirä",
+  "orderDate": "Sargalan sagady",
+  "orderedQuantity": "Sargan mukdary",
+  "warehouseQuantity": "Ammardaky mukdary",
+  "noSendQuantity": "Ýetmeýän mukdary",
+  "orderer": "Sargan",
+  "action": "Amal"
 }

@@ -1,13 +1,13 @@
 import ErrorComponent from '@/components/ErrorComponent';
 import { useProducts } from '@/components/Products/hooks/useProducts';
-import Toolbar from '@/components/Toolbar';
 import { useShops } from '@/components/Shops/hooks/useShops';
+import Toolbar from '@/components/Toolbar';
 import AddTransferProductModal from '@/components/Warehouse/AddTransferProductModal';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import { useWoodWarehouseTableColumn } from '@/components/Warehouse/hooks/useWoodWarehouseTableColumn';
 import TableLayout from '@/layout/TableLayout';
 import { PlusOutlined } from '@ant-design/icons';
-import { message, Segmented } from 'antd';
+import { Button, message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from 'use-debounce';
@@ -27,8 +27,6 @@ const WoodProductsWarehouse = () => {
     resetFilters,
     searchParams,
     setSearchParams,
-    type,
-    handleTypeChange,
   } = useWarehouse(undefined, 'wood');
 
   const { shopsQuery, setSearchParams: setShopsSearchParams } = useShops();
@@ -130,7 +128,7 @@ const WoodProductsWarehouse = () => {
       productUnits: item?.wood?.units || [],
       productWoodType: item?.wood?.woodType?.name || '',
       m3: '',
-      quantity: item?.availableProductCount || 0,
+      quantity: item?.productQuantity || 0,
     })) || [];
 
   const handleAddProduct = async (values: any) => {
@@ -171,15 +169,11 @@ const WoodProductsWarehouse = () => {
 
   return (
     <>
-      <div className='flex gap-2 items-center'>
-        <Segmented
-          options={[
-            { label: t('Sargalan harytlar'), value: 'order' },
-            { label: t('Iberilen harytlar'), value: 'transfer' },
-          ]}
-          value={type}
-          onChange={handleTypeChange}
-        />
+      <div className='flex gap-2 items-center m-4'>
+        <Button href='/gokderek/warehouse/orders/wood'>
+          {t('Sargalan harytlar')}
+        </Button>
+        <Button href='/'>{t('Iberilen harytlar')}</Button>
         <div>{t('allPrice')}</div>
       </div>
       <TableLayout

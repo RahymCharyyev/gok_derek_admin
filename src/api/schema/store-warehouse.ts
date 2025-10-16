@@ -1,6 +1,7 @@
 import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
 import {productSchema} from './product';
+import {productTransactionSchema} from './product-transactions';
 
 const schema = z.object({
   storeId: z.string().uuid(),
@@ -30,7 +31,7 @@ const transferProduct = z.object({
   quantity: z.coerce.number().int(),
   toStoreId: z.string().uuid(),
 });
-const getProducts = productSchema.getAll.omit({storeId: true});
+const getProducts = productSchema.getAll;
 const getProductsRes = productSchema.getAllRes
   .pick({count: true})
   .extend({data: productSchema.schema.partial().array()});
