@@ -36,7 +36,7 @@ export const useShops = () => {
     name: searchParams.get('name') || undefined,
     userId: searchParams.get('userId') || undefined,
     locationId: searchParams.get('locationId') || undefined,
-    type: searchParams.get('type') || undefined,
+    type: searchParams.get('storeType') || undefined,
     sortBy,
     sortDirection,
   };

@@ -46,7 +46,7 @@ const AddTransferProductModal: FC<
     } else {
       form.resetFields();
     }
-  }, [initialValues]);
+  }, [initialValues, form]);
 
   return (
     <Modal
@@ -73,62 +73,71 @@ const AddTransferProductModal: FC<
         onFinish={onSubmit}
         className='max-h-[70vh] overflow-y-auto'
       >
-        <Form.Item label={t('productType')}>
-          <Select
-            allowClear
-            placeholder={t('selectType')}
-            value={productType}
-            options={[
-              { label: t('wood'), value: 'wood' },
-              { label: t('other'), value: 'other' },
-            ]}
-            onChange={(val) => {
-              onChangeProductType?.(val as 'wood' | 'other');
-              // Reset selected product when type changes
-              form.setFieldValue('productId', undefined);
-            }}
-          />
-        </Form.Item>
-        <Form.Item
-          name='productId'
-          label={t('products')}
-          rules={[{ required: !initialValues, message: t('notEmptyField') }]}
-        >
-          <Select
-            showSearch
-            allowClear
-            placeholder={t('selectProduct')}
-            filterOption={false}
-            onSearch={onSearchProduct}
-            loading={loading}
-            notFoundContent={loading ? t('loading') : t('noResults')}
-            optionLabelProp='label'
-            options={products.map((e) => {
-              const parts: string[] = [];
+        {!isTransfer && (
+          <Form.Item label={t('productType')}>
+            <Select
+              allowClear
+              placeholder={t('selectType')}
+              value={productType}
+              options={[
+                { label: t('wood'), value: 'wood' },
+                { label: t('other'), value: 'other' },
+              ]}
+              onChange={(val) => {
+                onChangeProductType?.(val as 'wood' | 'other');
+                // Reset selected product when type changes
+                form.setFieldValue('productId', undefined);
+              }}
+            />
+          </Form.Item>
+        )}
+        {!isTransfer && (
+          <Form.Item
+            name='productId'
+            label={t('products')}
+            rules={[{ required: !initialValues, message: t('notEmptyField') }]}
+          >
+            <Select
+              showSearch
+              allowClear
+              placeholder={t('selectProduct')}
+              filterOption={false}
+              onSearch={onSearchProduct}
+              loading={loading}
+              notFoundContent={loading ? t('loading') : t('noResults')}
+              optionLabelProp='label'
+              options={products.map((e) => {
+                const parts: string[] = [];
 
-              if (e.wood?.width) parts.push(`${e.wood.width} mm`);
-              if (e.wood?.length) parts.push(`${e.wood.length} mm`);
-              if (e.wood?.thickness) parts.push(`${e.wood.thickness} mm`);
-              if (e.wood?.quality) parts.push(`Sorty: ${e.wood.quality}`);
-              if (e.wood?.woodType?.name) parts.push(e.wood.woodType.name);
+                if (e.wood?.width) parts.push(`${e.wood.width} mm`);
+                if (e.wood?.length) parts.push(`${e.wood.length} mm`);
+                if (e.wood?.thickness) parts.push(`${e.wood.thickness} mm`);
+                if (e.wood?.quality) parts.push(`Sorty: ${e.wood.quality}`);
+                if (e.wood?.woodType?.name) parts.push(e.wood.woodType.name);
 
-              return {
-                label: e.name,
-                value: e.id,
-                description: parts.join(' | '),
-              };
-            })}
-            optionRender={(option) => (
-              <div>
-                <div className='font-medium'>{option.data.label}</div>
-                <div className='text-xs text-gray-500'>
-                  {option.data.description}
+                return {
+                  label: e.name,
+                  value: e.id,
+                  description: parts.join(' | '),
+                };
+              })}
+              optionRender={(option) => (
+                <div>
+                  <div className='font-medium'>{option.data.label}</div>
+                  <div className='text-xs text-gray-500'>
+                    {option.data.description}
+                  </div>
                 </div>
-              </div>
-            )}
-            onClear={() => onClearProduct()}
-          />
-        </Form.Item>
+              )}
+              onClear={() => onClearProduct()}
+            />
+          </Form.Item>
+        )}
+        {isTransfer && (
+          <Form.Item name='productId' hidden>
+            <InputNumber />
+          </Form.Item>
+        )}
         {isTransfer && (
           <Form.Item
             name='toStoreId'

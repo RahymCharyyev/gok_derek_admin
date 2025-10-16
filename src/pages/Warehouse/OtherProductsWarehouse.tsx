@@ -37,10 +37,7 @@ const OtherProductsWarehouse = () => {
     'wood' | 'other' | undefined
   >(undefined);
   const { productsQuery, setSearchParams: setProductsSearchParams } =
-    useProducts(
-      selectedProductType,
-      selectedProductType ? undefined : ['wood', 'other']
-    );
+    useProducts('other');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
@@ -84,13 +81,15 @@ const OtherProductsWarehouse = () => {
   }, [searchValues, query]);
 
   const handleOpenTransferModal = (record: any) => {
-    setEditingData(record);
+    setEditingData({ productId: record.id });
+    setSelectedProductType('other');
     setIsTransfer(true);
     setIsModalOpen(true);
   };
 
   const handleOpenAddModal = () => {
     setEditingData(null);
+    setSelectedProductType(undefined);
     setIsTransfer(false);
     setIsModalOpen(true);
   };
