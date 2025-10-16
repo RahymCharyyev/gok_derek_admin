@@ -131,7 +131,7 @@ const WoodProductsWarehouse = () => {
       productUnits: item?.wood?.units || [],
       productWoodType: item?.wood?.woodType?.name || '',
       m3: '',
-      quantity: '',
+      quantity: item?.availableProductCount || 0,
     })) || [];
 
   const handleAddProduct = async (values: any) => {

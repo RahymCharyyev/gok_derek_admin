@@ -89,7 +89,6 @@ export const useWarehouse = (
     page,
     perPage,
     storeId,
-    storeType: 'warehouse',
     fromStoreId: searchParams.get('fromStoreId') ?? undefined,
     toStoreId: searchParams.get('toStoreId') ?? undefined,
     quantity: searchParams.get('quantity')

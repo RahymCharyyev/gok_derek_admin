@@ -124,7 +124,7 @@ const OtherProductsWarehouse = () => {
       index: (page - 1) * perPage + (index + 1),
       id: item.id,
       productName: item?.name || '',
-      quantity: '',
+      quantity: item?.availableProductCount || 0,
       productUnits: item?.wood?.units || [],
     })) || [];
 
