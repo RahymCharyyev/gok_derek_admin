@@ -29,7 +29,7 @@ const WoodProductsWarehouse = () => {
     setSearchParams,
     type,
     handleTypeChange,
-  } = useWarehouse();
+  } = useWarehouse(undefined, 'wood');
 
   const { shopsQuery, setSearchParams: setShopsSearchParams } = useShops();
 
@@ -123,15 +123,15 @@ const WoodProductsWarehouse = () => {
       key: item.id,
       index: (page - 1) * perPage + (index + 1),
       id: item.id,
-      productName: item.product?.name || '',
-      productThickness: item.product?.wood?.thickness || '',
-      productWidth: item.product?.wood?.width || '',
-      productLength: item.product?.wood?.length || '',
-      productQuality: item.product?.wood?.quality || '',
-      productUnits: item.product?.wood?.units || [],
-      productWoodType: item.product?.wood?.woodType?.name || '',
+      productName: item?.name || '',
+      productThickness: item?.wood?.thickness || '',
+      productWidth: item?.wood?.width || '',
+      productLength: item?.wood?.length || '',
+      productQuality: item?.wood?.quality || '',
+      productUnits: item?.wood?.units || [],
+      productWoodType: item?.wood?.woodType?.name || '',
       m3: '',
-      quantity: item.quantity || '',
+      quantity: '',
     })) || [];
 
   const handleAddProduct = async (values: any) => {

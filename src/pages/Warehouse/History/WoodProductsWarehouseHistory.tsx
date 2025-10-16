@@ -3,8 +3,8 @@ import { useProducts } from '@/components/Products/hooks/useProducts';
 import { useShops } from '@/components/Shops/hooks/useShops';
 import Toolbar from '@/components/Toolbar';
 import AddTransferProductModal from '@/components/Warehouse/AddTransferProductModal';
-import { useOtherWarehouseTableColumn } from '@/components/Warehouse/hooks/useOtherWarehouseTableColumn';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
+import { useWoodWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWoodWarehouseHistoryTableColumn';
 import TableLayout from '@/layout/TableLayout';
 import { PlusOutlined } from '@ant-design/icons';
 import { message, Segmented } from 'antd';
@@ -12,13 +12,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from 'use-debounce';
 
-const OtherProductsWarehouse = () => {
+const WoodProductsWarehouseHistory = () => {
   const { t } = useTranslation();
   const {
     query,
     page,
     perPage,
-    warehouseQuery,
+    warehouseHistoryQuery,
     addProductMutation,
     transferProductMutation,
     handleTableChange,
@@ -29,13 +29,23 @@ const OtherProductsWarehouse = () => {
     setSearchParams,
     type,
     handleTypeChange,
-  } = useWarehouse(undefined, 'other');
+  } = useWarehouse();
+
+  // Get productId from URL params and set it as a filter
+  useEffect(() => {
+    const productId = searchParams.get('productId');
+    if (productId) {
+      setFilter('productId', productId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { shopsQuery, setSearchParams: setShopsSearchParams } = useShops();
 
   const [selectedProductType, setSelectedProductType] = useState<
     'wood' | 'other' | undefined
   >(undefined);
+
   const { productsQuery, setSearchParams: setProductsSearchParams } =
     useProducts(
       selectedProductType,
@@ -95,7 +105,7 @@ const OtherProductsWarehouse = () => {
     setIsModalOpen(true);
   };
 
-  const columns = useOtherWarehouseTableColumn({
+  const columns = useWoodWarehouseHistoryTableColumn({
     t,
     searchValues,
     setSearchValues,
@@ -112,20 +122,35 @@ const OtherProductsWarehouse = () => {
     handleOpenTransferModal,
   });
 
-  if (warehouseQuery.isError) {
+  if (warehouseHistoryQuery.isError) {
     return (
-      <ErrorComponent message={warehouseQuery.error || t('unknownError')} />
+      <ErrorComponent
+        message={warehouseHistoryQuery.error || t('unknownError')}
+      />
     );
   }
 
   const data =
-    warehouseQuery.data?.body.data?.map((item, index) => ({
+    warehouseHistoryQuery.data?.body.data?.map((item, index) => ({
       key: item.id,
       index: (page - 1) * perPage + (index + 1),
       id: item.id,
-      productName: item?.name || '',
-      quantity: '',
-      productUnits: item?.wood?.units || [],
+      productName: item.product?.name || '',
+      productThickness: item.product?.wood?.thickness || '',
+      productWidth: item.product?.wood?.width || '',
+      productLength: item.product?.wood?.length || '',
+      productQuality: item.product?.wood?.quality || '',
+      productUnits: item.product?.wood?.units || [],
+      productWoodType: item.product?.wood?.woodType?.name || '',
+      m3: '',
+      quantity: item.quantity || '',
+      createdAt: item.createdAt || '',
+      toStore:
+        item.toStore?.type != 'shop'
+          ? t(item.toStore?.type || '')
+          : item.toStore.shop?.user?.firstName +
+              ' ' +
+              item.toStore.shop?.user?.lastName || '',
     })) || [];
 
   const handleAddProduct = async (values: any) => {
@@ -185,16 +210,16 @@ const OtherProductsWarehouse = () => {
             onCreate={handleOpenAddModal}
             onReset={resetFilters}
             resetDisabled={resetDisabled}
-            count={warehouseQuery.data?.body.count}
+            count={warehouseHistoryQuery.data?.body.count}
           />
         )}
-        loading={warehouseQuery.isLoading}
+        loading={warehouseHistoryQuery.isLoading}
         columns={columns}
         data={data}
         pagination={{
           current: page,
           pageSize: perPage,
-          total: warehouseQuery.data?.body?.count,
+          total: warehouseHistoryQuery.data?.body?.count,
           onChange: handleTableChange,
         }}
       />
@@ -203,7 +228,7 @@ const OtherProductsWarehouse = () => {
         onCancel={() => setIsModalOpen(false)}
         onSubmit={isTransfer ? handleTansferProduct : handleAddProduct}
         initialValues={editingData}
-        products={productsQuery.data?.body?.data || []}
+        products={productsQuery.data?.body.data || []}
         shops={shopsQuery.data?.body.data || []}
         loading={productsQuery.isLoading || shopsQuery.isLoading}
         onSearchProduct={(value) => setSearchProductValue(value)}
@@ -216,4 +241,4 @@ const OtherProductsWarehouse = () => {
   );
 };
 
-export default OtherProductsWarehouse;
+export default WoodProductsWarehouseHistory;

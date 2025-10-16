@@ -21,6 +21,8 @@ import FurnitureWorkshop from './pages/Workshops/Furniture';
 import WoodWorkshop from './pages/Workshops/Wood';
 import WoodProductsWarehouse from './pages/Warehouse/WoodProductsWarehouse';
 import OtherProductsWarehouse from './pages/Warehouse/OtherProductsWarehouse';
+import WoodProductsWarehouseHistory from './pages/Warehouse/History/WoodProductsWarehouseHistory';
+import OtherProductsWarehouseHistory from './pages/Warehouse/History/OtherProductsWarehouseHistory';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -152,6 +154,22 @@ function App() {
             element={
               <LayoutComponent>
                 <OtherProductsWarehouse />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/warehouse/wood/history'
+            element={
+              <LayoutComponent>
+                <WoodProductsWarehouseHistory />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/warehouse/other/history'
+            element={
+              <LayoutComponent>
+                <OtherProductsWarehouseHistory />
               </LayoutComponent>
             }
           />

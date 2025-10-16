@@ -3,13 +3,14 @@ import {
   DownOutlined,
   HistoryOutlined,
   SearchOutlined,
+  ShoppingCartOutlined,
   TransactionOutlined,
 } from '@ant-design/icons';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 
-interface UseOtherWarehouseTableColumnProps {
+interface UseOtherWarehouseHistoryTableColumnProps {
   t: (key: string) => string;
   searchValues: { [key: string]: string };
   setSearchValues: (values: { [key: string]: string }) => void;
@@ -22,9 +23,10 @@ interface UseOtherWarehouseTableColumnProps {
   sortOptions: string[];
   isShopProducts?: boolean;
   handleOpenTransferModal?: (record: any) => void;
+  handleOpenSaleModal?: (record: any) => void;
 }
 
-export const useOtherWarehouseTableColumn = ({
+export const useOtherWarehouseHistoryTableColumn = ({
   t,
   searchValues,
   setSearchValues,
@@ -36,8 +38,8 @@ export const useOtherWarehouseTableColumn = ({
   sortOptions,
   isShopProducts,
   handleOpenTransferModal,
-}: UseOtherWarehouseTableColumnProps): ColumnsType<any> => {
-  const navigate = useNavigate();
+  handleOpenSaleModal,
+}: UseOtherWarehouseHistoryTableColumnProps): ColumnsType<any> => {
   return [
     {
       title: '№',
@@ -116,35 +118,50 @@ export const useOtherWarehouseTableColumn = ({
         return value.map((e) => t(e.unit)).join(' / ');
       },
     },
-    ...(!isShopProducts
-      ? [
-          {
-            title: t('actions'),
-            key: 'actions',
-            render: (_: any, record: any) => (
-              <div className='flex items-center gap-2'>
-                <Button
-                  size='small'
-                  type='primary'
-                  icon={<TransactionOutlined />}
-                  onClick={() => handleOpenTransferModal?.(record)}
-                >
-                  {t('sendProduct')}
-                </Button>
-                <Button
-                  size='small'
-                  type='primary'
-                  icon={<HistoryOutlined />}
-                  onClick={() =>
-                    navigate(`/warehouse/other/history?productId=${record.id}`)
-                  }
-                >
-                  {t('history')}
-                </Button>
-              </div>
-            ),
-          },
-        ]
-      : []),
+    {
+      title: t('createdAt'),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'createdAt',
+          t('createdAt'),
+          searchValues,
+          setSearchValues,
+          sortOptions,
+          sortDirectionParam,
+          setSortBy,
+          setSortDirectionParam,
+          handleSearch,
+          clearFilter,
+          t,
+          'createdAt',
+          false
+        ),
+      filterIcon: () => <DownOutlined />,
+      render: (record) => <div>{dayjs(record).format('DD.MM.YYYY HH:mm')}</div>,
+    },
+    {
+      title: t('toStore'),
+      dataIndex: 'toStore',
+      key: 'toStore',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'toStore',
+          t('toStore'),
+          searchValues,
+          setSearchValues,
+          sortOptions,
+          sortDirectionParam,
+          setSortBy,
+          setSortDirectionParam,
+          handleSearch,
+          clearFilter,
+          t,
+          'toStore',
+          false
+        ),
+      filterIcon: () => <DownOutlined />,
+    },
   ];
 };
