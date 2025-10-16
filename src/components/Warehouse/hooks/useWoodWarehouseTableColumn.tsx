@@ -22,6 +22,7 @@ interface UseWoodWarehouseTableColumnProps {
   sortOptions: string[];
   isShopProducts?: boolean;
   handleOpenTransferModal?: (record: any) => void;
+  handleOpenSaleModal?: (record: any) => void;
 }
 
 export const useWoodWarehouseTableColumn = ({

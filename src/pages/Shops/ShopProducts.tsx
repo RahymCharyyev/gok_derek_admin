@@ -1,5 +1,7 @@
 import ErrorComponent from '@/components/ErrorComponent';
 import { useShops } from '@/components/Shops/hooks/useShops';
+import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
+import SaleProductModal from '@/components/Shops/SaleProductModal';
 import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import { useWoodWarehouseTableColumn } from '@/components/Warehouse/hooks/useWoodWarehouseTableColumn';
@@ -14,8 +16,6 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import TransferShopProductModal from '../../components/Shops/TransferShopProductModal';
-import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
-import SaleProductModal from '@/components/Shops/SaleProductModal';
 
 const ShopProducts = () => {
   const { t } = useTranslation();
@@ -24,7 +24,7 @@ const ShopProducts = () => {
     query,
     page,
     perPage,
-    warehouseQuery,
+    warehouseHistoryQuery,
     handleTableChange,
     setFilter,
     clearFilter,
@@ -101,14 +101,16 @@ const ShopProducts = () => {
     handleOpenSaleModal: handleOpenSaleModal,
   });
 
-  if (warehouseQuery.isError) {
+  if (warehouseHistoryQuery.isError) {
     return (
-      <ErrorComponent message={warehouseQuery.error || t('unknownError')} />
+      <ErrorComponent
+        message={warehouseHistoryQuery.error || t('unknownError')}
+      />
     );
   }
 
   const data =
-    warehouseQuery.data?.body.data?.map((item, index) => ({
+    warehouseHistoryQuery.data?.body.data?.map((item, index) => ({
       key: item.id,
       index: (page - 1) * perPage + (index + 1),
       id: item.id,
@@ -207,18 +209,18 @@ const ShopProducts = () => {
             }}
             onReset={resetFilters}
             resetDisabled={resetDisabled}
-            count={warehouseQuery.data?.body.count}
+            count={warehouseHistoryQuery.data?.body.count}
             hasSecondButton={true}
             hasThirdButton={true}
           />
         )}
-        loading={warehouseQuery.isLoading}
+        loading={warehouseHistoryQuery.isLoading}
         columns={columns}
         data={data}
         pagination={{
           current: page,
           pageSize: perPage,
-          total: warehouseQuery.data?.body?.count,
+          total: warehouseHistoryQuery.data?.body?.count,
           onChange: handleTableChange,
         }}
       />
