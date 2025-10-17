@@ -298,5 +298,27 @@ export const useWoodWarehouseHistoryTableColumn = ({
         ),
       filterIcon: () => <DownOutlined />,
     },
+    {
+      title: t('type'),
+      dataIndex: 'type',
+      key: 'type',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'type',
+          t('type'),
+          searchValues,
+          setSearchValues,
+          sortOptions,
+          sortDirectionParam,
+          setSortBy,
+          setSortDirectionParam,
+          handleSearch,
+          clearFilter,
+          t,
+          'type',
+          false
+        ),
+      filterIcon: () => <DownOutlined />,
+    },
   ];
 };

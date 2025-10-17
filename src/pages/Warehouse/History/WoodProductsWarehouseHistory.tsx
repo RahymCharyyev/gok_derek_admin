@@ -151,6 +151,7 @@ const WoodProductsWarehouseHistory = () => {
           : item.toStore.shop?.user?.firstName +
               ' ' +
               item.toStore.shop?.user?.lastName || '',
+      type: t(item.type) || '',
     })) || [];
 
   const handleAddProduct = async (values: any) => {

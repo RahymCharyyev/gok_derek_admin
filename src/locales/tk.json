@@ -234,5 +234,9 @@
   "sentProducts": "Iberilen harytlar",
   "sentTime": "Iberilen sagady",
   "sentQuantity": "Iberilen mukdary",
-  "sentStore": "Iberilen ýeri"
+  "sentStore": "Iberilen ýeri",
+  "transfer": "Geçirilen",
+  "sale": "Satylan",
+  "production": "Öndürilen",
+  "receipt": "Goşulan"
 }
