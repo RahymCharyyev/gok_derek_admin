@@ -4,7 +4,7 @@ import { useShops } from '@/components/Shops/hooks/useShops';
 import Toolbar from '@/components/Toolbar';
 import AddTransferProductModal from '@/components/Warehouse/AddTransferProductModal';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
-import { useWoodWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWoodWarehouseHistoryTableColumn';
+import { useWoodWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWarehouseHistory/useWoodWarehouseHistoryTableColumn';
 import TableLayout from '@/layout/TableLayout';
 import { HistoryOutlined, PlusOutlined } from '@ant-design/icons';
 import { message } from 'antd';

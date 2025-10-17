@@ -3,7 +3,7 @@ import { useProducts } from '@/components/Products/hooks/useProducts';
 import { useShops } from '@/components/Shops/hooks/useShops';
 import Toolbar from '@/components/Toolbar';
 import AddTransferProductModal from '@/components/Warehouse/AddTransferProductModal';
-import { useOtherWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useOtherWarehouseHistoryTableColumn';
+import { useOtherWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWarehouseHistory/useOtherWarehouseHistoryTableColumn';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import TableLayout from '@/layout/TableLayout';
 import { HistoryOutlined, PlusOutlined } from '@ant-design/icons';

@@ -1,6 +1,6 @@
 import ErrorComponent from '@/components/ErrorComponent';
 import Toolbar from '@/components/Toolbar';
-import { useOrderedWoodTableColumn } from '@/components/Warehouse/hooks/useOrderedWoodTableColumn';
+import { useOrderedWoodTableColumn } from '@/components/Warehouse/hooks/useOrderedProducts/useOrderedWoodTableColumn';
 import { useOrders } from '@/components/Warehouse/hooks/useOrders';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import TableLayout from '@/layout/TableLayout';

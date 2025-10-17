@@ -230,5 +230,9 @@
   "orderedProducts": "Sargalan harytlar",
   "transferredProducts": "Iberilen harytlar",
   "transferOrderedProduct": "Sargalan harydy ibermek",
-  "addToWarehouse": "Ammara goşmak"
+  "addToWarehouse": "Ammara goşmak",
+  "sentProducts": "Iberilen harytlar",
+  "sentTime": "Iberilen sagady",
+  "sentQuantity": "Iberilen mukdary",
+  "sentStore": "Iberilen ýeri"
 }

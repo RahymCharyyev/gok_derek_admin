@@ -172,7 +172,9 @@ const WoodProductsWarehouse = () => {
         <Button onClick={() => navigate('/warehouse/orders/wood')}>
           {t('orderedProducts')}
         </Button>
-        <Button href='/'>{t('transferredProducts')}</Button>
+        <Button onClick={() => navigate('/warehouse/sent/wood')}>
+          {t('sentProducts')}
+        </Button>
         <div>{t('allPrice')}</div>
       </div>
       <TableLayout

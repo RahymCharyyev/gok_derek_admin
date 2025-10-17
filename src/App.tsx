@@ -24,6 +24,8 @@ import OrderedWarehouseOtherProducts from './pages/Warehouse/OrderedProducts/Ord
 import OrderedWarehouseWoodProducts from './pages/Warehouse/OrderedProducts/OrderedWarehouseWoodProducts';
 import OtherProductsWarehouse from './pages/Warehouse/OtherProductsWarehouse';
 import WoodProductsWarehouse from './pages/Warehouse/WoodProductsWarehouse';
+import WoodSentProducts from './pages/Warehouse/SentProducts/WoodSentProducts';
+import OtherSentProducts from './pages/Warehouse/SentProducts/OtherSentProducts';
 import FurnitureWorkshop from './pages/Workshops/Furniture';
 import WoodWorkshop from './pages/Workshops/Wood';
 
@@ -197,6 +199,22 @@ function App() {
             element={
               <LayoutComponent>
                 <OrderedWarehouseOtherProducts />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/warehouse/sent/wood'
+            element={
+              <LayoutComponent>
+                <WoodSentProducts />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/warehouse/sent/other'
+            element={
+              <LayoutComponent>
+                <OtherSentProducts />
               </LayoutComponent>
             }
           />
