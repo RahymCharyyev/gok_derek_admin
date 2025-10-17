@@ -21,6 +21,7 @@ import FurnitureWorkshop from './pages/Workshops/Furniture';
 import WoodWorkshop from './pages/Workshops/Wood';
 import WoodProductsWarehouse from './pages/Warehouse/WoodProductsWarehouse';
 import OtherProductsWarehouse from './pages/Warehouse/OtherProductsWarehouse';
+import AddProductToWarehouse from './pages/Warehouse/AddProductToWarehouse';
 import WoodProductsWarehouseHistory from './pages/Warehouse/History/WoodProductsWarehouseHistory';
 import OtherProductsWarehouseHistory from './pages/Warehouse/History/OtherProductsWarehouseHistory';
 import OrderedWarehouseWoodProducts from './pages/Warehouse/OrderedWarehouseWoodProducts';
@@ -157,6 +158,14 @@ function App() {
             element={
               <LayoutComponent>
                 <OtherProductsWarehouse />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/warehouse/add-product'
+            element={
+              <LayoutComponent>
+                <AddProductToWarehouse />
               </LayoutComponent>
             }
           />

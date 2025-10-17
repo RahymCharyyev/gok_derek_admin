@@ -10,10 +10,12 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 
 const OtherProductsWarehouse = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const {
     query,
     page,
@@ -86,10 +88,7 @@ const OtherProductsWarehouse = () => {
   };
 
   const handleOpenAddModal = () => {
-    setEditingData(null);
-    setSelectedProductType(undefined);
-    setIsTransfer(false);
-    setIsModalOpen(true);
+    navigate('/warehouse/add-product?type=other');
   };
 
   const columns = useOtherWarehouseTableColumn({

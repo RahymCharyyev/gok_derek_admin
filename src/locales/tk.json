@@ -224,5 +224,7 @@
   "warehouseQuantity": "Ammardaky mukdary",
   "noSendQuantity": "Ýetmeýän mukdary",
   "orderer": "Sargan",
-  "action": "Amal"
+  "action": "Amal",
+  "back": "Yza dolanmak",
+  "add": "Goşmak"
 }

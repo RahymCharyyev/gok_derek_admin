@@ -7,7 +7,7 @@ import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import { useWoodWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWoodWarehouseHistoryTableColumn';
 import TableLayout from '@/layout/TableLayout';
 import { PlusOutlined } from '@ant-design/icons';
-import { message, Segmented } from 'antd';
+import { message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from 'use-debounce';
@@ -191,17 +191,6 @@ const WoodProductsWarehouseHistory = () => {
 
   return (
     <>
-      <div className='flex gap-2 items-center'>
-        <Segmented
-          options={[
-            { label: t('Sargalan harytlar'), value: 'order' },
-            { label: t('Iberilen harytlar'), value: 'transfer' },
-          ]}
-          value={type}
-          onChange={handleTypeChange}
-        />
-        <div>{t('allPrice')}</div>
-      </div>
       <TableLayout
         title={() => (
           <Toolbar
