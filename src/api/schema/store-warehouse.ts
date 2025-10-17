@@ -1,7 +1,6 @@
 import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
 import {productSchema} from './product';
-import {productTransactionSchema} from './product-transactions';
 
 const schema = z.object({
   storeId: z.string().uuid(),

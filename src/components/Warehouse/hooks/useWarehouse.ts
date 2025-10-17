@@ -137,6 +137,14 @@ export const useWarehouse = (
     queryData: { query },
   });
 
+  const warehouseSentProductsQuery = tsr.warehouse.sentProducts.useQuery({
+    queryKey: [
+      'warehouse-sent-products',
+      Object.fromEntries(searchParams.entries()),
+    ],
+    queryData: { query },
+  });
+
   const addProductMutation = useMutation({
     mutationFn: (body: any) => tsr.warehouse.addProduct.mutate({ body }),
     onSuccess: () => {
@@ -172,6 +180,7 @@ export const useWarehouse = (
     addProductMutation,
     transferProductMutation,
     transferOrderedProductMutation,
+    warehouseSentProductsQuery,
     handleTableChange,
     setFilter,
     clearFilter,
