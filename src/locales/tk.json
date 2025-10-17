@@ -226,5 +226,9 @@
   "orderer": "Sargan",
   "action": "Amal",
   "back": "Yza dolanmak",
-  "add": "Goşmak"
+  "add": "Goşmak",
+  "orderedProducts": "Sargalan harytlar",
+  "transferredProducts": "Iberilen harytlar",
+  "transferOrderedProduct": "Sargalan harydy ibermek",
+  "addToWarehouse": "Ammara goşmak"
 }

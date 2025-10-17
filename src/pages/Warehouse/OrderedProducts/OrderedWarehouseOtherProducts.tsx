@@ -1,29 +1,31 @@
 import ErrorComponent from '@/components/ErrorComponent';
 import Toolbar from '@/components/Toolbar';
-import { useOrderedWoodTableColumn } from '@/components/Warehouse/hooks/useOrderedWoodTableColumn';
+import { useOrderedOtherTableColumn } from '@/components/Warehouse/hooks/useOrderedOtherTableColumn';
 import { useOrders } from '@/components/Warehouse/hooks/useOrders';
-import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
+import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import TableLayout from '@/layout/TableLayout';
 import { Form, InputNumber, message, Modal } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { RiOrderPlayLine } from 'react-icons/ri';
 
 const { useForm } = Form;
 
-const OrderedWarehouseWoodProducts = () => {
+const OrderedWarehouseOtherProducts = () => {
   const { t } = useTranslation();
   const {
     query,
     page,
     perPage,
     ordersQuery,
-    transferProductMutation,
     handleTableChange,
     setFilter,
     clearFilter,
     resetFilters,
     searchParams,
-  } = useOrders('wood');
+  } = useOrders('other');
+
+  const { transferOrderedProductMutation } = useWarehouse();
 
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     productName: '',
@@ -31,8 +33,6 @@ const OrderedWarehouseWoodProducts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const [form] = useForm();
-
-  const confirmDelete = useDeleteConfirm();
 
   const handleSearch = useCallback(() => {
     Object.entries(searchValues).forEach(([key, value]) => {
@@ -51,7 +51,7 @@ const OrderedWarehouseWoodProducts = () => {
   const handleCreateOrder = (record: any) => {
     setSelectedOrder(record);
     form.setFieldsValue({
-      productId: record.productId,
+      orderId: record.id,
       quantity: record.quantity || 1,
     });
     setIsModalOpen(true);
@@ -59,7 +59,7 @@ const OrderedWarehouseWoodProducts = () => {
 
   const handleSubmitOrder = async (values: any) => {
     try {
-      const response = await transferProductMutation.mutateAsync(values);
+      const response = await transferOrderedProductMutation.mutateAsync(values);
       if (response.status === 200 || response.status === 201) {
         message.success(t('productAdded'));
         setIsModalOpen(false);
@@ -74,7 +74,7 @@ const OrderedWarehouseWoodProducts = () => {
     }
   };
 
-  const columns = useOrderedWoodTableColumn({
+  const columns = useOrderedOtherTableColumn({
     t,
     searchValues,
     setSearchValues,
@@ -101,18 +101,14 @@ const OrderedWarehouseWoodProducts = () => {
       index: (page - 1) * perPage + (index + 1),
       id: item.id,
       productId: item.productId,
-      createdAt: item.createdAt || '',
       productName: item.product?.name || '',
-      productThickness: item.product?.wood?.thickness || '',
-      productWidth: item.product?.wood?.width || '',
-      productLength: item.product?.wood?.length || '',
-      productQuality: item.product?.wood?.quality || '',
-      woodUnits: item.product?.wood?.units || '',
+      productUnits: item.product?.units || [],
       quantity: item.quantity || '',
       status: item.status || '',
-      createdBy: `${item?.createdBy?.firstName || ''} ${
-        item?.createdBy?.lastName || ''
+      createdBy: `${item.createdBy?.firstName || ''} ${
+        item.createdBy?.lastName || ''
       }`,
+      createdAt: item.createdAt || '',
     })) || [];
 
   return (
@@ -120,6 +116,8 @@ const OrderedWarehouseWoodProducts = () => {
       <TableLayout
         title={() => (
           <Toolbar
+            title={t('orderedProducts')}
+            icon={<RiOrderPlayLine />}
             onReset={resetFilters}
             resetDisabled={resetDisabled}
             count={ordersQuery.data?.body.count}
@@ -145,7 +143,7 @@ const OrderedWarehouseWoodProducts = () => {
         onOk={() => form.submit()}
         okText={t('okText')}
         cancelText={t('cancelText')}
-        title={t('addToWarehouse')}
+        title={t('transferOrderedProduct')}
         width='100%'
         style={{ maxWidth: 500 }}
         styles={{ body: { padding: 16 } }}
@@ -157,7 +155,13 @@ const OrderedWarehouseWoodProducts = () => {
           onFinish={handleSubmitOrder}
           className='max-h-[70vh] overflow-y-auto'
         >
-          <Form.Item name='productId' hidden>
+          <div className='mb-4'>
+            <strong>{t('productName')}:</strong> {selectedOrder?.productName}
+          </div>
+          <div className='mb-4'>
+            <strong>{t('orderedQuantity')}:</strong> {selectedOrder?.quantity}
+          </div>
+          <Form.Item name='orderId' hidden rules={[{ required: true }]}>
             <InputNumber />
           </Form.Item>
           <Form.Item
@@ -173,4 +177,4 @@ const OrderedWarehouseWoodProducts = () => {
   );
 };
 
-export default OrderedWarehouseWoodProducts;
+export default OrderedWarehouseOtherProducts;

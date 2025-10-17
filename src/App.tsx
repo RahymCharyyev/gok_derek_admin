@@ -17,16 +17,15 @@ import Report from './pages/Report';
 import ShopProducts from './pages/Shops/ShopProducts';
 import Shops from './pages/Shops/Shops';
 import Users from './pages/Users';
+import AddProductToWarehouse from './pages/Warehouse/AddProductToWarehouse';
+import OtherProductsWarehouseHistory from './pages/Warehouse/History/OtherProductsWarehouseHistory';
+import WoodProductsWarehouseHistory from './pages/Warehouse/History/WoodProductsWarehouseHistory';
+import OrderedWarehouseOtherProducts from './pages/Warehouse/OrderedProducts/OrderedWarehouseOtherProducts';
+import OrderedWarehouseWoodProducts from './pages/Warehouse/OrderedProducts/OrderedWarehouseWoodProducts';
+import OtherProductsWarehouse from './pages/Warehouse/OtherProductsWarehouse';
+import WoodProductsWarehouse from './pages/Warehouse/WoodProductsWarehouse';
 import FurnitureWorkshop from './pages/Workshops/Furniture';
 import WoodWorkshop from './pages/Workshops/Wood';
-import WoodProductsWarehouse from './pages/Warehouse/WoodProductsWarehouse';
-import OtherProductsWarehouse from './pages/Warehouse/OtherProductsWarehouse';
-import AddProductToWarehouse from './pages/Warehouse/AddProductToWarehouse';
-import WoodProductsWarehouseHistory from './pages/Warehouse/History/WoodProductsWarehouseHistory';
-import OtherProductsWarehouseHistory from './pages/Warehouse/History/OtherProductsWarehouseHistory';
-import OrderedWarehouseWoodProducts from './pages/Warehouse/OrderedWarehouseWoodProducts';
-import OrderedWarehouseOtherProducts from './pages/Warehouse/OrderedWarehouseOtherProducts';
-// import OrderedWarehouseOtherProducts from './pages/Warehouse/OrderedWarehouseOtherProducts';
 
 function App() {
   const { darkMode } = useThemeStore();

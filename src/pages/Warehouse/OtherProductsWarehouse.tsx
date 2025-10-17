@@ -163,10 +163,10 @@ const OtherProductsWarehouse = () => {
   return (
     <>
       <div className='flex gap-2 items-center m-4'>
-        <Button href='/gokderek/warehouse/orders/other'>
-          {t('Sargalan harytlar')}
+        <Button onClick={() => navigate('/warehouse/orders/other')}>
+          {t('orderedProducts')}
         </Button>
-        <Button href='/'>{t('Iberilen harytlar')}</Button>
+        <Button href='/'>{t('transferredProducts')}</Button>
         <div>{t('allPrice')}</div>
       </div>
       <TableLayout

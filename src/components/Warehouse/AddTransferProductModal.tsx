@@ -58,7 +58,7 @@ const AddTransferProductModal: FC<
       title={
         initialValues
           ? isTransfer
-            ? t('transferProduct')
+            ? t('sendProduct')
             : t('editShop')
           : t('addProduct')
       }

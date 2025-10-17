@@ -6,7 +6,7 @@ import AddTransferProductModal from '@/components/Warehouse/AddTransferProductMo
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import { useWoodWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWoodWarehouseHistoryTableColumn';
 import TableLayout from '@/layout/TableLayout';
-import { PlusOutlined } from '@ant-design/icons';
+import { HistoryOutlined, PlusOutlined } from '@ant-design/icons';
 import { message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -194,9 +194,8 @@ const WoodProductsWarehouseHistory = () => {
       <TableLayout
         title={() => (
           <Toolbar
-            title={t('addProduct')}
-            icon={<PlusOutlined />}
-            onCreate={handleOpenAddModal}
+            title={t('history')}
+            icon={<HistoryOutlined />}
             onReset={resetFilters}
             resetDisabled={resetDisabled}
             count={warehouseHistoryQuery.data?.body.count}

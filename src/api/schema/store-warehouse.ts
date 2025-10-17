@@ -36,6 +36,11 @@ const getProductsRes = productSchema.getAllRes
   .pick({count: true})
   .extend({data: productSchema.schema.partial().array()});
 
+const transferOrderedProduct = z.object({
+  orderId: z.string().uuid(),
+  quantity: z.coerce.number().int().nullish(),
+});
+
 type Schema = z.infer<typeof schema>;
 type GetAll = z.infer<typeof getAll>;
 type Create = z.infer<typeof create>;
@@ -46,6 +51,7 @@ type AddProduct = z.infer<typeof addProduct>;
 type TransferProduct = z.infer<typeof transferProduct>;
 type GetProducts = z.infer<typeof getProducts>;
 type GetProductsRes = z.infer<typeof getProductsRes>;
+type TransferOrderedProduct = z.infer<typeof transferOrderedProduct>;
 
 export const storeWarehouseSchema = {
   schema,
@@ -60,6 +66,7 @@ export const storeWarehouseSchema = {
   transferProduct,
   getProducts,
   getProductsRes,
+  transferOrderedProduct,
 };
 
 export type StoreWarehouseSchema = {
@@ -73,4 +80,5 @@ export type StoreWarehouseSchema = {
   TransferProduct: TransferProduct;
   GetProducts: GetProducts;
   GetProductsRes: GetProductsRes;
+  TransferOrderedProduct: TransferOrderedProduct;
 };

@@ -7,7 +7,7 @@ import {storeWorkshopSchema} from './store-workshop';
 
 const schema = z.object({
   id: z.string().uuid(),
-  type: z.enum(['transfer', 'sale', 'production', 'receipt', 'order']),
+  type: z.enum(['transfer', 'sale', 'production', 'receipt']),
   createdById: z.string().uuid(),
   productId: z.string().uuid(),
   fromStoreId: z.string().uuid(),

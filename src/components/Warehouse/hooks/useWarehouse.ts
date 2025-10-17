@@ -26,10 +26,9 @@ export const useWarehouse = (
 
   const typeParam = searchParams.get('type');
   const [type, setType] = useState<
-    'order' | 'transfer' | 'sale' | 'receipt' | 'production' | undefined
+    'transfer' | 'sale' | 'receipt' | 'production' | undefined
   >(
     typeParam === 'transfer' ||
-      typeParam === 'order' ||
       typeParam === 'sale' ||
       typeParam === 'receipt' ||
       typeParam === 'production'
@@ -38,7 +37,7 @@ export const useWarehouse = (
   );
 
   const handleTypeChange = (
-    value: 'order' | 'transfer' | 'sale' | 'receipt' | 'production'
+    value: 'transfer' | 'sale' | 'receipt' | 'production'
   ) => {
     setType(value);
     const params = new URLSearchParams(searchParams);
@@ -152,6 +151,14 @@ export const useWarehouse = (
     },
   });
 
+  const transferOrderedProductMutation = useMutation({
+    mutationFn: (body: any) =>
+      tsr.warehouse.transferOrderedProduct.mutate({ body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['warehouse'] });
+    },
+  });
+
   return {
     query,
     searchParams,
@@ -164,6 +171,7 @@ export const useWarehouse = (
     warehouseHistoryQuery,
     addProductMutation,
     transferProductMutation,
+    transferOrderedProductMutation,
     handleTableChange,
     setFilter,
     clearFilter,

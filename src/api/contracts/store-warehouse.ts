@@ -40,6 +40,14 @@ export const storeWarehouseContract = c.router(
         201: common.result,
       },
     },
+    transferOrderedProduct: {
+      method: 'POST',
+      path: '/product-transfer-ordered',
+      body: schema.transferOrderedProduct,
+      responses: {
+        201: common.result,
+      },
+    },
     getProducts: {
       method: 'GET',
       path: '/product-get/all',
