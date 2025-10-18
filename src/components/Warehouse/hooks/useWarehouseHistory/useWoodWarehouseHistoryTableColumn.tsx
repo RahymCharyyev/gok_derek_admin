@@ -1,6 +1,11 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
-import { DownOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  DownOutlined,
+  SearchOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import { Button } from 'antd';
 import dayjs from 'dayjs';
 
 interface UseWoodWarehouseHistoryTableColumnProps {
@@ -14,6 +19,7 @@ interface UseWoodWarehouseHistoryTableColumnProps {
   handleSearch: () => void;
   clearFilter: (key: string) => void;
   sortOptions: string[];
+  confirmDelete: (options: { id: string }) => void;
 }
 
 export const useWoodWarehouseHistoryTableColumn = ({
@@ -26,6 +32,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
   handleSearch,
   clearFilter,
   sortOptions,
+  confirmDelete,
 }: UseWoodWarehouseHistoryTableColumnProps): ColumnsType<any> => {
   return [
     {
@@ -283,6 +290,22 @@ export const useWoodWarehouseHistoryTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
+    },
+    {
+      title: t('actions'),
+      key: 'actions',
+      fixed: 'right',
+      render: (_, record) => (
+        <div className='flex items-center gap-2'>
+          <Button
+            size='small'
+            type='primary'
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => confirmDelete({ id: record.key })}
+          />
+        </div>
+      ),
     },
   ];
 };

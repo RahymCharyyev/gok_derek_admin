@@ -3,17 +3,19 @@ import { useProducts } from '@/components/Products/hooks/useProducts';
 import { useShops } from '@/components/Shops/hooks/useShops';
 import Toolbar from '@/components/Toolbar';
 import AddTransferProductModal from '@/components/Warehouse/AddTransferProductModal';
-import { useOtherWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWarehouseHistory/useOtherWarehouseHistoryTableColumn';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
+import { useOtherWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWarehouseHistory/useOtherWarehouseHistoryTableColumn';
 import TableLayout from '@/layout/TableLayout';
-import { HistoryOutlined, PlusOutlined } from '@ant-design/icons';
+import { HistoryOutlined } from '@ant-design/icons';
 import { message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from 'use-debounce';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 
 const OtherProductsWarehouseHistory = () => {
   const { t } = useTranslation();
+  const confirmDeleteModal = useDeleteConfirm();
   const {
     query,
     page,
@@ -26,9 +28,8 @@ const OtherProductsWarehouseHistory = () => {
     clearFilter,
     resetFilters,
     searchParams,
-    setSearchParams,
     type,
-    handleTypeChange,
+    deleteProductHistoryMutation,
   } = useWarehouse();
 
   // Get productId from URL params and set it as a filter
@@ -92,17 +93,30 @@ const OtherProductsWarehouseHistory = () => {
     );
   }, [searchValues, query]);
 
-  const handleOpenTransferModal = (record: any) => {
-    setEditingData(record);
-    setIsTransfer(true);
-    setIsModalOpen(true);
-  };
+  const handleDelete = useCallback(
+    async (id: string) => {
+      try {
+        const response = await deleteProductHistoryMutation.mutateAsync({ id });
+        if (response.status === 200 || response.status === 201) {
+          message.success(t('deleteSuccess'));
+        } else {
+          message.error(t('deleteError'));
+        }
+      } catch {
+        message.error(t('deleteError'));
+      }
+    },
+    [deleteProductHistoryMutation, t]
+  );
 
-  const handleOpenAddModal = () => {
-    setEditingData(null);
-    setIsTransfer(false);
-    setIsModalOpen(true);
-  };
+  const confirmDelete = useCallback(
+    ({ id }: { id: string }) => {
+      confirmDeleteModal({
+        onConfirm: () => handleDelete(id),
+      });
+    },
+    [confirmDeleteModal, handleDelete]
+  );
 
   const columns = useOtherWarehouseHistoryTableColumn({
     t,
@@ -118,6 +132,7 @@ const OtherProductsWarehouseHistory = () => {
       clearFilter(key);
     },
     sortOptions: ['asc', 'desc'],
+    confirmDelete,
   });
 
   if (warehouseHistoryQuery.isError) {
@@ -187,8 +202,6 @@ const OtherProductsWarehouseHistory = () => {
       message.error(t('transferProductError'));
     }
   };
-
-  console.log(type);
 
   return (
     <>

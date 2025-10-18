@@ -180,6 +180,14 @@ export const useWarehouse = (
     },
   });
 
+  const deleteProductHistoryMutation = useMutation({
+    mutationFn: (body: any) =>
+      tsr.productTransaction.remove.mutate({ params: { id: body.id } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['warehouse-history'] });
+    },
+  });
+
   return {
     query,
     searchParams,
@@ -195,6 +203,7 @@ export const useWarehouse = (
     transferOrderedProductMutation,
     warehouseSentProductsQuery,
     setOrderStatusMutation,
+    deleteProductHistoryMutation,
     handleTableChange,
     setFilter,
     clearFilter,

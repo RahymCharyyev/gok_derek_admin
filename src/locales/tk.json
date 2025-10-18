@@ -246,5 +246,7 @@
   "statusUpdateError": "Ýagdaýy üýtgedilende ýalňyşlyk döredi",
   "status": "Ýagdaýy",
   "filterByDate": "Sene boýunça görmek",
-  "selectDate": "Sene saýlaň"
+  "selectDate": "Sene saýlaň",
+  "deleteSuccess": "Ýagdaýy üstünlikli pozuldy",
+  "deleteError": "Ýagdaýy pozulanda ýalňyşlyk döredi"
 }

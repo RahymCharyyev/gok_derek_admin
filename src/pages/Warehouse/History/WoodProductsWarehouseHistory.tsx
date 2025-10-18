@@ -11,9 +11,11 @@ import { message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from 'use-debounce';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 
 const WoodProductsWarehouseHistory = () => {
   const { t } = useTranslation();
+  const confirmDeleteModal = useDeleteConfirm();
   const {
     query,
     page,
@@ -26,9 +28,7 @@ const WoodProductsWarehouseHistory = () => {
     clearFilter,
     resetFilters,
     searchParams,
-    setSearchParams,
-    type,
-    handleTypeChange,
+    deleteProductHistoryMutation,
   } = useWarehouse();
 
   // Get productId from URL params and set it as a filter
@@ -93,17 +93,30 @@ const WoodProductsWarehouseHistory = () => {
     );
   }, [searchValues, query]);
 
-  const handleOpenTransferModal = (record: any) => {
-    setEditingData(record);
-    setIsTransfer(true);
-    setIsModalOpen(true);
-  };
+  const handleDelete = useCallback(
+    async (id: string) => {
+      try {
+        const response = await deleteProductHistoryMutation.mutateAsync({ id });
+        if (response.status === 200 || response.status === 201) {
+          message.success(t('deleteSuccess'));
+        } else {
+          message.error(t('deleteError'));
+        }
+      } catch {
+        message.error(t('deleteError'));
+      }
+    },
+    [deleteProductHistoryMutation, t]
+  );
 
-  const handleOpenAddModal = () => {
-    setEditingData(null);
-    setIsTransfer(false);
-    setIsModalOpen(true);
-  };
+  const confirmDelete = useCallback(
+    ({ id }: { id: string }) => {
+      confirmDeleteModal({
+        onConfirm: () => handleDelete(id),
+      });
+    },
+    [confirmDeleteModal, handleDelete]
+  );
 
   const columns = useWoodWarehouseHistoryTableColumn({
     t,
@@ -119,6 +132,7 @@ const WoodProductsWarehouseHistory = () => {
       clearFilter(key);
     },
     sortOptions: ['asc', 'desc'],
+    confirmDelete,
   });
 
   if (warehouseHistoryQuery.isError) {
