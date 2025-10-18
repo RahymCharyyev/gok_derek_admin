@@ -51,7 +51,7 @@ export const useOtherWarehouseTableColumn = ({
       key: 'productName',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productName',
+          'name',
           t('name'),
           searchValues,
           setSearchValues,
@@ -62,7 +62,7 @@ export const useOtherWarehouseTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productName'
+          'name'
         ),
       filterIcon: () => <SearchOutlined />,
       render: (record) => <div>{record}</div>,

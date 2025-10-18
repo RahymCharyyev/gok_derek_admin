@@ -36,13 +36,17 @@ const WoodProductsWarehouse = () => {
   const [selectedProductType, setSelectedProductType] = useState<
     'wood' | 'other' | undefined
   >(undefined);
-  const { productsQuery, setSearchParams: setProductsSearchParams } =
-    useProducts('wood');
+  const {
+    productsQuery,
+    woodTypesQuery,
+    setSearchParams: setProductsSearchParams,
+  } = useProducts('wood');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
+    woodTypeId: '',
   });
   const [isTransfer, setIsTransfer] = useState(false);
   const [searchProductValue, setSearchProductValue] = useState('');
@@ -51,9 +55,9 @@ const WoodProductsWarehouse = () => {
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
     if (selectedProductType) {
-      params.set('type', selectedProductType);
+      params.set('name', selectedProductType);
     } else {
-      params.delete('type');
+      params.delete('name');
     }
     if (debouncedSearchProductValue.trim()) {
       params.set('name', debouncedSearchProductValue.trim());
@@ -106,6 +110,7 @@ const WoodProductsWarehouse = () => {
     },
     sortOptions: ['asc', 'desc'],
     handleOpenTransferModal,
+    woodTypes: woodTypesQuery.data?.body.data,
   });
 
   if (warehouseQuery.isError) {

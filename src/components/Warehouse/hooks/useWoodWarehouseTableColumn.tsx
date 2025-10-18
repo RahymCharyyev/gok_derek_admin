@@ -23,6 +23,7 @@ interface UseWoodWarehouseTableColumnProps {
   isShopProducts?: boolean;
   handleOpenTransferModal?: (record: any) => void;
   handleOpenSaleModal?: (record: any) => void;
+  woodTypes?: Array<{ id: string; name: string }>;
 }
 
 export const useWoodWarehouseTableColumn = ({
@@ -37,6 +38,7 @@ export const useWoodWarehouseTableColumn = ({
   sortOptions,
   isShopProducts,
   handleOpenTransferModal,
+  woodTypes,
 }: UseWoodWarehouseTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
   return [
@@ -52,7 +54,7 @@ export const useWoodWarehouseTableColumn = ({
       key: 'productName',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productName',
+          'name',
           t('productName'),
           searchValues,
           setSearchValues,
@@ -63,7 +65,7 @@ export const useWoodWarehouseTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productName'
+          'name'
         ),
       filterIcon: () => <SearchOutlined />,
       render: (record) => <div>{record}</div>,
@@ -74,7 +76,7 @@ export const useWoodWarehouseTableColumn = ({
       key: 'productThickness',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productThickness',
+          'thickness',
           t('woodThickness'),
           searchValues,
           setSearchValues,
@@ -85,7 +87,7 @@ export const useWoodWarehouseTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productThickness'
+          'thickness'
         ),
       filterIcon: () => <SearchOutlined />,
       render: (record) => <div>{t(record)}</div>,
@@ -96,7 +98,7 @@ export const useWoodWarehouseTableColumn = ({
       key: 'productWidth',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productWidth',
+          'width',
           t('woodWidth'),
           searchValues,
           setSearchValues,
@@ -107,7 +109,7 @@ export const useWoodWarehouseTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productWidth'
+          'width'
         ),
       filterIcon: () => <SearchOutlined />,
     },
@@ -117,7 +119,7 @@ export const useWoodWarehouseTableColumn = ({
       key: 'productLength',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productLength',
+          'length',
           t('woodLength'),
           searchValues,
           setSearchValues,
@@ -128,10 +130,9 @@ export const useWoodWarehouseTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productLength',
-          false
+          'length'
         ),
-      filterIcon: () => <DownOutlined />,
+      filterIcon: () => <SearchOutlined />,
     },
     {
       title: t('woodType'),
@@ -139,7 +140,7 @@ export const useWoodWarehouseTableColumn = ({
       key: 'productWoodType',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productWoodType',
+          'woodTypeId',
           t('woodType'),
           searchValues,
           setSearchValues,
@@ -150,8 +151,9 @@ export const useWoodWarehouseTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productWoodType',
-          false
+          'woodTypeId',
+          false,
+          woodTypes?.map((wt) => ({ label: wt.name, value: wt.id }))
         ),
       filterIcon: () => <DownOutlined />,
       render: (record) => <div>{record}</div>,
@@ -163,7 +165,7 @@ export const useWoodWarehouseTableColumn = ({
       key: 'productQuality',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productQuality',
+          'quality',
           t('woodQuality'),
           searchValues,
           setSearchValues,
@@ -174,10 +176,9 @@ export const useWoodWarehouseTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productQuality',
-          false
+          'quality'
         ),
-      filterIcon: () => <DownOutlined />,
+      filterIcon: () => <SearchOutlined />,
       render: (record) => <div>{record}</div>,
     },
     {
@@ -211,46 +212,12 @@ export const useWoodWarehouseTableColumn = ({
       title: t('M3'),
       dataIndex: 'm3',
       key: 'm3',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'm3',
-          t('M3'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'm3',
-          false
-        ),
-      filterIcon: () => <DownOutlined />,
       render: (record) => <div>{record}</div>,
     },
     {
       title: t('productQuantity'),
       dataIndex: 'quantity',
       key: 'quantity',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'quantity',
-          t('productQuantity'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'quantity',
-          false
-        ),
-      filterIcon: () => <DownOutlined />,
       render: (record) => <div>{record}</div>,
     },
     ...(!isShopProducts

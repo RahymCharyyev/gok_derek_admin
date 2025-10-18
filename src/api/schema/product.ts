@@ -45,6 +45,7 @@ const getAll = schema
     storeId: z.string().uuid().optional(),
     isAvailable: common.boolStr,
   })
+  .merge(productWoodSchema.schema.pick({woodTypeId: true, quality: true, thickness: true, length: true, width: true}))
   .partial()
   .merge(sort)
   .merge(commonQuery);

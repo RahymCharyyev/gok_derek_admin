@@ -1,4 +1,5 @@
 import { tsr } from '@/api';
+import type { StoreWarehouseSchema } from '@/api/schema';
 import { usePagination } from '@/hooks/usePagination';
 import { queryClient } from '@/Providers';
 import { getEnumParam } from '@/utils/getEnumParam';
@@ -45,10 +46,17 @@ export const useProducts = (
     perPage,
     name: searchParams.get('name') || undefined,
     woodType: searchParams.get('woodType') || undefined,
-    thickness: searchParams.get('thickness') || undefined,
-    width: searchParams.get('width') || undefined,
-    length: searchParams.get('length') || undefined,
-    quality: searchParams.get('quality') || undefined,
+    thickness: Number(searchParams.get('thickness')) || undefined,
+    width: Number(searchParams.get('width')) || undefined,
+    length: Number(searchParams.get('length')) || undefined,
+    quality: ((): StoreWarehouseSchema['GetProducts']['quality'] => {
+      const val = searchParams.get('quality');
+      if (val === null || val === undefined || val === '') return undefined;
+      if (['0', '1', '2', '3', 'extra', 'premium'].includes(val)) {
+        return val as StoreWarehouseSchema['GetProducts']['quality'];
+      }
+      return undefined;
+    })(),
     units,
     type: productType,
     types: productTypes,

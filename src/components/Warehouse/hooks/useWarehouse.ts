@@ -108,7 +108,6 @@ export const useWarehouse = (
   const warehouseQueryParams: StoreWarehouseSchema['GetProducts'] = {
     page,
     perPage,
-    isAvailable: Boolean(searchParams.get('isAvailable')) || undefined,
     price: searchParams.get('price')
       ? Number(searchParams.get('price'))
       : undefined,
@@ -116,13 +115,19 @@ export const useWarehouse = (
       ? new Date(searchParams.get('createdAt') as string)
       : undefined,
     name: searchParams.get('name') || '',
-    text: searchParams.get('text') || '',
     type: productType,
-    types:
-      searchParams
-        .get('types')
-        ?.split(',')
-        .map((type) => type as 'wood' | 'furniture' | 'other') || undefined,
+    width: Number(searchParams.get('width')) || undefined,
+    length: Number(searchParams.get('length')) || undefined,
+    thickness: Number(searchParams.get('thickness')) || undefined,
+    quality: ((): StoreWarehouseSchema['GetProducts']['quality'] => {
+      const val = searchParams.get('quality');
+      if (val === null || val === undefined || val === '') return undefined;
+      if (['0', '1', '2', '3', 'extra', 'premium'].includes(val)) {
+        return val as StoreWarehouseSchema['GetProducts']['quality'];
+      }
+      return undefined;
+    })(),
+    woodTypeId: searchParams.get('woodTypeId') || undefined,
     sortBy: warehouseSortBy,
     sortDirection,
   };

@@ -14,11 +14,12 @@ export const renderFilterDropdown = (
   clearFilter: (key: string) => void,
   t: (key: string) => string,
   sortField: string,
-  showSearch: boolean = true
+  showSearch: boolean = true,
+  selectOptions?: Array<{ label: string; value: string }>
 ) => {
   return (
     <div className='p-2 space-y-2 w-[220px]'>
-      {showSearch && (
+      {showSearch && !selectOptions && (
         <Input
           value={searchValues[key]}
           suffix={<SearchOutlined />}
@@ -27,6 +28,22 @@ export const renderFilterDropdown = (
             setSearchValues({ ...searchValues, [key]: e.target.value })
           }
           onPressEnter={handleSearch}
+        />
+      )}
+      {selectOptions && (
+        <Select
+          className='w-[205px]'
+          placeholder={t('search')}
+          options={selectOptions}
+          value={searchValues[key] || undefined}
+          onChange={(value) => {
+            setSearchValues({ ...searchValues, [key]: value });
+          }}
+          allowClear
+          showSearch
+          filterOption={(input, option) =>
+            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+          }
         />
       )}
       <Select
@@ -43,7 +60,7 @@ export const renderFilterDropdown = (
         }}
       />
       <div className='flex justify-between'>
-        {showSearch && (
+        {(showSearch || selectOptions) && (
           <Button size='small' type='primary' onClick={handleSearch}>
             {t('search')}
           </Button>
