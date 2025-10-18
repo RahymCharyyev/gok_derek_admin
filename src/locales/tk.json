@@ -244,5 +244,7 @@
   "closed": "Ugradylan",
   "statusUpdated": "Ýagdaýy üstünlikli üýtgedildi",
   "statusUpdateError": "Ýagdaýy üýtgedilende ýalňyşlyk döredi",
-  "status": "Ýagdaýy"
+  "status": "Ýagdaýy",
+  "filterByDate": "Sene boýunça görmek",
+  "selectDate": "Sene saýlaň"
 }

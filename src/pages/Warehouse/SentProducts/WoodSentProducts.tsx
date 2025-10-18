@@ -5,6 +5,8 @@ import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import { useWoodWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWarehouseHistory/useWoodWarehouseHistoryTableColumn';
 import TableLayout from '@/layout/TableLayout';
 import { SendOutlined } from '@ant-design/icons';
+import { DatePicker } from 'antd';
+import dayjs, { type Dayjs } from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -35,19 +37,37 @@ const WoodSentProducts = () => {
     name: '',
   });
 
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(() => {
+    const dateParam = searchParams.get('createdAt');
+    return dateParam ? dayjs(dateParam) : null;
+  });
+
   const handleSearch = useCallback(() => {
     Object.entries(searchValues).forEach(([key, value]) => {
       setFilter(key, value);
     });
   }, [searchValues, setFilter]);
 
+  const handleDateChange = useCallback(
+    (date: Dayjs | null) => {
+      setSelectedDate(date);
+      if (date) {
+        setFilter('createdAt', date.format('YYYY-MM-DD'));
+      } else {
+        clearFilter('createdAt');
+      }
+    },
+    [setFilter, clearFilter]
+  );
+
   const resetDisabled = useMemo(() => {
     return (
       Object.values(searchValues).every((v) => !v) &&
       !query.sortBy &&
-      !query.sortDirection
+      !query.sortDirection &&
+      !selectedDate
     );
-  }, [searchValues, query]);
+  }, [searchValues, query, selectedDate]);
 
   const columns = useSentWoodProductsTableColumn({
     t,
@@ -100,13 +120,28 @@ const WoodSentProducts = () => {
     <>
       <TableLayout
         title={() => (
-          <Toolbar
-            title={t('sentProducts')}
-            icon={<SendOutlined />}
-            onReset={resetFilters}
-            resetDisabled={resetDisabled}
-            count={warehouseSentProductsQuery.data?.body.count}
-          />
+          <>
+            <Toolbar
+              title={t('sentProducts')}
+              icon={<SendOutlined />}
+              onReset={() => {
+                setSelectedDate(null);
+                resetFilters();
+              }}
+              resetDisabled={resetDisabled}
+              count={warehouseSentProductsQuery.data?.body.count}
+            />
+            <div className='mt-4 flex items-center gap-2'>
+              <span className='font-medium'>{t('filterByDate')}:</span>
+              <DatePicker
+                value={selectedDate}
+                onChange={handleDateChange}
+                format='YYYY-MM-DD'
+                placeholder={t('selectDate')}
+                allowClear
+              />
+            </div>
+          </>
         )}
         loading={warehouseSentProductsQuery.isLoading}
         columns={columns}

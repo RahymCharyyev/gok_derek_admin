@@ -4,7 +4,9 @@ import { useOrderedOtherTableColumn } from '@/components/Warehouse/hooks/useOrde
 import { useOrders } from '@/components/Warehouse/hooks/useOrders';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import TableLayout from '@/layout/TableLayout';
-import { Form, InputNumber, message, Modal } from 'antd';
+import { DatePicker, Form, InputNumber, message, Modal } from 'antd';
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RiOrderPlayLine } from 'react-icons/ri';
@@ -31,6 +33,10 @@ const OrderedWarehouseOtherProducts = () => {
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     productName: '',
   });
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(() => {
+    const dateParam = searchParams.get('createdAt');
+    return dateParam ? dayjs(dateParam) : null;
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const [form] = useForm();
@@ -40,6 +46,18 @@ const OrderedWarehouseOtherProducts = () => {
       setFilter(key, value);
     });
   }, [searchValues, setFilter]);
+
+  const handleDateChange = useCallback(
+    (date: Dayjs | null) => {
+      setSelectedDate(date);
+      if (date) {
+        setFilter('createdAt', date.format('YYYY-MM-DD'));
+      } else {
+        clearFilter('createdAt');
+      }
+    },
+    [setFilter, clearFilter]
+  );
 
   const resetDisabled = useMemo(() => {
     return (
@@ -138,13 +156,25 @@ const OrderedWarehouseOtherProducts = () => {
     <>
       <TableLayout
         title={() => (
-          <Toolbar
-            title={t('orderedProducts')}
-            icon={<RiOrderPlayLine />}
-            onReset={resetFilters}
-            resetDisabled={resetDisabled}
-            count={ordersQuery.data?.body.count}
-          />
+          <>
+            <Toolbar
+              title={t('orderedProducts')}
+              icon={<RiOrderPlayLine />}
+              onReset={resetFilters}
+              resetDisabled={resetDisabled}
+              count={ordersQuery.data?.body.count}
+            />
+            <div className='mt-4 flex items-center gap-2'>
+              <span className='font-medium'>{t('filterByDate')}:</span>
+              <DatePicker
+                value={selectedDate}
+                onChange={handleDateChange}
+                format='DD.MM.YYYY'
+                placeholder={t('selectDate')}
+                allowClear
+              />
+            </div>
+          </>
         )}
         loading={ordersQuery.isLoading}
         columns={columns}

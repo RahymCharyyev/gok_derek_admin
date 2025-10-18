@@ -119,7 +119,6 @@ const WoodProductsWarehouseHistory = () => {
       clearFilter(key);
     },
     sortOptions: ['asc', 'desc'],
-    handleOpenTransferModal,
   });
 
   if (warehouseHistoryQuery.isError) {
