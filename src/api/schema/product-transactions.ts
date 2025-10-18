@@ -4,10 +4,12 @@ import {productSchema} from './product';
 import {storeSchema} from './store';
 import {userSchema} from './user';
 import {storeWorkshopSchema} from './store-workshop';
+import {orderSchema} from './order';
 
 const schema = z.object({
   id: z.string().uuid(),
   type: z.enum(['transfer', 'sale', 'production', 'receipt']),
+  orderId: z.string().uuid().nullish(),
   createdById: z.string().uuid(),
   productId: z.string().uuid(),
   fromStoreId: z.string().uuid(),
@@ -21,6 +23,7 @@ const schema = z.object({
   fromStore: z.lazy(() => storeSchema.schema.partial().nullish()),
   toStore: z.lazy(() => storeSchema.schema.partial().nullish()),
   createdBy: z.lazy(() => userSchema.schema.partial().nullish()),
+  order: z.lazy(() => orderSchema.schema.partial().nullish()),
 });
 
 const sortKeys = schema.pick({
@@ -59,6 +62,7 @@ const create = schema.pick({
   toStoreId: true,
   quantity: true,
   price: true,
+  orderId: true,
 });
 
 const edit = create.partial();

@@ -64,6 +64,14 @@ export const storeWarehouseContract = c.router(
         200: productTransactionSchema.getAllRes,
       },
     },
+    setOrderStatus: {
+      method: 'PUT',
+      path: '/order/status',
+      body: schema.setOrderStatus,
+      responses: {
+        201: common.result.nullish(),
+      },
+    },
 
     getOne: {
       method: 'GET',

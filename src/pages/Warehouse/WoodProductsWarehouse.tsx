@@ -58,27 +58,25 @@ const WoodProductsWarehouse = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
-    if (selectedProductType) {
-      params.set('name', selectedProductType);
-    } else {
-      params.delete('name');
-    }
+
     if (debouncedSearchProductValue.trim()) {
       params.set('name', debouncedSearchProductValue.trim());
     }
     setProductsSearchParams(params);
-  }, [
-    debouncedSearchProductValue,
-    setProductsSearchParams,
-    searchParams,
-    selectedProductType,
-  ]);
+  }, [debouncedSearchProductValue, setProductsSearchParams, searchParams]);
 
   const handleSearch = useCallback(() => {
+    const params = new URLSearchParams(searchParams);
     Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
+      if (value === null || value === '') {
+        params.delete(key);
+      } else {
+        params.set(key, String(value));
+      }
     });
-  }, [searchValues, setFilter]);
+    params.set('page', '1'); // Reset to first page when searching
+    setSearchParams(params);
+  }, [searchValues, searchParams, setSearchParams]);
 
   const resetDisabled = useMemo(() => {
     return (

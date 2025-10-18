@@ -173,6 +173,13 @@ export const useWarehouse = (
     },
   });
 
+  const setOrderStatusMutation = useMutation({
+    mutationFn: (body: any) => tsr.warehouse.setOrderStatus.mutate({ body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['warehouse'] });
+    },
+  });
+
   return {
     query,
     searchParams,
@@ -187,6 +194,7 @@ export const useWarehouse = (
     transferProductMutation,
     transferOrderedProductMutation,
     warehouseSentProductsQuery,
+    setOrderStatusMutation,
     handleTableChange,
     setFilter,
     clearFilter,

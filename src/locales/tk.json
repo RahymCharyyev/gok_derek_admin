@@ -238,5 +238,11 @@
   "transfer": "Geçirilen",
   "sale": "Satylan",
   "production": "Öndürilen",
-  "receipt": "Goşulan"
+  "receipt": "Goşulan",
+  "processing": "Işlenilýär",
+  "pending": "Täze goşulan",
+  "closed": "Ugradylan",
+  "statusUpdated": "Ýagdaýy üstünlikli üýtgedildi",
+  "statusUpdateError": "Ýagdaýy üýtgedilende ýalňyşlyk döredi",
+  "status": "Ýagdaýy"
 }

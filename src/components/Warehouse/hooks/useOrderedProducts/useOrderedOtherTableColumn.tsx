@@ -1,6 +1,6 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
 import { DownOutlined, PlusCircleFilled } from '@ant-design/icons';
-import { Button } from 'antd';
+import { Button, Select, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 
@@ -16,6 +16,7 @@ interface UseOrderedOtherTableColumnProps {
   clearFilter: (key: string) => void;
   sortOptions: string[];
   handleCreateOrder?: (record: any) => void;
+  handleStatusChange?: (record: any) => void;
 }
 
 export const useOrderedOtherTableColumn = ({
@@ -29,7 +30,20 @@ export const useOrderedOtherTableColumn = ({
   clearFilter,
   sortOptions,
   handleCreateOrder,
+  handleStatusChange,
 }: UseOrderedOtherTableColumnProps): ColumnsType<any> => {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'orange';
+      case 'processing':
+        return 'blue';
+      case 'closed':
+        return 'green';
+      default:
+        return 'default';
+    }
+  };
   return [
     {
       title: '№',
@@ -180,6 +194,40 @@ export const useOrderedOtherTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
+    },
+    {
+      title: t('status'),
+      dataIndex: 'status',
+      key: 'status',
+      render: (status, record) => (
+        <Select
+          value={status}
+          style={{ width: '100%', minWidth: 120 }}
+          onChange={(newStatus) => {
+            handleStatusChange?.({ ...record, status: newStatus });
+          }}
+          options={[
+            {
+              value: 'pending',
+              label: (
+                <Tag color={getStatusColor('pending')}>{t('pending')}</Tag>
+              ),
+            },
+            {
+              value: 'processing',
+              label: (
+                <Tag color={getStatusColor('processing')}>
+                  {t('processing')}
+                </Tag>
+              ),
+            },
+            {
+              value: 'closed',
+              label: <Tag color={getStatusColor('closed')}>{t('closed')}</Tag>,
+            },
+          ]}
+        />
+      ),
     },
     {
       title: t('action'),

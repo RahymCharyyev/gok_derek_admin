@@ -25,7 +25,8 @@ const OrderedWarehouseWoodProducts = () => {
     searchParams,
   } = useOrders('wood');
 
-  const { transferOrderedProductMutation } = useWarehouse();
+  const { transferOrderedProductMutation, setOrderStatusMutation } =
+    useWarehouse();
 
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     productName: '',
@@ -74,6 +75,23 @@ const OrderedWarehouseWoodProducts = () => {
     }
   };
 
+  const handleStatusChange = async (record: any) => {
+    try {
+      const response = await setOrderStatusMutation.mutateAsync({
+        orderId: record.id,
+        status: record.status,
+      });
+      if (response.status === 200 || response.status === 201) {
+        message.success(t('statusUpdated'));
+        ordersQuery.refetch();
+      } else {
+        message.error((response.body as any).message);
+      }
+    } catch {
+      message.error(t('statusUpdateError'));
+    }
+  };
+
   const columns = useOrderedWoodTableColumn({
     t,
     searchValues,
@@ -89,6 +107,7 @@ const OrderedWarehouseWoodProducts = () => {
     },
     sortOptions: ['asc', 'desc'],
     handleCreateOrder,
+    handleStatusChange,
   });
 
   if (ordersQuery.isError) {
@@ -109,7 +128,6 @@ const OrderedWarehouseWoodProducts = () => {
       productQuality: item.product?.wood?.quality || '',
       woodUnits: item.product?.wood?.units || '',
       quantity: item.quantity || '',
-      status: item.status || '',
       productQuantity: item.product?.productQuantity || 0,
       noSendQuantity:
         Number(item.product?.productQuantity || 0) -
@@ -117,6 +135,7 @@ const OrderedWarehouseWoodProducts = () => {
       createdBy: `${item?.createdBy?.firstName || ''} ${
         item?.createdBy?.lastName || ''
       }`,
+      status: item.status || '',
     })) || [];
 
   return (

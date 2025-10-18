@@ -8,7 +8,7 @@ import {
   PlusCircleFilled,
   SearchOutlined,
 } from '@ant-design/icons';
-import { Button, Tag } from 'antd';
+import { Button, Select, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 
@@ -26,6 +26,7 @@ interface UseOrderedWoodTableColumnProps {
   handleOpenEditModal?: (record: any) => void;
   confirmDelete?: (record: any) => void;
   handleCreateOrder?: (record: any) => void;
+  handleStatusChange?: (record: any) => void;
 }
 
 export const useOrderedWoodTableColumn = ({
@@ -41,6 +42,7 @@ export const useOrderedWoodTableColumn = ({
   handleOpenEditModal,
   confirmDelete,
   handleCreateOrder,
+  handleStatusChange,
 }: UseOrderedWoodTableColumnProps): ColumnsType<any> => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -303,7 +305,40 @@ export const useOrderedWoodTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
-      //   render: (record) => <div>{record}</div>,
+    },
+    {
+      title: t('status'),
+      dataIndex: 'status',
+      key: 'status',
+      render: (status, record) => (
+        <Select
+          value={status}
+          style={{ width: '100%', minWidth: 120 }}
+          onChange={(newStatus) => {
+            handleStatusChange?.({ ...record, status: newStatus });
+          }}
+          options={[
+            {
+              value: 'pending',
+              label: (
+                <Tag color={getStatusColor('pending')}>{t('pending')}</Tag>
+              ),
+            },
+            {
+              value: 'processing',
+              label: (
+                <Tag color={getStatusColor('processing')}>
+                  {t('processing')}
+                </Tag>
+              ),
+            },
+            {
+              value: 'closed',
+              label: <Tag color={getStatusColor('closed')}>{t('closed')}</Tag>,
+            },
+          ]}
+        />
+      ),
     },
     {
       title: t('action'),
