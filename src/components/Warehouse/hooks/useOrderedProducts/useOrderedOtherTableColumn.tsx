@@ -65,7 +65,7 @@ export const useOrderedOtherTableColumn = ({
       key: 'productName',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productName',
+          'name',
           t('productName'),
           searchValues,
           setSearchValues,
@@ -76,7 +76,7 @@ export const useOrderedOtherTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productName',
+          'name',
           false
         ),
       filterIcon: () => <DownOutlined />,

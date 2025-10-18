@@ -63,7 +63,7 @@ export const useSentWoodProductsTableColumn = ({
       key: 'productName',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productName',
+          'name',
           t('productName'),
           searchValues,
           setSearchValues,
@@ -74,7 +74,7 @@ export const useSentWoodProductsTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productName'
+          'name'
         ),
       filterIcon: () => <SearchOutlined />,
       render: (record) => <div>{record}</div>,
@@ -85,7 +85,7 @@ export const useSentWoodProductsTableColumn = ({
       key: 'productThickness',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productThickness',
+          'thickness',
           t('woodThickness'),
           searchValues,
           setSearchValues,
@@ -96,7 +96,7 @@ export const useSentWoodProductsTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productThickness'
+          'thickness'
         ),
       filterIcon: () => <SearchOutlined />,
       render: (record) => <div>{t(record)}</div>,
@@ -107,7 +107,7 @@ export const useSentWoodProductsTableColumn = ({
       key: 'productWidth',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productWidth',
+          'width',
           t('woodWidth'),
           searchValues,
           setSearchValues,
@@ -118,7 +118,7 @@ export const useSentWoodProductsTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productWidth'
+          'width'
         ),
       filterIcon: () => <SearchOutlined />,
     },
@@ -128,7 +128,7 @@ export const useSentWoodProductsTableColumn = ({
       key: 'productLength',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productLength',
+          'length',
           t('woodLength'),
           searchValues,
           setSearchValues,
@@ -139,7 +139,7 @@ export const useSentWoodProductsTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productLength',
+          'length',
           false
         ),
       filterIcon: () => <DownOutlined />,
@@ -150,7 +150,7 @@ export const useSentWoodProductsTableColumn = ({
       key: 'productWoodType',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productWoodType',
+          'woodTypeId',
           t('woodType'),
           searchValues,
           setSearchValues,
@@ -161,7 +161,7 @@ export const useSentWoodProductsTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productWoodType',
+          'woodTypeId',
           false
         ),
       filterIcon: () => <DownOutlined />,
@@ -174,7 +174,7 @@ export const useSentWoodProductsTableColumn = ({
       key: 'productQuality',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productQuality',
+          'quality',
           t('woodQuality'),
           searchValues,
           setSearchValues,
@@ -185,7 +185,7 @@ export const useSentWoodProductsTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productQuality',
+          'quality',
           false
         ),
       filterIcon: () => <DownOutlined />,

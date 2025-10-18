@@ -1,11 +1,5 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
-import {
-  DownOutlined,
-  HistoryOutlined,
-  SearchOutlined,
-  TransactionOutlined,
-} from '@ant-design/icons';
-import { Button } from 'antd';
+import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 
@@ -20,9 +14,6 @@ interface UseWoodWarehouseHistoryTableColumnProps {
   handleSearch: () => void;
   clearFilter: (key: string) => void;
   sortOptions: string[];
-  isShopProducts?: boolean;
-  handleOpenTransferModal?: (record: any) => void;
-  handleOpenSaleModal?: (record: any) => void;
 }
 
 export const useWoodWarehouseHistoryTableColumn = ({
@@ -35,9 +26,6 @@ export const useWoodWarehouseHistoryTableColumn = ({
   handleSearch,
   clearFilter,
   sortOptions,
-  isShopProducts,
-  handleOpenTransferModal,
-  handleOpenSaleModal,
 }: UseWoodWarehouseHistoryTableColumnProps): ColumnsType<any> => {
   return [
     {
@@ -52,7 +40,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
       key: 'productName',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productName',
+          'name',
           t('productName'),
           searchValues,
           setSearchValues,
@@ -63,7 +51,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productName'
+          'name'
         ),
       filterIcon: () => <SearchOutlined />,
       render: (record) => <div>{record}</div>,
@@ -74,7 +62,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
       key: 'productThickness',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productThickness',
+          'thickness',
           t('woodThickness'),
           searchValues,
           setSearchValues,
@@ -85,7 +73,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productThickness'
+          'thickness'
         ),
       filterIcon: () => <SearchOutlined />,
       render: (record) => <div>{t(record)}</div>,
@@ -96,7 +84,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
       key: 'productWidth',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productWidth',
+          'width',
           t('woodWidth'),
           searchValues,
           setSearchValues,
@@ -107,7 +95,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productWidth'
+          'width'
         ),
       filterIcon: () => <SearchOutlined />,
     },
@@ -117,7 +105,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
       key: 'productLength',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productLength',
+          'length',
           t('woodLength'),
           searchValues,
           setSearchValues,
@@ -128,7 +116,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productLength',
+          'length',
           false
         ),
       filterIcon: () => <DownOutlined />,
@@ -139,7 +127,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
       key: 'productWoodType',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productWoodType',
+          'woodTypeId',
           t('woodType'),
           searchValues,
           setSearchValues,
@@ -150,7 +138,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productWoodType',
+          'woodTypeId',
           false
         ),
       filterIcon: () => <DownOutlined />,
@@ -163,7 +151,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
       key: 'productQuality',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productQuality',
+          'quality',
           t('woodQuality'),
           searchValues,
           setSearchValues,
@@ -174,7 +162,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productQuality',
+          'quality',
           false
         ),
       filterIcon: () => <DownOutlined />,

@@ -78,7 +78,7 @@ export const useOrderedWoodTableColumn = ({
       key: 'productName',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productName',
+          'name',
           t('productName'),
           searchValues,
           setSearchValues,
@@ -89,7 +89,7 @@ export const useOrderedWoodTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productName',
+          'name',
           false
         ),
       filterIcon: () => <DownOutlined />,
@@ -103,7 +103,7 @@ export const useOrderedWoodTableColumn = ({
           key: 'productThickness',
           filterDropdown: () =>
             renderFilterDropdown(
-              'productThickness',
+              'thickness',
               t('woodThickness'),
               searchValues,
               setSearchValues,
@@ -114,7 +114,7 @@ export const useOrderedWoodTableColumn = ({
               handleSearch,
               clearFilter,
               t,
-              'productThickness',
+              'thickness',
               false
             ),
           filterIcon: () => <DownOutlined />,
@@ -127,7 +127,7 @@ export const useOrderedWoodTableColumn = ({
           key: 'productWidth',
           filterDropdown: () =>
             renderFilterDropdown(
-              'productWidth',
+              'width',
               t('width'),
               searchValues,
               setSearchValues,
@@ -138,7 +138,7 @@ export const useOrderedWoodTableColumn = ({
               handleSearch,
               clearFilter,
               t,
-              'productWidth',
+              'width',
               false
             ),
           filterIcon: () => <DownOutlined />,
@@ -150,7 +150,7 @@ export const useOrderedWoodTableColumn = ({
           key: 'productLength',
           filterDropdown: () =>
             renderFilterDropdown(
-              'productLength',
+              'length',
               t('length'),
               searchValues,
               setSearchValues,
@@ -161,7 +161,7 @@ export const useOrderedWoodTableColumn = ({
               handleSearch,
               clearFilter,
               t,
-              'productLength',
+              'length',
               false
             ),
           filterIcon: () => <DownOutlined />,
@@ -175,7 +175,7 @@ export const useOrderedWoodTableColumn = ({
       key: 'productQuality',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productQuality',
+          'quality',
           t('woodQuality'),
           searchValues,
           setSearchValues,
@@ -186,7 +186,7 @@ export const useOrderedWoodTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productQuality',
+          'quality',
           false
         ),
       filterIcon: () => <DownOutlined />,

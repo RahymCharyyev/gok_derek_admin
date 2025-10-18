@@ -63,7 +63,7 @@ export const useSentOtherProductsTableColumn = ({
       key: 'productName',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productName',
+          'name',
           t('productName'),
           searchValues,
           setSearchValues,
@@ -74,7 +74,7 @@ export const useSentOtherProductsTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productName'
+          'name'
         ),
       filterIcon: () => <SearchOutlined />,
       render: (record) => <div>{record}</div>,

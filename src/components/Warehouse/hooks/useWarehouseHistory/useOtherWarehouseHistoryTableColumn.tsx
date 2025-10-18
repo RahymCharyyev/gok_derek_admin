@@ -1,12 +1,5 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
-import {
-  DownOutlined,
-  HistoryOutlined,
-  SearchOutlined,
-  ShoppingCartOutlined,
-  TransactionOutlined,
-} from '@ant-design/icons';
-import { Button } from 'antd';
+import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 
@@ -21,9 +14,6 @@ interface UseOtherWarehouseHistoryTableColumnProps {
   handleSearch: () => void;
   clearFilter: (key: string) => void;
   sortOptions: string[];
-  isShopProducts?: boolean;
-  handleOpenTransferModal?: (record: any) => void;
-  handleOpenSaleModal?: (record: any) => void;
 }
 
 export const useOtherWarehouseHistoryTableColumn = ({
@@ -36,9 +26,6 @@ export const useOtherWarehouseHistoryTableColumn = ({
   handleSearch,
   clearFilter,
   sortOptions,
-  isShopProducts,
-  handleOpenTransferModal,
-  handleOpenSaleModal,
 }: UseOtherWarehouseHistoryTableColumnProps): ColumnsType<any> => {
   return [
     {
@@ -53,7 +40,7 @@ export const useOtherWarehouseHistoryTableColumn = ({
       key: 'productName',
       filterDropdown: () =>
         renderFilterDropdown(
-          'productName',
+          'name',
           t('name'),
           searchValues,
           setSearchValues,
@@ -64,7 +51,7 @@ export const useOtherWarehouseHistoryTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'productName'
+          'name'
         ),
       filterIcon: () => <SearchOutlined />,
       render: (record) => <div>{record}</div>,
