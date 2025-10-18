@@ -15,7 +15,8 @@ export const renderFilterDropdown = (
   t: (key: string) => string,
   sortField: string,
   showSearch: boolean = true,
-  selectOptions?: Array<{ label: string; value: string }>
+  selectOptions?: Array<{ label: string; value: string }>,
+  onSort?: (sortBy: string, sortDirection: 'asc' | 'desc') => void
 ) => {
   return (
     <div className='p-2 space-y-2 w-[220px]'>
@@ -55,8 +56,12 @@ export const renderFilterDropdown = (
         }))}
         value={sortDirectionParam || undefined}
         onChange={(value) => {
-          setSortBy(sortField);
-          setSortDirectionParam(value);
+          if (onSort) {
+            onSort(sortField, value);
+          } else {
+            setSortBy(sortField);
+            setSortDirectionParam(value);
+          }
         }}
       />
       <div className='flex justify-between'>

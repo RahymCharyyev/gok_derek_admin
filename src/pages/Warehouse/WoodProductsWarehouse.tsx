@@ -46,6 +46,10 @@ const WoodProductsWarehouse = () => {
   const [editingData, setEditingData] = useState<any | null>(null);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
+    thickness: '',
+    width: '',
+    length: '',
+    quality: '',
     woodTypeId: '',
   });
   const [isTransfer, setIsTransfer] = useState(false);
@@ -95,6 +99,17 @@ const WoodProductsWarehouse = () => {
     navigate('/warehouse/add-product?type=wood');
   };
 
+  const handleSort = useCallback(
+    (sortBy: string, sortDirection: 'asc' | 'desc') => {
+      const params = new URLSearchParams(searchParams);
+      params.set('sortBy', sortBy);
+      params.set('sortDirection', sortDirection);
+      params.set('page', '1'); // Reset to first page when sorting
+      setSearchParams(params);
+    },
+    [searchParams, setSearchParams]
+  );
+
   const columns = useWoodWarehouseTableColumn({
     t,
     searchValues,
@@ -111,6 +126,7 @@ const WoodProductsWarehouse = () => {
     sortOptions: ['asc', 'desc'],
     handleOpenTransferModal,
     woodTypes: woodTypesQuery.data?.body.data,
+    onSort: handleSort,
   });
 
   if (warehouseQuery.isError) {

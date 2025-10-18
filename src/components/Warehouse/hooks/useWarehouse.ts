@@ -70,7 +70,7 @@ export const useWarehouse = (
 
   const warehouseSortBy = getEnumParam(
     searchParams,
-    'warehouseSortBy',
+    'sortBy',
     [
       'type',
       'name',
@@ -80,6 +80,7 @@ export const useWarehouse = (
       'quality',
       'thickness',
       'width',
+      'length',
     ] as const,
     'createdAt'
   );

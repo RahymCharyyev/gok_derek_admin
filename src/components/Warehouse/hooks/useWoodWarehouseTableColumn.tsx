@@ -24,6 +24,7 @@ interface UseWoodWarehouseTableColumnProps {
   handleOpenTransferModal?: (record: any) => void;
   handleOpenSaleModal?: (record: any) => void;
   woodTypes?: Array<{ id: string; name: string }>;
+  onSort?: (sortBy: string, sortDirection: 'asc' | 'desc') => void;
 }
 
 export const useWoodWarehouseTableColumn = ({
@@ -39,6 +40,7 @@ export const useWoodWarehouseTableColumn = ({
   isShopProducts,
   handleOpenTransferModal,
   woodTypes,
+  onSort,
 }: UseWoodWarehouseTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
   return [
@@ -65,7 +67,10 @@ export const useWoodWarehouseTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'name'
+          'name',
+          true,
+          undefined,
+          onSort
         ),
       filterIcon: () => <SearchOutlined />,
       render: (record) => <div>{record}</div>,
@@ -87,7 +92,10 @@ export const useWoodWarehouseTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'thickness'
+          'thickness',
+          true,
+          undefined,
+          onSort
         ),
       filterIcon: () => <SearchOutlined />,
       render: (record) => <div>{t(record)}</div>,
@@ -109,7 +117,10 @@ export const useWoodWarehouseTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'width'
+          'width',
+          true,
+          undefined,
+          onSort
         ),
       filterIcon: () => <SearchOutlined />,
     },
@@ -130,7 +141,10 @@ export const useWoodWarehouseTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'length'
+          'length',
+          true,
+          undefined,
+          onSort
         ),
       filterIcon: () => <SearchOutlined />,
     },
@@ -153,7 +167,8 @@ export const useWoodWarehouseTableColumn = ({
           t,
           'woodTypeId',
           false,
-          woodTypes?.map((wt) => ({ label: wt.name, value: wt.id }))
+          woodTypes?.map((wt) => ({ label: wt.name, value: wt.id })),
+          onSort
         ),
       filterIcon: () => <DownOutlined />,
       render: (record) => <div>{record}</div>,
@@ -176,7 +191,10 @@ export const useWoodWarehouseTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'quality'
+          'quality',
+          true,
+          undefined,
+          onSort
         ),
       filterIcon: () => <SearchOutlined />,
       render: (record) => <div>{record}</div>,
@@ -185,23 +203,6 @@ export const useWoodWarehouseTableColumn = ({
       title: t('woodUnit'),
       dataIndex: 'productUnits',
       key: 'productUnits',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'productUnits',
-          t('woodUnit'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'productUnits',
-          false
-        ),
-      filterIcon: () => <DownOutlined />,
       render: (value) => {
         if (!Array.isArray(value)) return null;
         return value.map((e) => t(e.unit)).join(' / ');
