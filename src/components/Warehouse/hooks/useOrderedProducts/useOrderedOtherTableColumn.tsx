@@ -91,11 +91,11 @@ export const useOrderedOtherTableColumn = ({
     },
     {
       title: t('warehouseQuantity'),
-      dataIndex: 'warehouseQuantity',
-      key: 'warehouseQuantity',
+      dataIndex: 'productQuantity',
+      key: 'productQuantity',
       filterDropdown: () =>
         renderFilterDropdown(
-          'warehouseQuantity',
+          'productQuantity',
           t('warehouseQuantity'),
           searchValues,
           setSearchValues,
@@ -106,7 +106,7 @@ export const useOrderedOtherTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'warehouseQuantity',
+          'productQuantity',
           false
         ),
       filterIcon: () => <DownOutlined />,

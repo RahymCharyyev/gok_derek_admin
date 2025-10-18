@@ -67,7 +67,7 @@ const OrderedWarehouseWoodProducts = () => {
         form.resetFields();
         ordersQuery.refetch();
       } else {
-        message.error(t('addProductError'));
+        message.error((response.body as any).message);
       }
     } catch {
       message.error(t('addProductError'));
@@ -110,6 +110,10 @@ const OrderedWarehouseWoodProducts = () => {
       woodUnits: item.product?.wood?.units || '',
       quantity: item.quantity || '',
       status: item.status || '',
+      productQuantity: item.product?.productQuantity || 0,
+      noSendQuantity:
+        Number(item.product?.productQuantity || 0) -
+          Number(item.quantity || 0) || 0,
       createdBy: `${item?.createdBy?.firstName || ''} ${
         item?.createdBy?.lastName || ''
       }`,

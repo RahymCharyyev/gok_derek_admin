@@ -214,11 +214,11 @@ export const useOrderedWoodTableColumn = ({
     },
     {
       title: t('warehouseQuantity'),
-      dataIndex: 'warehouseQuantity',
-      key: 'warehouseQuantity',
+      dataIndex: 'productQuantity',
+      key: 'productQuantity',
       filterDropdown: () =>
         renderFilterDropdown(
-          'warehouseQuantity',
+          'productQuantity',
           t('warehouseQuantity'),
           searchValues,
           setSearchValues,
@@ -229,7 +229,7 @@ export const useOrderedWoodTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'warehouseQuantity',
+          'productQuantity',
           false
         ),
       filterIcon: () => <DownOutlined />,

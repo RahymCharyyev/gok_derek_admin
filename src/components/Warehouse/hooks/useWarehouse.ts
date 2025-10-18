@@ -137,7 +137,7 @@ export const useWarehouse = (
     queryData: { query },
   });
 
-  const warehouseSentProductsQuery = tsr.warehouse.sentProducts.useQuery({
+  const warehouseSentProductsQuery = tsr.warehouse.getSentProducts.useQuery({
     queryKey: [
       'warehouse-sent-products',
       Object.fromEntries(searchParams.entries()),

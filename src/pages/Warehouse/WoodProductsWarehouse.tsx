@@ -153,11 +153,8 @@ const WoodProductsWarehouse = () => {
       const response = await transferProductMutation.mutateAsync(values);
       if (response.status == 200 || response.status == 201) {
         message.success(t('productTransfered'));
-      } else if (response.status == 404) {
-        const errorBody = response.body as { message: string };
-        message.error(errorBody.message);
       } else {
-        message.error(t('transferProductError'));
+        message.error((response.body as any).message);
       }
       setIsModalOpen(false);
       setEditingData(null);

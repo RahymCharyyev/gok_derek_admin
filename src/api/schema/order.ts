@@ -22,7 +22,7 @@ const sortable = schema.pick({status: true, createdAt: true}).keyof();
 const sort = z.object({sortBy: sortable.default('createdAt'), sortDirection: sortDirection.default('desc')});
 
 const getAll = schema
-  .extend({productType: z.lazy(() => productSchema.schema.shape.type)})
+  .extend({productType: z.lazy(() => productSchema.schema.shape.type), storeId: z.string().uuid().optional()})
   .partial()
   .merge(sort)
   .merge(commonQuery);

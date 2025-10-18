@@ -27,7 +27,7 @@ const edit = create.partial();
 const addProduct = z.object({productId: z.string().uuid(), quantity: z.coerce.number().int()});
 const transferProduct = z.object({
   productId: z.string().uuid(),
-  quantity: z.coerce.number().int(),
+  quantity: z.coerce.number().min(1).int(),
   toStoreId: z.string().uuid(),
 });
 const getProducts = productSchema.getAll;
@@ -37,7 +37,7 @@ const getProductsRes = productSchema.getAllRes
 
 const transferOrderedProduct = z.object({
   orderId: z.string().uuid(),
-  quantity: z.coerce.number().int().nullish(),
+  quantity: z.coerce.number().min(1).int().nullish(),
 });
 
 type Schema = z.infer<typeof schema>;

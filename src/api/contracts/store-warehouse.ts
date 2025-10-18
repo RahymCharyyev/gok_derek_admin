@@ -56,7 +56,7 @@ export const storeWarehouseContract = c.router(
         200: schema.getProductsRes,
       },
     },
-    sentProducts: {
+    getSentProducts: {
       method: 'GET',
       path: '/products-sent/all',
       query: productTransactionSchema.getAll,
