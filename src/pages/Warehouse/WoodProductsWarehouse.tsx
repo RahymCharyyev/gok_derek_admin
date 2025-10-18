@@ -147,7 +147,7 @@ const WoodProductsWarehouse = () => {
       productQuality: item?.wood?.quality || '',
       productUnits: item?.wood?.units || [],
       productWoodType: item?.wood?.woodType?.name || '',
-      m3: '',
+      m3: item.volume || '',
       quantity: item?.productQuantity || 0,
     })) || [];
 
@@ -193,7 +193,9 @@ const WoodProductsWarehouse = () => {
         <Button onClick={() => navigate('/warehouse/sent/wood')}>
           {t('sentProducts')}
         </Button>
-        <div>{t('allPrice')}</div>
+        <div>
+          {t('allPrice')} {warehouseQuery.data?.body.totalVolume} m3
+        </div>
       </div>
       <TableLayout
         title={() => (

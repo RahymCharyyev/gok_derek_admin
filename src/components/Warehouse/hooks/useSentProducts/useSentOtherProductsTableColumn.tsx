@@ -80,29 +80,6 @@ export const useSentOtherProductsTableColumn = ({
       render: (record) => <div>{record}</div>,
     },
     {
-      title: t('M3'),
-      dataIndex: 'm3',
-      key: 'm3',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'm3',
-          t('M3'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'm3',
-          false
-        ),
-      filterIcon: () => <DownOutlined />,
-      render: (record) => <div>{record}</div>,
-    },
-    {
       title: t('sentQuantity'),
       dataIndex: 'quantity',
       key: 'quantity',

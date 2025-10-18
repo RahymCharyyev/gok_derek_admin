@@ -31,9 +31,10 @@ const transferProduct = z.object({
   toStoreId: z.string().uuid(),
 });
 const getProducts = productSchema.getAll;
-const getProductsRes = productSchema.getAllRes
-  .pick({count: true})
-  .extend({data: productSchema.schema.partial().array()});
+const getProductsRes = productSchema.getAllRes.pick({count: true}).extend({
+  data: productSchema.schema.extend({volume: z.coerce.number().int().nullish()}).partial().array(),
+  totalVolume: z.coerce.number().int().nullish(),
+});
 
 const transferOrderedProduct = z.object({
   orderId: z.string().uuid(),
