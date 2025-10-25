@@ -39,6 +39,7 @@ export const useWoodWarehouseTableColumn = ({
   sortOptions,
   isShopProducts,
   handleOpenTransferModal,
+  handleOpenSaleModal,
   woodTypes,
   onSort,
 }: UseWoodWarehouseTableColumnProps): ColumnsType<any> => {
@@ -221,35 +222,54 @@ export const useWoodWarehouseTableColumn = ({
       key: 'quantity',
       render: (record) => <div>{record}</div>,
     },
-    ...(!isShopProducts
-      ? [
-          {
-            title: t('actions'),
-            key: 'actions',
-            render: (_: any, record: any) => (
-              <div className='flex items-center gap-2'>
-                <Button
-                  size='small'
-                  type='primary'
-                  icon={<TransactionOutlined />}
-                  onClick={() => handleOpenTransferModal?.(record)}
-                >
-                  {t('sendProduct')}
-                </Button>
-                <Button
-                  size='small'
-                  type='primary'
-                  icon={<HistoryOutlined />}
-                  onClick={() =>
-                    navigate(`/warehouse/wood/history?productId=${record.id}`)
-                  }
-                >
-                  {t('history')}
-                </Button>
-              </div>
-            ),
-          },
-        ]
-      : []),
+    {
+      title: t('actions'),
+      key: 'actions',
+      render: (_: any, record: any) => (
+        <div className='flex items-center gap-2'>
+          {isShopProducts ? (
+            <>
+              <Button
+                size='small'
+                type='primary'
+                icon={<TransactionOutlined />}
+                onClick={() => handleOpenTransferModal?.(record)}
+              >
+                {t('transferProduct')}
+              </Button>
+              <Button
+                size='small'
+                type='primary'
+                icon={<TransactionOutlined />}
+                onClick={() => handleOpenSaleModal?.(record)}
+              >
+                {t('saleProduct')}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                size='small'
+                type='primary'
+                icon={<TransactionOutlined />}
+                onClick={() => handleOpenTransferModal?.(record)}
+              >
+                {t('sendProduct')}
+              </Button>
+              <Button
+                size='small'
+                type='primary'
+                icon={<HistoryOutlined />}
+                onClick={() =>
+                  navigate(`/warehouse/wood/history?productId=${record.id}`)
+                }
+              >
+                {t('history')}
+              </Button>
+            </>
+          )}
+        </div>
+      ),
+    },
   ];
 };

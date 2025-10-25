@@ -21,6 +21,7 @@ interface ToolbarProps {
   thirdTitle?: string;
   thirdIcon?: ReactNode;
   thirdCreate?: () => void;
+  customButton?: ReactNode;
 }
 
 const Toolbar: FC<ToolbarProps> = ({
@@ -38,15 +39,18 @@ const Toolbar: FC<ToolbarProps> = ({
   thirdTitle,
   thirdIcon,
   thirdCreate,
+  customButton,
 }) => {
   const { t } = useTranslation();
   const screens = useBreakpoint();
   return (
     <div className='flex flex-col xs:flex-row gap-4'>
       <div className='flex flex-wrap gap-2 items-center'>
-        <Button icon={icon} type='primary' onClick={onCreate}>
-          {title}
-        </Button>
+        {customButton || (
+          <Button icon={icon} type='primary' onClick={onCreate}>
+            {title}
+          </Button>
+        )}
         {hasSecondButton && (
           <Button icon={secondIcon} onClick={secondCreate}>
             {secondTitle}

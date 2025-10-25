@@ -1,3 +1,4 @@
+import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
 import { useShops } from '@/components/Shops/hooks/useShops';
 import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
@@ -6,19 +7,16 @@ import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import { useWoodWarehouseTableColumn } from '@/components/Warehouse/hooks/useWoodWarehouseTableColumn';
 import TableLayout from '@/layout/TableLayout';
-import {
-  BankOutlined,
-  MinusCircleOutlined,
-  TransactionOutlined,
-} from '@ant-design/icons';
-import { message } from 'antd';
+import { MinusCircleOutlined, TransactionOutlined } from '@ant-design/icons';
+import { Button, Dropdown, message, type MenuProps } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import TransferShopProductModal from '../../components/Shops/TransferShopProductModal';
 
 const ShopProducts = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { id } = useParams();
   const {
     query,
@@ -39,6 +37,13 @@ const ShopProducts = () => {
     addExpenseMutation,
     saleMutation,
   } = useShops();
+
+  // Fetch current shop data
+  const currentShopQuery = tsr.shop.getOne.useQuery({
+    queryKey: ['shop', id],
+    queryData: { params: { id: id || '' } },
+    enabled: !!id,
+  });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
@@ -83,6 +88,43 @@ const ShopProducts = () => {
     setSelectedProductId(record.productId);
   };
 
+  // Get menu items based on shop type
+  const getMenuItems = (): MenuProps['items'] => {
+    const shopType = currentShopQuery.data?.body?.type;
+
+    switch (shopType) {
+      case 'furniture':
+        return [
+          {
+            key: 'furniture',
+            label: t('furnitureProducts'),
+            onClick: () => navigate(`/shops/order/furniture`),
+          },
+        ];
+      case 'wood':
+        return [
+          {
+            key: 'wood',
+            label: t('woodProducts'),
+            onClick: () => navigate(`/shops/order/wood`),
+          },
+          {
+            key: 'other',
+            label: t('otherProducts'),
+            onClick: () => navigate(`/shops/order/other`),
+          },
+        ];
+      default:
+        return [
+          {
+            key: 'other',
+            label: t('otherOrder'),
+            onClick: () => navigate(`/shops/other/order?shop=${id}`),
+          },
+        ];
+    }
+  };
+
   const columns = useWoodWarehouseTableColumn({
     t,
     searchValues,
@@ -97,6 +139,7 @@ const ShopProducts = () => {
       clearFilter(key);
     },
     sortOptions: ['asc', 'desc'],
+    isShopProducts: true,
     handleOpenTransferModal: handleOpenAddModal,
     handleOpenSaleModal: handleOpenSaleModal,
   });
@@ -189,12 +232,13 @@ const ShopProducts = () => {
       <TableLayout
         title={() => (
           <Toolbar
-            title={t('createShop')}
-            icon={<BankOutlined />}
-            onCreate={() => {
-              setEditingData(null);
-              setIsModalOpen(true);
-            }}
+            customButton={
+              <Dropdown menu={{ items: getMenuItems() }} trigger={['click']}>
+                <Button type='primary' icon={<TransactionOutlined />}>
+                  {t('addOrder')}
+                </Button>
+              </Dropdown>
+            }
             secondTitle={t('addIncome')}
             secondIcon={<TransactionOutlined />}
             secondCreate={() => {
