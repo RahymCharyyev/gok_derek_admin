@@ -1,14 +1,16 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
 import { useShops } from '@/components/Shops/hooks/useShops';
+import { useFurnitureShopProductsTableColumn } from '@/components/Shops/hooks/useFurnitureShopProductsTableColumn';
+import { useOtherShopProductsTableColumn } from '@/components/Shops/hooks/useOtherShopProductsTableColumn';
+import { useWoodShopProductsTableColumn } from '@/components/Shops/hooks/useWoodShopProductsTableColumn';
 import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
 import SaleProductModal from '@/components/Shops/SaleProductModal';
 import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
-import { useWoodWarehouseTableColumn } from '@/components/Warehouse/hooks/useWoodWarehouseTableColumn';
 import TableLayout from '@/layout/TableLayout';
 import { MinusCircleOutlined, TransactionOutlined } from '@ant-design/icons';
-import { Button, Dropdown, message, type MenuProps } from 'antd';
+import { Button, Dropdown, message, Segmented, type MenuProps } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -22,7 +24,6 @@ const ShopProducts = () => {
     query,
     page,
     perPage,
-    warehouseHistoryQuery,
     handleTableChange,
     setFilter,
     clearFilter,
@@ -30,21 +31,7 @@ const ShopProducts = () => {
     searchParams,
   } = useWarehouse(id);
 
-  const {
-    shopsQuery,
-    transferProductMutation,
-    addIncomeMutation,
-    addExpenseMutation,
-    saleMutation,
-  } = useShops();
-
-  // Fetch current shop data
-  const currentShopQuery = tsr.shop.getOne.useQuery({
-    queryKey: ['shop', id],
-    queryData: { params: { id: id || '' } },
-    enabled: !!id,
-  });
-
+  // State declarations
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
   const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
@@ -53,6 +40,9 @@ const ShopProducts = () => {
   const [searchProductValue, setSearchProductValue] = useState('');
   const [editingData, setEditingData] = useState<any | null>(null);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
+  const [activeProductType, setActiveProductType] = useState<'wood' | 'other'>(
+    'wood'
+  );
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
     userId: '',
@@ -61,6 +51,31 @@ const ShopProducts = () => {
     creditLimit: '',
     address: '',
   });
+
+  // Fetch current shop data
+  const currentShopQuery = tsr.shop.getOne.useQuery({
+    queryKey: ['shop', id],
+    queryData: { params: { id: id || '' } },
+    enabled: !!id,
+  });
+
+  // Determine product types based on shop type
+  const shopType = currentShopQuery.data?.body?.type;
+  const productTypes: Array<'wood' | 'other' | 'furniture'> | undefined =
+    shopType === 'furniture'
+      ? ['furniture']
+      : shopType === 'wood'
+      ? [activeProductType]
+      : undefined;
+
+  const {
+    shopsQuery,
+    shopProductsQuery,
+    transferProductMutation,
+    addIncomeMutation,
+    addExpenseMutation,
+    saleMutation,
+  } = useShops(undefined, productTypes);
 
   const handleSearch = useCallback(() => {
     Object.entries(searchValues).forEach(([key, value]) => {
@@ -125,16 +140,18 @@ const ShopProducts = () => {
     }
   };
 
-  const columns = useWoodWarehouseTableColumn({
+  // Column configuration based on shop type
+  const columnProps = {
     t,
     searchValues,
     setSearchValues,
     sortBy: query.sortBy || '',
-    setSortBy: (value) => setFilter('sortBy', value),
+    setSortBy: (value: string) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
-    setSortDirectionParam: (value) => setFilter('sortDirection', value),
+    setSortDirectionParam: (value: 'asc' | 'desc') =>
+      setFilter('sortDirection', value),
     handleSearch,
-    clearFilter: (key) => {
+    clearFilter: (key: string) => {
       setSearchValues((prev) => ({ ...prev, [key]: '' }));
       clearFilter(key);
     },
@@ -142,32 +159,73 @@ const ShopProducts = () => {
     isShopProducts: true,
     handleOpenTransferModal: handleOpenAddModal,
     handleOpenSaleModal: handleOpenSaleModal,
-  });
+  };
 
-  if (warehouseHistoryQuery.isError) {
+  // Conditionally use the appropriate column hook
+  const furnitureColumns = useFurnitureShopProductsTableColumn(columnProps);
+  const woodColumns = useWoodShopProductsTableColumn(columnProps);
+  const otherColumns = useOtherShopProductsTableColumn(columnProps);
+
+  // Dynamic data mapping based on shop type and active product type
+  const data = useMemo(() => {
+    if (!shopProductsQuery.data?.body.data) return [];
+
+    return shopProductsQuery.data.body.data.map((item, index) => {
+      const baseData = {
+        key: item.id,
+        index: (page - 1) * perPage + (index + 1),
+        id: item.id,
+        productId: item.id,
+        productName: item?.name || '',
+        quantity: item.productQuantity || '',
+      };
+
+      // Furniture-specific fields
+      if (shopType === 'furniture') {
+        return {
+          ...baseData,
+          productCode: item?.furniture?.code || '',
+          actualPrice: item?.price || '',
+          sellPrice: item?.priceSelection || '',
+          benefit: (item?.priceSelection || 0) - (item?.price || 0),
+        };
+      }
+
+      // Wood-specific fields
+      if (shopType === 'wood' && activeProductType === 'wood' && item?.wood) {
+        return {
+          ...baseData,
+          productThickness: item.wood.thickness || '',
+          productWidth: item.wood.width || '',
+          productLength: item.wood.length || '',
+          productQuality: item.wood.quality || '',
+          productUnits: item.wood.units || [],
+          productWoodType: item.wood.woodType?.name || '',
+          m3: '',
+        };
+      }
+
+      // Other products
+      return {
+        ...baseData,
+        productUnits: item?.units || [],
+        price: item?.price || '',
+      };
+    });
+  }, [shopProductsQuery.data, page, perPage, shopType, activeProductType]);
+
+  const columns =
+    shopType === 'furniture'
+      ? furnitureColumns
+      : shopType === 'wood' && activeProductType === 'wood'
+      ? woodColumns
+      : otherColumns;
+
+  if (shopProductsQuery.isError) {
     return (
-      <ErrorComponent
-        message={warehouseHistoryQuery.error || t('unknownError')}
-      />
+      <ErrorComponent message={shopProductsQuery.error || t('unknownError')} />
     );
   }
-
-  const data =
-    warehouseHistoryQuery.data?.body.data?.map((item, index) => ({
-      key: item.id,
-      index: (page - 1) * perPage + (index + 1),
-      id: item.id,
-      productId: item.productId,
-      productName: item.product?.name || '',
-      productThickness: item.product?.wood?.thickness || '',
-      productWidth: item.product?.wood?.width || '',
-      productLength: item.product?.wood?.length || '',
-      productQuality: item.product?.wood?.quality || '',
-      productUnits: item.product?.wood?.units || [],
-      productWoodType: item.product?.wood?.woodType?.name || '',
-      m3: '',
-      quantity: item.quantity || '',
-    })) || [];
 
   const handleTansferProduct = async (values: any) => {
     try {
@@ -231,40 +289,57 @@ const ShopProducts = () => {
     <>
       <TableLayout
         title={() => (
-          <Toolbar
-            customButton={
-              <Dropdown menu={{ items: getMenuItems() }} trigger={['click']}>
-                <Button type='primary' icon={<TransactionOutlined />}>
-                  {t('addOrder')}
-                </Button>
-              </Dropdown>
-            }
-            secondTitle={t('addIncome')}
-            secondIcon={<TransactionOutlined />}
-            secondCreate={() => {
-              setIsIncome(true);
-              setIsIncomeModalOpen(true);
-            }}
-            thirdTitle={t('addExpense')}
-            thirdIcon={<MinusCircleOutlined />}
-            thirdCreate={() => {
-              setIsIncome(false);
-              setIsExpenseModalOpen(true);
-            }}
-            onReset={resetFilters}
-            resetDisabled={resetDisabled}
-            count={warehouseHistoryQuery.data?.body.count}
-            hasSecondButton={true}
-            hasThirdButton={true}
-          />
+          <>
+            <Toolbar
+              customButton={
+                <Dropdown menu={{ items: getMenuItems() }} trigger={['click']}>
+                  <Button type='primary' icon={<TransactionOutlined />}>
+                    {t('addOrder')}
+                  </Button>
+                </Dropdown>
+              }
+              secondTitle={t('addIncome')}
+              secondIcon={<TransactionOutlined />}
+              secondCreate={() => {
+                setIsIncome(true);
+                setIsIncomeModalOpen(true);
+              }}
+              thirdTitle={t('addExpense')}
+              thirdIcon={<MinusCircleOutlined />}
+              thirdCreate={() => {
+                setIsIncome(false);
+                setIsExpenseModalOpen(true);
+              }}
+              onReset={resetFilters}
+              resetDisabled={resetDisabled}
+              count={shopProductsQuery.data?.body.count}
+              hasSecondButton={true}
+              hasThirdButton={true}
+            />
+            {shopType === 'wood' && (
+              <div className='mt-4 mb-4'>
+                <Segmented
+                  options={[
+                    { label: t('woodProducts'), value: 'wood' },
+                    { label: t('otherProducts'), value: 'other' },
+                  ]}
+                  value={activeProductType}
+                  onChange={(value) =>
+                    setActiveProductType(value as 'wood' | 'other')
+                  }
+                  size='large'
+                />
+              </div>
+            )}
+          </>
         )}
-        loading={warehouseHistoryQuery.isLoading}
+        loading={shopProductsQuery.isLoading}
         columns={columns}
         data={data}
         pagination={{
           current: page,
           pageSize: perPage,
-          total: warehouseHistoryQuery.data?.body?.count,
+          total: shopProductsQuery.data?.body?.count,
           onChange: handleTableChange,
         }}
       />

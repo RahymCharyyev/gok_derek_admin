@@ -248,5 +248,7 @@
   "filterByDate": "Sene boýunça görmek",
   "selectDate": "Sene saýlaň",
   "deleteSuccess": "Ýagdaýy üstünlikli pozuldy",
-  "deleteError": "Ýagdaýy pozulanda ýalňyşlyk döredi"
+  "deleteError": "Ýagdaýy pozulanda ýalňyşlyk döredi",
+  "oneProductPrice": "Ştuk/metr nyrhy (man)",
+  "m2Price": "m² nyrhy"
 }

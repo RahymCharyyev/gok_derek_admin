@@ -4,7 +4,10 @@ import { queryClient } from '@/Providers';
 import { getEnumParam } from '@/utils/getEnumParam';
 import { useMutation } from '@tanstack/react-query';
 
-export const useShops = () => {
+export const useShops = (
+  storeType?: 'wood' | 'furniture',
+  types?: Array<'wood' | 'other' | 'furniture'>
+) => {
   const {
     page,
     perPage,
@@ -23,6 +26,13 @@ export const useShops = () => {
     'storeId'
   );
 
+  const sortByProducts = getEnumParam(
+    searchParams,
+    'sortBy',
+    ['name', 'userId', 'locationId', 'type'] as const,
+    'createdAt'
+  );
+
   const sortDirection = getEnumParam(
     searchParams,
     'sortDirection',
@@ -36,14 +46,41 @@ export const useShops = () => {
     name: searchParams.get('name') || undefined,
     userId: searchParams.get('userId') || undefined,
     locationId: searchParams.get('locationId') || undefined,
-    type: searchParams.get('storeType') || undefined,
+    type: storeType,
     sortBy,
     sortDirection,
+  };
+
+  const productsQuery: Record<string, any> = {
+    page,
+    perPage,
+    length: searchParams.get('length') || undefined,
+    type: searchParams.get('type') || undefined,
+    createdAt: searchParams.get('createdAt') || undefined,
+    sortBy: sortByProducts,
+    sortDirection,
+    name: searchParams.get('name') || undefined,
+    price: searchParams.get('price') || undefined,
+    thickness: searchParams.get('thickness') || undefined,
+    quality: searchParams.get('quality') || undefined,
+    isAvailable: searchParams.get('isAvailable') || undefined,
+    woodTypeId: searchParams.get('woodTypeId') || undefined,
+    width: searchParams.get('width') || undefined,
+    types,
   };
 
   const shopsQuery = tsr.shop.getAll.useQuery({
     queryKey: ['shops', Object.fromEntries(searchParams.entries())],
     queryData: { query },
+  });
+
+  const shopProductsQuery = tsr.shop.getProducts.useQuery({
+    queryKey: [
+      'shop-products',
+      Object.fromEntries(searchParams.entries()),
+      types,
+    ],
+    queryData: { query: productsQuery },
   });
 
   const createShopMutation = useMutation({
@@ -73,6 +110,7 @@ export const useShops = () => {
     mutationFn: (body: any) => tsr.shop.transferProduct.mutate({ body }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shops'] });
+      queryClient.invalidateQueries({ queryKey: ['shop-products'] });
     },
   });
 
@@ -80,6 +118,7 @@ export const useShops = () => {
     mutationFn: (body: any) => tsr.shop.addExpense.mutate({ body }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shops'] });
+      queryClient.invalidateQueries({ queryKey: ['shop-products'] });
     },
   });
 
@@ -87,6 +126,7 @@ export const useShops = () => {
     mutationFn: (body: any) => tsr.shop.addIncome.mutate({ body }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shops'] });
+      queryClient.invalidateQueries({ queryKey: ['shop-products'] });
     },
   });
 
@@ -94,6 +134,7 @@ export const useShops = () => {
     mutationFn: (body: any) => tsr.shop.sale.mutate({ body }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shops'] });
+      queryClient.invalidateQueries({ queryKey: ['shop-products'] });
     },
   });
 
@@ -104,6 +145,7 @@ export const useShops = () => {
     page,
     perPage,
     shopsQuery,
+    shopProductsQuery,
     createShopMutation,
     updateShopMutation,
     deleteShopMutation,

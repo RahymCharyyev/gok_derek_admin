@@ -31,7 +31,8 @@ const WoodProductsWarehouse = () => {
     setSearchParams,
   } = useWarehouse(undefined, 'wood');
 
-  const { shopsQuery, setSearchParams: setShopsSearchParams } = useShops();
+  const { shopsQuery, setSearchParams: setShopsSearchParams } =
+    useShops('wood');
 
   const [selectedProductType, setSelectedProductType] = useState<
     'wood' | 'other' | undefined
