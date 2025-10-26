@@ -42,6 +42,7 @@ const getAll = schema
     createdById: true,
     storeId: true,
   })
+  .extend({isSale: z.coerce.boolean()})
   .partial()
   .merge(sort)
   .merge(commonQuery);

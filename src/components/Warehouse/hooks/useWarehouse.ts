@@ -104,6 +104,7 @@ export const useWarehouse = (
     type,
     sortBy,
     sortDirection,
+    productType,
   };
 
   const warehouseQueryParams: StoreWarehouseSchema['GetProducts'] = {
@@ -139,12 +140,22 @@ export const useWarehouse = (
   });
 
   const warehouseQuery = tsr.warehouse.getProducts.useQuery({
-    queryKey: ['warehouse', Object.fromEntries(searchParams.entries())],
+    queryKey: [
+      'warehouse',
+      Object.fromEntries(searchParams.entries()),
+      productType,
+    ],
     queryData: { query: warehouseQueryParams },
   });
 
   const warehouseHistoryQuery = tsr.productTransaction.getAll.useQuery({
-    queryKey: ['warehouse-history', Object.fromEntries(searchParams.entries())],
+    queryKey: [
+      'warehouse-history',
+      Object.fromEntries(searchParams.entries()),
+      productType,
+      storeId,
+      type,
+    ],
     queryData: { query },
   });
 

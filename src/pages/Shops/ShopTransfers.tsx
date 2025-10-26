@@ -1,15 +1,14 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
 import { useFurnitureShopProductsTableColumn } from '@/components/Shops/hooks/useFurnitureShopProductsTableColumn';
-import { useOtherShopProductsTableColumn } from '@/components/Shops/hooks/useOtherShopProductsTableColumn';
-import { useWoodShopProductsTableColumn } from '@/components/Shops/hooks/useWoodShopProductsTableColumn';
 import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
-import { useWoodWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWarehouseHistory/useWoodWarehouseHistoryTableColumn';
 import { useOtherWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWarehouseHistory/useOtherWarehouseHistoryTableColumn';
+import { useWoodWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWarehouseHistory/useWoodWarehouseHistoryTableColumn';
 import TableLayout from '@/layout/TableLayout';
 import { HistoryOutlined } from '@ant-design/icons';
-import { Segmented } from 'antd';
+import { Button, DatePicker, Segmented } from 'antd';
+import dayjs, { type Dayjs } from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -17,6 +16,11 @@ import { useParams } from 'react-router-dom';
 const ShopTransfers = () => {
   const { t } = useTranslation();
   const { id } = useParams();
+
+  const [activeProductType, setActiveProductType] = useState<
+    'wood' | 'other' | 'furniture'
+  >('wood');
+
   const {
     query,
     page,
@@ -27,13 +31,15 @@ const ShopTransfers = () => {
     clearFilter,
     resetFilters,
     searchParams,
-  } = useWarehouse(id);
-
-  const [activeProductType, setActiveProductType] = useState<
-    'wood' | 'other' | 'furniture'
-  >('wood');
+    handleTypeChange,
+  } = useWarehouse(id, activeProductType);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
+  });
+
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(() => {
+    const dateParam = searchParams.get('createdAt');
+    return dateParam ? dayjs(dateParam) : null;
   });
 
   // Fetch current shop data
@@ -45,26 +51,39 @@ const ShopTransfers = () => {
 
   const shopType = currentShopQuery.data?.body?.type;
 
-  // Set filter for product type
-  useEffect(() => {
-    if (activeProductType) {
-      setFilter('type', activeProductType);
-    }
-  }, [activeProductType, setFilter]);
-
   const handleSearch = useCallback(() => {
     Object.entries(searchValues).forEach(([key, value]) => {
       setFilter(key, value);
     });
   }, [searchValues, setFilter]);
 
+  const handleDateChange = useCallback(
+    (date: Dayjs | null) => {
+      setSelectedDate(date);
+      if (date) {
+        setFilter('createdAt', date.format('YYYY-MM-DD'));
+      } else {
+        clearFilter('createdAt');
+      }
+    },
+    [setFilter, clearFilter]
+  );
+
+  const handleProductTypeChange = useCallback(
+    (value: 'wood' | 'other' | 'furniture') => {
+      setActiveProductType(value);
+    },
+    []
+  );
+
   const resetDisabled = useMemo(() => {
     return (
       Object.values(searchValues).every((v) => !v) &&
       !query.sortBy &&
-      !query.sortDirection
+      !query.sortDirection &&
+      !selectedDate
     );
-  }, [searchValues, query]);
+  }, [searchValues, query, selectedDate]);
 
   // Column configuration based on product type
   const columnProps = {
@@ -88,13 +107,19 @@ const ShopTransfers = () => {
   // Use appropriate column hooks
   const woodColumns = useWoodWarehouseHistoryTableColumn(columnProps);
   const otherColumns = useOtherWarehouseHistoryTableColumn(columnProps);
+  const furnitureColumns = useFurnitureShopProductsTableColumn({
+    ...columnProps,
+    isShopProducts: false,
+    handleOpenTransferModal: () => {},
+    handleOpenSaleModal: () => {},
+  });
 
   const columns =
     activeProductType === 'wood'
       ? woodColumns
       : activeProductType === 'other'
       ? otherColumns
-      : woodColumns; // For furniture, use wood columns for now
+      : furnitureColumns;
 
   // Dynamic data mapping based on active product type
   const data = useMemo(() => {
@@ -105,9 +130,9 @@ const ShopTransfers = () => {
         key: item.id,
         index: (page - 1) * perPage + (index + 1),
         id: item.id,
+        createdAt: item.createdAt || '',
         productName: item.product?.name || '',
         quantity: item.quantity || '',
-        createdAt: item.createdAt || '',
         toStore:
           item.toStore?.type != 'shop'
             ? t(item.toStore?.type || '')
@@ -136,6 +161,10 @@ const ShopTransfers = () => {
         return {
           ...baseData,
           productCode: item.product.furniture.code || '',
+          actualPrice: item.product.price || '',
+          sellPrice: item.product.priceSelection || '',
+          benefit:
+            (item.product.priceSelection || 0) - (item.product.price || 0),
         };
       }
 
@@ -171,10 +200,16 @@ const ShopTransfers = () => {
       setActiveProductType('furniture');
     } else if (shopType === 'wood') {
       setActiveProductType('wood');
-    } else {
+    } else if (shopType) {
       setActiveProductType('other');
     }
   }, [shopType]);
+
+  // Set type to 'transfer' for shop transfers on mount
+  useEffect(() => {
+    handleTypeChange('transfer');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (warehouseHistoryQuery.isError) {
     return (
@@ -189,24 +224,41 @@ const ShopTransfers = () => {
       title={() => (
         <>
           <Toolbar
-            title={t('transfers')}
-            icon={<HistoryOutlined />}
-            onReset={resetFilters}
+            onReset={() => {
+              setSelectedDate(null);
+              resetFilters();
+            }}
             resetDisabled={resetDisabled}
             count={warehouseHistoryQuery.data?.body.count}
+            customButton={
+              <>
+                <Button type='primary' icon={<HistoryOutlined />}>
+                  {t('transfers')}
+                </Button>
+                {availableTypes.length > 1 && (
+                  <Segmented
+                    options={availableTypes}
+                    value={activeProductType}
+                    onChange={(value) =>
+                      handleProductTypeChange(
+                        value as 'wood' | 'other' | 'furniture'
+                      )
+                    }
+                  />
+                )}
+                <div className='flex items-center gap-2'>
+                  <span className='font-medium'>{t('filterByDate')}:</span>
+                  <DatePicker
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    format='YYYY-MM-DD'
+                    placeholder={t('selectDate')}
+                    allowClear
+                  />
+                </div>
+              </>
+            }
           />
-          {availableTypes.length > 1 && (
-            <div className='mt-4 mb-4'>
-              <Segmented
-                options={availableTypes}
-                value={activeProductType}
-                onChange={(value) =>
-                  setActiveProductType(value as 'wood' | 'other' | 'furniture')
-                }
-                size='large'
-              />
-            </div>
-          )}
         </>
       )}
       loading={warehouseHistoryQuery.isLoading}

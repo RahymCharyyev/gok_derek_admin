@@ -44,6 +44,7 @@ const getAll = schema
     storeType: z.lazy(() => storeSchema.schema.shape.type),
     storeId: z.lazy(() => storeSchema.schema.shape.id),
     workshopType: z.lazy(() => storeWorkshopSchema.schema.shape.type),
+    productType: z.lazy(() => productSchema.schema.shape.type),
   })
   .partial()
   .merge(sort)
