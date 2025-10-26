@@ -1,21 +1,20 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
-import { useFurnitureShopProductsTableColumn } from '@/components/Shops/hooks/useFurnitureShopProductsTableColumn';
 import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
-import { useOtherWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWarehouseHistory/useOtherWarehouseHistoryTableColumn';
-import { useWoodWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWarehouseHistory/useWoodWarehouseHistoryTableColumn';
 import TableLayout from '@/layout/TableLayout';
-import { HistoryOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Segmented } from 'antd';
+import { DeleteOutlined, HistoryOutlined } from '@ant-design/icons';
+import { Button, DatePicker, message, Segmented } from 'antd';
 import dayjs, { type Dayjs } from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 
 const ShopTransfers = () => {
   const { t } = useTranslation();
   const { id } = useParams();
+  const confirmDeleteModal = useDeleteConfirm();
 
   const [activeProductType, setActiveProductType] = useState<
     'wood' | 'other' | 'furniture'
@@ -32,10 +31,8 @@ const ShopTransfers = () => {
     resetFilters,
     searchParams,
     handleTypeChange,
+    deleteProductHistoryMutation,
   } = useWarehouse(id, activeProductType);
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    name: '',
-  });
 
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(() => {
     const dateParam = searchParams.get('createdAt');
@@ -50,12 +47,6 @@ const ShopTransfers = () => {
   });
 
   const shopType = currentShopQuery.data?.body?.type;
-
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
 
   const handleDateChange = useCallback(
     (date: Dayjs | null) => {
@@ -77,49 +68,177 @@ const ShopTransfers = () => {
   );
 
   const resetDisabled = useMemo(() => {
-    return (
-      Object.values(searchValues).every((v) => !v) &&
-      !query.sortBy &&
-      !query.sortDirection &&
-      !selectedDate
-    );
-  }, [searchValues, query, selectedDate]);
+    return !query.sortBy && !query.sortDirection && !selectedDate;
+  }, [query, selectedDate]);
 
-  // Column configuration based on product type
-  const columnProps = {
-    t,
-    searchValues,
-    setSearchValues,
-    sortBy: query.sortBy || '',
-    setSortBy: (value: string) => setFilter('sortBy', value),
-    sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
-    setSortDirectionParam: (value: 'asc' | 'desc') =>
-      setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key: string) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
+  const handleDelete = useCallback(
+    async (id: string) => {
+      try {
+        const response = await deleteProductHistoryMutation.mutateAsync({ id });
+        if (response.status === 200 || response.status === 201) {
+          message.success(t('deleteSuccess'));
+        } else {
+          message.error(t('deleteError'));
+        }
+      } catch {
+        message.error(t('deleteError'));
+      }
     },
-    sortOptions: ['asc', 'desc'],
-    confirmDelete: () => {},
-  };
+    [deleteProductHistoryMutation, t]
+  );
 
-  // Use appropriate column hooks
-  const woodColumns = useWoodWarehouseHistoryTableColumn(columnProps);
-  const otherColumns = useOtherWarehouseHistoryTableColumn(columnProps);
-  const furnitureColumns = useFurnitureShopProductsTableColumn({
-    ...columnProps,
-    isShopProducts: false,
-    handleOpenTransferModal: () => {},
-    handleOpenSaleModal: () => {},
-  });
+  const confirmDelete = useCallback(
+    ({ id }: { id: string }) => {
+      confirmDeleteModal({
+        onConfirm: () => handleDelete(id),
+      });
+    },
+    [confirmDeleteModal, handleDelete]
+  );
+
+  // Custom column configurations for transfers
+  const baseColumns = [
+    {
+      title: '№',
+      dataIndex: 'index',
+      key: 'index',
+      fixed: 'left' as const,
+      width: 70,
+    },
+    {
+      title: t('transferDate'),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (date: string) => dayjs(date).format('DD.MM.YYYY HH:mm'),
+    },
+  ];
+
+  const woodProductColumns = [
+    {
+      title: t('productName'),
+      dataIndex: 'productName',
+      key: 'productName',
+    },
+    {
+      title: t('woodThickness'),
+      dataIndex: 'productThickness',
+      key: 'productThickness',
+    },
+    {
+      title: t('woodWidth'),
+      dataIndex: 'productWidth',
+      key: 'productWidth',
+    },
+    {
+      title: t('woodLength'),
+      dataIndex: 'productLength',
+      key: 'productLength',
+    },
+    {
+      title: t('woodType'),
+      dataIndex: 'productWoodType',
+      key: 'productWoodType',
+    },
+    {
+      title: t('woodQuality'),
+      dataIndex: 'productQuality',
+      key: 'productQuality',
+    },
+    {
+      title: t('woodUnit'),
+      dataIndex: 'productUnits',
+      key: 'productUnits',
+      render: (value: any[]) => {
+        if (!Array.isArray(value)) return null;
+        return value.map((e) => t(e.unit)).join(' / ');
+      },
+    },
+    {
+      title: t('m2Price'),
+      dataIndex: 'm2',
+      key: 'm2',
+    },
+  ];
+
+  const furnitureProductColumns = [
+    {
+      title: t('productCode'),
+      dataIndex: 'productCode',
+      key: 'productCode',
+    },
+    {
+      title: t('name'),
+      dataIndex: 'productName',
+      key: 'productName',
+    },
+    {
+      title: t('actualPrice'),
+      dataIndex: 'actualPrice',
+      key: 'actualPrice',
+    },
+    {
+      title: t('sellPrice'),
+      dataIndex: 'sellPrice',
+      key: 'sellPrice',
+    },
+    {
+      title: t('benefit'),
+      dataIndex: 'benefit',
+      key: 'benefit',
+    },
+  ];
+
+  const otherProductColumns = [
+    {
+      title: t('name'),
+      dataIndex: 'productName',
+      key: 'productName',
+    },
+    {
+      title: t('productQuantity'),
+      dataIndex: 'quantity',
+      key: 'quantity',
+    },
+    {
+      title: t('woodUnit'),
+      dataIndex: 'productUnits',
+      key: 'productUnits',
+      render: (value: any[]) => {
+        if (!Array.isArray(value)) return null;
+        return value.map((e) => t(e.unit)).join(' / ');
+      },
+    },
+  ];
+
+  const endColumns = [
+    {
+      title: t('sentStore'),
+      dataIndex: 'toStore',
+      key: 'toStore',
+    },
+    {
+      title: t('actions'),
+      key: 'actions',
+      fixed: 'right' as const,
+      width: 100,
+      render: (_: any, record: any) => (
+        <Button
+          size='small'
+          type='primary'
+          danger
+          icon={<DeleteOutlined />}
+          onClick={() => confirmDelete({ id: record.id })}
+        />
+      ),
+    },
+  ];
 
   const columns =
     activeProductType === 'wood'
-      ? woodColumns
+      ? [...baseColumns, ...woodProductColumns, ...endColumns]
       : activeProductType === 'other'
-      ? otherColumns
-      : furnitureColumns;
+      ? [...baseColumns, ...otherProductColumns, ...endColumns]
+      : [...baseColumns, ...furnitureProductColumns, ...endColumns];
 
   // Dynamic data mapping based on active product type
   const data = useMemo(() => {

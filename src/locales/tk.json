@@ -251,5 +251,6 @@
   "deleteError": "Ýagdaýy pozulanda ýalňyşlyk döredi",
   "oneProductPrice": "Ştuk/metr nyrhy (man)",
   "m2Price": "m² nyrhy",
-  "transfers": "Geçirimler"
+  "transfers": "Geçirimler",
+  "transferDate": "Geçirilen senesi"
 }
