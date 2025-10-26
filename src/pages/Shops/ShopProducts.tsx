@@ -9,7 +9,11 @@ import SaleProductModal from '@/components/Shops/SaleProductModal';
 import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import TableLayout from '@/layout/TableLayout';
-import { MinusCircleOutlined, TransactionOutlined } from '@ant-design/icons';
+import {
+  HistoryOutlined,
+  MinusCircleOutlined,
+  TransactionOutlined,
+} from '@ant-design/icons';
 import { Button, Dropdown, message, Segmented, type MenuProps } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +28,7 @@ const ShopProducts = () => {
     query,
     page,
     perPage,
+    warehousesQuery,
     handleTableChange,
     setFilter,
     clearFilter,
@@ -201,7 +206,7 @@ const ShopProducts = () => {
           productQuality: item.wood.quality || '',
           productUnits: item.wood.units || [],
           productWoodType: item.wood.woodType?.name || '',
-          m3: '',
+          productQuantity: item.productQuantity || '',
         };
       }
 
@@ -220,6 +225,13 @@ const ShopProducts = () => {
       : shopType === 'wood' && activeProductType === 'wood'
       ? woodColumns
       : otherColumns;
+
+  // Combine warehouses and shops for transfer modal
+  const transferDestinations = useMemo(() => {
+    const warehouses = warehousesQuery.data?.body.data || [];
+    const shops = shopsQuery.data?.body.data || [];
+    return [...warehouses, ...shops];
+  }, [warehousesQuery.data, shopsQuery.data]);
 
   if (shopProductsQuery.isError) {
     return (
@@ -292,11 +304,38 @@ const ShopProducts = () => {
           <>
             <Toolbar
               customButton={
-                <Dropdown menu={{ items: getMenuItems() }} trigger={['click']}>
-                  <Button type='primary' icon={<TransactionOutlined />}>
-                    {t('addOrder')}
+                <>
+                  {shopType === 'wood' && (
+                    <div className='mt-4 mb-4'>
+                      <Segmented
+                        options={[
+                          { label: t('woodProducts'), value: 'wood' },
+                          { label: t('otherProducts'), value: 'other' },
+                        ]}
+                        value={activeProductType}
+                        onChange={(value) =>
+                          setActiveProductType(value as 'wood' | 'other')
+                        }
+                        size='middle'
+                      />
+                    </div>
+                  )}
+                  <Button
+                    type='default'
+                    icon={<HistoryOutlined />}
+                    onClick={() => navigate(`/shops/${id}/transfers`)}
+                  >
+                    {t('transfers')}
                   </Button>
-                </Dropdown>
+                  <Dropdown
+                    menu={{ items: getMenuItems() }}
+                    trigger={['click']}
+                  >
+                    <Button type='primary' icon={<TransactionOutlined />}>
+                      {t('addOrder')}
+                    </Button>
+                  </Dropdown>
+                </>
               }
               secondTitle={t('addIncome')}
               secondIcon={<TransactionOutlined />}
@@ -316,21 +355,6 @@ const ShopProducts = () => {
               hasSecondButton={true}
               hasThirdButton={true}
             />
-            {shopType === 'wood' && (
-              <div className='mt-4 mb-4'>
-                <Segmented
-                  options={[
-                    { label: t('woodProducts'), value: 'wood' },
-                    { label: t('otherProducts'), value: 'other' },
-                  ]}
-                  value={activeProductType}
-                  onChange={(value) =>
-                    setActiveProductType(value as 'wood' | 'other')
-                  }
-                  size='large'
-                />
-              </div>
-            )}
           </>
         )}
         loading={shopProductsQuery.isLoading}
@@ -362,8 +386,8 @@ const ShopProducts = () => {
         productId={selectedProductId}
         onCancel={() => setIsModalOpen(false)}
         onSubmit={handleTansferProduct}
-        shops={shopsQuery.data?.body.data || []}
-        loading={shopsQuery.isLoading}
+        shops={transferDestinations}
+        loading={shopsQuery.isLoading || warehousesQuery.isLoading}
         onSearchProduct={(value) => setSearchProductValue(value)}
         onClearProduct={() => clearFilter('name')}
       />

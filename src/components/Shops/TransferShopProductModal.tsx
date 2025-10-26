@@ -61,8 +61,10 @@ const TransferShopProductModal: FC<TransferShopProductModalProps> = ({
             loading={loading}
             notFoundContent={loading ? t('loading') : t('noResults')}
             options={shops.map((e) => ({
-              label: `${e.user.firstName} ${e.user.lastName}`,
-              value: e.storeId,
+              label: e?.user
+                ? `${e.user.firstName} ${e.user.lastName}`
+                : e?.name,
+              value: e?.storeId,
             }))}
             onClear={() => onClearProduct()}
           />

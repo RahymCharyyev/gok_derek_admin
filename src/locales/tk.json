@@ -250,5 +250,6 @@
   "deleteSuccess": "Ýagdaýy üstünlikli pozuldy",
   "deleteError": "Ýagdaýy pozulanda ýalňyşlyk döredi",
   "oneProductPrice": "Ştuk/metr nyrhy (man)",
-  "m2Price": "m² nyrhy"
+  "m2Price": "m² nyrhy",
+  "transfers": "Geçirimler"
 }

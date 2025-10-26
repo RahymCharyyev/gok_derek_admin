@@ -239,6 +239,30 @@ export const useWoodShopProductsTableColumn = ({
       ],
     },
     {
+      title: t('productQuantity'),
+      dataIndex: 'productQuantity',
+      key: 'productQuantity',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'productQuantity',
+          t('productQuantity'),
+          searchValues,
+          setSearchValues,
+          sortOptions,
+          sortDirectionParam,
+          setSortBy,
+          setSortDirectionParam,
+          handleSearch,
+          clearFilter,
+          t,
+          'productQuantity',
+          false,
+          woodTypes?.map((wt) => ({ label: wt.name, value: wt.id })),
+          onSort
+        ),
+      filterIcon: () => <DownOutlined />,
+    },
+    {
       title: t('actions'),
       key: 'actions',
       render: (_: any, record: any) => (

@@ -133,6 +133,11 @@ export const useWarehouse = (
     sortDirection,
   };
 
+  const warehousesQuery = tsr.warehouse.getAll.useQuery({
+    queryKey: ['warehouses', Object.fromEntries(searchParams.entries())],
+    queryData: {},
+  });
+
   const warehouseQuery = tsr.warehouse.getProducts.useQuery({
     queryKey: ['warehouse', Object.fromEntries(searchParams.entries())],
     queryData: { query: warehouseQueryParams },
@@ -197,6 +202,7 @@ export const useWarehouse = (
     page,
     perPage,
     warehouseQuery,
+    warehousesQuery,
     warehouseHistoryQuery,
     addProductMutation,
     transferProductMutation,

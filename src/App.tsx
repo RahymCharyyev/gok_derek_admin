@@ -28,6 +28,7 @@ import WoodSentProducts from './pages/Warehouse/SentProducts/WoodSentProducts';
 import OtherSentProducts from './pages/Warehouse/SentProducts/OtherSentProducts';
 import FurnitureWorkshop from './pages/Workshops/Furniture';
 import WoodWorkshop from './pages/Workshops/Wood';
+import ShopTransfers from './pages/Shops/ShopTransfers';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -119,6 +120,14 @@ function App() {
             element={
               <LayoutComponent>
                 <ShopProducts />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/shops/:id/transfers'
+            element={
+              <LayoutComponent>
+                <ShopTransfers />
               </LayoutComponent>
             }
           />
