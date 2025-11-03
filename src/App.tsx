@@ -14,6 +14,8 @@ import OtherProducts from './pages/Products/Other';
 import Wood from './pages/Products/Wood';
 import WoodTypes from './pages/Products/WoodTypes';
 import Report from './pages/Report';
+import ShopCredits from './pages/Shops/ShopCredits';
+import ShopIsSale from './pages/Shops/ShopIsSale';
 import ShopProducts from './pages/Shops/ShopProducts';
 import Shops from './pages/Shops/Shops';
 import Users from './pages/Users';
@@ -128,6 +130,22 @@ function App() {
             element={
               <LayoutComponent>
                 <ShopTransfers />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/shops/:id/credits'
+            element={
+              <LayoutComponent>
+                <ShopCredits />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/shops/:id/sales'
+            element={
+              <LayoutComponent>
+                <ShopIsSale />
               </LayoutComponent>
             }
           />

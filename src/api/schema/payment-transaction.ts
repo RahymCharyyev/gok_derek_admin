@@ -7,6 +7,7 @@ import {userSchema} from './user';
 const schema = z.object({
   id: z.string().uuid(),
   type: z.enum(['in', 'out']),
+  method: z.enum(['cash', 'bank', 'credit']),
   amount: z.coerce.number().int(),
   createdById: z.string().uuid(),
 
@@ -37,6 +38,7 @@ const getAll = schema
   .pick({
     id: true,
     type: true,
+    method: true,
     amount: true,
     productTransactionId: true,
     createdById: true,
@@ -55,6 +57,7 @@ const getOneRes = schema;
 
 const create = schema.pick({
   type: true,
+  method: true,
   amount: true,
   productTransactionId: true,
   storeId: true,

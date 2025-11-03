@@ -6,6 +6,14 @@ import { PrintButtons } from './PrintButtons';
 
 const { useBreakpoint } = Grid;
 
+export interface AdditionalButton {
+  title: string;
+  icon?: ReactNode;
+  onClick: () => void;
+  type?: 'default' | 'primary' | 'dashed' | 'link' | 'text';
+  danger?: boolean;
+}
+
 interface ToolbarProps {
   icon?: ReactNode;
   title?: string;
@@ -13,14 +21,7 @@ interface ToolbarProps {
   onReset: () => void;
   resetDisabled: boolean;
   count: any;
-  hasSecondButton?: boolean;
-  secondTitle?: string;
-  secondIcon?: ReactNode;
-  secondCreate?: () => void;
-  hasThirdButton?: boolean;
-  thirdTitle?: string;
-  thirdIcon?: ReactNode;
-  thirdCreate?: () => void;
+  additionalButtons?: AdditionalButton[];
   customButton?: ReactNode;
 }
 
@@ -31,14 +32,7 @@ const Toolbar: FC<ToolbarProps> = ({
   onReset,
   resetDisabled,
   count,
-  hasSecondButton,
-  secondTitle,
-  secondIcon,
-  secondCreate,
-  hasThirdButton,
-  thirdTitle,
-  thirdIcon,
-  thirdCreate,
+  additionalButtons = [],
   customButton,
 }) => {
   const { t } = useTranslation();
@@ -46,21 +40,23 @@ const Toolbar: FC<ToolbarProps> = ({
   return (
     <div className='flex flex-col xs:flex-row gap-4'>
       <div className='flex flex-wrap gap-2 items-center'>
-        {customButton || (
-          <Button icon={icon} type='primary' onClick={onCreate}>
-            {title}
+        {customButton ||
+          (onCreate && (
+            <Button icon={icon} type='primary' onClick={onCreate}>
+              {title}
+            </Button>
+          ))}
+        {additionalButtons.map((button, index) => (
+          <Button
+            key={index}
+            icon={button.icon}
+            type={button.type || 'default'}
+            danger={button.danger}
+            onClick={button.onClick}
+          >
+            {button.title}
           </Button>
-        )}
-        {hasSecondButton && (
-          <Button icon={secondIcon} onClick={secondCreate}>
-            {secondTitle}
-          </Button>
-        )}
-        {hasThirdButton && (
-          <Button icon={thirdIcon} onClick={thirdCreate}>
-            {thirdTitle}
-          </Button>
-        )}
+        ))}
         <Button
           icon={<UndoOutlined />}
           danger

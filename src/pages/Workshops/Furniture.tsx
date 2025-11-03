@@ -146,13 +146,16 @@ const FurnitureWorkshop: FC = () => {
             onReset={resetFilters}
             resetDisabled={resetDisabled}
             count={workshopsQuery.data?.body.count}
-            hasSecondButton
-            secondTitle={t('productTransaction')}
-            secondIcon={<TransactionOutlined />}
-            secondCreate={() => {
-              setEditingData(null);
-              setIsModalOpen(true);
-            }}
+            additionalButtons={[
+              {
+                title: t('productTransaction'),
+                icon: <TransactionOutlined />,
+                onClick: () => {
+                  setEditingData(null);
+                  setIsModalOpen(true);
+                },
+              },
+            ]}
           />
         )}
         loading={workshopsQuery.isLoading}

@@ -150,6 +150,31 @@ export const useWoodShopProductsTableColumn = ({
       filterIcon: () => <SearchOutlined />,
     },
     {
+      title: t('woodType'),
+      dataIndex: 'productWoodType',
+      key: 'productWoodType',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'woodTypeId',
+          t('woodType'),
+          searchValues,
+          setSearchValues,
+          sortOptions,
+          sortDirectionParam,
+          setSortBy,
+          setSortDirectionParam,
+          handleSearch,
+          clearFilter,
+          t,
+          'woodTypeId',
+          false,
+          woodTypes?.map((wt) => ({ label: wt.name, value: wt.id })),
+          onSort
+        ),
+      filterIcon: () => <DownOutlined />,
+      render: (record) => <div>{record}</div>,
+    },
+    {
       title: t('woodQuality'),
       dataIndex: 'productQuality',
       key: 'productQuality',
@@ -182,31 +207,6 @@ export const useWoodShopProductsTableColumn = ({
         if (!Array.isArray(value)) return null;
         return value.map((e) => t(e.unit)).join(' / ');
       },
-    },
-    {
-      title: t('woodType'),
-      dataIndex: 'productWoodType',
-      key: 'productWoodType',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'woodTypeId',
-          t('woodType'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'woodTypeId',
-          false,
-          woodTypes?.map((wt) => ({ label: wt.name, value: wt.id })),
-          onSort
-        ),
-      filterIcon: () => <DownOutlined />,
-      render: (record) => <div>{record}</div>,
     },
     {
       title: t('oneProductPrice'),
@@ -242,25 +242,7 @@ export const useWoodShopProductsTableColumn = ({
       title: t('productQuantity'),
       dataIndex: 'productQuantity',
       key: 'productQuantity',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'productQuantity',
-          t('productQuantity'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'productQuantity',
-          false,
-          woodTypes?.map((wt) => ({ label: wt.name, value: wt.id })),
-          onSort
-        ),
-      filterIcon: () => <DownOutlined />,
+      render: (record) => <div>{record}</div>,
     },
     {
       title: t('actions'),

@@ -89,6 +89,7 @@ export const useWarehouse = (
     page,
     perPage,
     storeId,
+
     fromStoreId: searchParams.get('fromStoreId') ?? undefined,
     toStoreId: searchParams.get('toStoreId') ?? undefined,
     quantity: searchParams.get('quantity')
@@ -136,7 +137,9 @@ export const useWarehouse = (
 
   const warehousesQuery = tsr.warehouse.getAll.useQuery({
     queryKey: ['warehouses', Object.fromEntries(searchParams.entries())],
-    queryData: {},
+    queryData: {
+      query: {},
+    },
   });
 
   const warehouseQuery = tsr.warehouse.getProducts.useQuery({

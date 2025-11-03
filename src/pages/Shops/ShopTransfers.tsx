@@ -120,29 +120,24 @@ const ShopTransfers = () => {
       key: 'productName',
     },
     {
-      title: t('woodThickness'),
-      dataIndex: 'productThickness',
-      key: 'productThickness',
-    },
-    {
-      title: t('woodWidth'),
-      dataIndex: 'productWidth',
-      key: 'productWidth',
-    },
-    {
-      title: t('woodLength'),
-      dataIndex: 'productLength',
-      key: 'productLength',
-    },
-    {
-      title: t('woodType'),
-      dataIndex: 'productWoodType',
-      key: 'productWoodType',
-    },
-    {
-      title: t('woodQuality'),
-      dataIndex: 'productQuality',
-      key: 'productQuality',
+      title: t('dimensions'),
+      children: [
+        {
+          title: t('woodThickness'),
+          dataIndex: 'productThickness',
+          key: 'productThickness',
+        },
+        {
+          title: t('woodWidth'),
+          dataIndex: 'productWidth',
+          key: 'productWidth',
+        },
+        {
+          title: t('woodLength'),
+          dataIndex: 'productLength',
+          key: 'productLength',
+        },
+      ],
     },
     {
       title: t('woodUnit'),
@@ -152,6 +147,16 @@ const ShopTransfers = () => {
         if (!Array.isArray(value)) return null;
         return value.map((e) => t(e.unit)).join(' / ');
       },
+    },
+    {
+      title: t('woodType'),
+      dataIndex: 'productWoodType',
+      key: 'productWoodType',
+    },
+    {
+      title: t('productQuantity'),
+      dataIndex: 'quantity',
+      key: 'quantity',
     },
     {
       title: t('m2Price'),

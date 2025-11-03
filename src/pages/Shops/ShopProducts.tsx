@@ -10,8 +10,10 @@ import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import TableLayout from '@/layout/TableLayout';
 import {
+  CreditCardOutlined,
   HistoryOutlined,
   MinusCircleOutlined,
+  ShoppingCartOutlined,
   TransactionOutlined,
 } from '@ant-design/icons';
 import { Button, Dropdown, message, Segmented, type MenuProps } from 'antd';
@@ -24,17 +26,7 @@ const ShopProducts = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
-  const {
-    query,
-    page,
-    perPage,
-    warehousesQuery,
-    handleTableChange,
-    setFilter,
-    clearFilter,
-    resetFilters,
-    searchParams,
-  } = useWarehouse(id);
+  const { warehousesQuery } = useWarehouse(id);
 
   // State declarations
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -80,7 +72,20 @@ const ShopProducts = () => {
     addIncomeMutation,
     addExpenseMutation,
     saleMutation,
-  } = useShops(undefined, productTypes);
+    page,
+    perPage,
+    handleTableChange,
+    setFilter,
+    clearFilter,
+    resetFilters,
+    searchParams,
+  } = useShops(undefined, productTypes, id);
+
+  // Fetch wood types for filtering (only needed for wood products)
+  const woodTypesQuery = tsr.woodType.getAll.useQuery({
+    queryKey: ['wood-types'],
+    queryData: {},
+  });
 
   const handleSearch = useCallback(() => {
     Object.entries(searchValues).forEach(([key, value]) => {
@@ -91,10 +96,10 @@ const ShopProducts = () => {
   const resetDisabled = useMemo(() => {
     return (
       Object.values(searchValues).every((v) => !v) &&
-      !query.sortBy &&
-      !query.sortDirection
+      !searchParams.get('sortBy') &&
+      !searchParams.get('sortDirection')
     );
-  }, [searchValues, query]);
+  }, [searchValues, searchParams]);
 
   const handleOpenAddModal = (record: any) => {
     setEditingData(null);
@@ -150,9 +155,10 @@ const ShopProducts = () => {
     t,
     searchValues,
     setSearchValues,
-    sortBy: query.sortBy || '',
+    sortBy: searchParams.get('sortBy') || '',
     setSortBy: (value: string) => setFilter('sortBy', value),
-    sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
+    sortDirectionParam:
+      (searchParams.get('sortDirection') as 'asc' | 'desc' | null) || null,
     setSortDirectionParam: (value: 'asc' | 'desc') =>
       setFilter('sortDirection', value),
     handleSearch,
@@ -164,6 +170,7 @@ const ShopProducts = () => {
     isShopProducts: true,
     handleOpenTransferModal: handleOpenAddModal,
     handleOpenSaleModal: handleOpenSaleModal,
+    woodTypes: woodTypesQuery.data?.body.data,
   };
 
   // Conditionally use the appropriate column hook
@@ -337,23 +344,37 @@ const ShopProducts = () => {
                   </Dropdown>
                 </>
               }
-              secondTitle={t('addIncome')}
-              secondIcon={<TransactionOutlined />}
-              secondCreate={() => {
-                setIsIncome(true);
-                setIsIncomeModalOpen(true);
-              }}
-              thirdTitle={t('addExpense')}
-              thirdIcon={<MinusCircleOutlined />}
-              thirdCreate={() => {
-                setIsIncome(false);
-                setIsExpenseModalOpen(true);
-              }}
+              additionalButtons={[
+                {
+                  title: t('addIncome'),
+                  icon: <TransactionOutlined />,
+                  onClick: () => {
+                    setIsIncome(true);
+                    setIsIncomeModalOpen(true);
+                  },
+                },
+                {
+                  title: t('addExpense'),
+                  icon: <MinusCircleOutlined />,
+                  onClick: () => {
+                    setIsIncome(false);
+                    setIsExpenseModalOpen(true);
+                  },
+                },
+                {
+                  title: t('credits'),
+                  icon: <CreditCardOutlined />,
+                  onClick: () => navigate(`/shops/${id}/credits`),
+                },
+                {
+                  title: t('sales'),
+                  icon: <ShoppingCartOutlined />,
+                  onClick: () => navigate(`/shops/${id}/sales`),
+                },
+              ]}
               onReset={resetFilters}
               resetDisabled={resetDisabled}
-              count={shopProductsQuery.data?.body.count}
-              hasSecondButton={true}
-              hasThirdButton={true}
+              count={`${shopProductsQuery.data?.body.count} haryt = ${shopProductsQuery.data?.body.totalPrice} TMT`}
             />
           </>
         )}

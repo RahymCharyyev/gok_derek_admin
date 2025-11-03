@@ -34,7 +34,9 @@ const sortKeys = schema.pick({
   price: true,
   createdAt: true,
 });
-const sortable = sortKeys.merge(productWoodSchema.sortKeys).keyof();
+const sortable = sortKeys
+  .merge(productWoodSchema.sortKeys.pick({woodTypeId: true, quality: true, thickness: true, length: true, width: true}))
+  .keyof();
 const sort = z.object({sortBy: sortable.default('createdAt'), sortDirection: sortDirection.default('desc')});
 
 const getAll = schema
@@ -51,6 +53,7 @@ const getAll = schema
   .merge(commonQuery);
 const getAllRes = z.object({
   count: z.number(),
+  totalPrice: z.coerce.number().optional(),
   data: schema.array(),
 });
 

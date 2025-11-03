@@ -252,5 +252,12 @@
   "oneProductPrice": "Ştuk/metr nyrhy (man)",
   "m2Price": "m² nyrhy",
   "transfers": "Geçirimler",
-  "transferDate": "Geçirilen senesi"
+  "transferDate": "Geçirilen senesi",
+  "credits": "Ýazgylar",
+  "sales": "Söwda maglumaty",
+  "dateTime": "Senesi/sagady",
+  "buyer": "Alan",
+  "deducted": "Aýrylan (man)",
+  "added": "Goşulan (man)",
+  "currencyTMT": "man"
 }

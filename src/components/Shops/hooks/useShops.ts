@@ -6,7 +6,8 @@ import { useMutation } from '@tanstack/react-query';
 
 export const useShops = (
   storeType?: 'wood' | 'furniture',
-  types?: Array<'wood' | 'other' | 'furniture'>
+  types?: Array<'wood' | 'other' | 'furniture'>,
+  storeId?: string
 ) => {
   const {
     page,
@@ -29,7 +30,17 @@ export const useShops = (
   const sortByProducts = getEnumParam(
     searchParams,
     'sortBy',
-    ['name', 'userId', 'locationId', 'type'] as const,
+    [
+      'name',
+      'price',
+      'createdAt',
+      'thickness',
+      'width',
+      'length',
+      'woodTypeId',
+      'quality',
+      'type',
+    ] as const,
     'createdAt'
   );
 
@@ -38,6 +49,20 @@ export const useShops = (
     'sortDirection',
     ['asc', 'desc'] as const,
     'desc'
+  );
+
+  const sortByPaymentTransaction = getEnumParam(
+    searchParams,
+    'sortBy',
+    [
+      'amount',
+      'storeId',
+      'productTransactionId',
+      'createdById',
+      'type',
+      'createdAt',
+    ] as const,
+    'createdAt'
   );
 
   const query: Record<string, any> = {
@@ -54,18 +79,36 @@ export const useShops = (
   const productsQuery: Record<string, any> = {
     page,
     perPage,
-    length: searchParams.get('length') || undefined,
+    storeId: storeId || undefined,
+    length: searchParams.get('length')
+      ? Number(searchParams.get('length'))
+      : undefined,
     type: searchParams.get('type') || undefined,
-    createdAt: searchParams.get('createdAt') || undefined,
+    createdAt: searchParams.get('createdAt')
+      ? new Date(searchParams.get('createdAt') as string)
+      : undefined,
     sortBy: sortByProducts,
     sortDirection,
     name: searchParams.get('name') || undefined,
-    price: searchParams.get('price') || undefined,
-    thickness: searchParams.get('thickness') || undefined,
-    quality: searchParams.get('quality') || undefined,
+    price: searchParams.get('price')
+      ? Number(searchParams.get('price'))
+      : undefined,
+    thickness: searchParams.get('thickness')
+      ? Number(searchParams.get('thickness'))
+      : undefined,
+    quality: (() => {
+      const val = searchParams.get('quality');
+      if (val === null || val === undefined || val === '') return undefined;
+      if (['0', '1', '2', '3', 'extra', 'premium'].includes(val)) {
+        return val;
+      }
+      return undefined;
+    })(),
     isAvailable: searchParams.get('isAvailable') || undefined,
     woodTypeId: searchParams.get('woodTypeId') || undefined,
-    width: searchParams.get('width') || undefined,
+    width: searchParams.get('width')
+      ? Number(searchParams.get('width'))
+      : undefined,
     types,
   };
 
@@ -79,8 +122,49 @@ export const useShops = (
       'shop-products',
       Object.fromEntries(searchParams.entries()),
       types,
+      storeId,
     ],
     queryData: { query: productsQuery },
+  });
+
+  const creditsQueryParams: Record<string, any> = {
+    page,
+    perPage,
+    method: 'credit',
+    storeId: storeId || undefined,
+    amount: searchParams.get('amount')
+      ? Number(searchParams.get('amount'))
+      : undefined,
+    productTransactionId: searchParams.get('productTransactionId') || undefined,
+    createdById: searchParams.get('createdById') || undefined,
+    type: searchParams.get('type') || undefined,
+    sortBy: sortByPaymentTransaction,
+    sortDirection,
+  };
+
+  const isSaleQueryParams: Record<string, any> = {
+    page,
+    perPage,
+    isSale: true,
+    storeId: storeId || undefined,
+    amount: searchParams.get('amount')
+      ? Number(searchParams.get('amount'))
+      : undefined,
+    productTransactionId: searchParams.get('productTransactionId') || undefined,
+    createdById: searchParams.get('createdById') || undefined,
+    type: searchParams.get('type') || undefined,
+    sortBy: sortByPaymentTransaction,
+    sortDirection,
+  };
+
+  const creditsQuery = tsr.paymentTransaction.getAll.useQuery({
+    queryKey: ['credits', Object.fromEntries(searchParams.entries()), storeId],
+    queryData: { query: creditsQueryParams },
+  });
+
+  const isSaleQuery = tsr.paymentTransaction.getAll.useQuery({
+    queryKey: ['isSale', Object.fromEntries(searchParams.entries()), storeId],
+    queryData: { query: isSaleQueryParams },
   });
 
   const createShopMutation = useMutation({
@@ -153,6 +237,8 @@ export const useShops = (
     addExpenseMutation,
     addIncomeMutation,
     saleMutation,
+    creditsQuery,
+    isSaleQuery,
     handleTableChange,
     setFilter,
     clearFilter,
