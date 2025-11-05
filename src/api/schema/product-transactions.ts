@@ -49,7 +49,9 @@ const getAll = schema
     storeId: z.lazy(() => storeSchema.schema.shape.id),
     workshopType: z.lazy(() => storeWorkshopSchema.schema.shape.type),
     productType: z.lazy(() => productSchema.schema.shape.type),
+    productName: z.lazy(() => productSchema.schema.shape.name),
   })
+  .extend(productWoodSchema.schema.pick({length: true, quality: true, thickness: true, width: true}).shape)
   .partial()
   .merge(sort)
   .merge(commonQuery);

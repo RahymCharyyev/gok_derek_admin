@@ -196,6 +196,7 @@
   "addIncome": "Gaýry girdeji goşmak",
   "addExpense": "Cykdajy goşmak",
   "amount": "Mukdary",
+  "amountMan": "Möçberi (man)",
   "note": "Bellik",
   "incomeAdded": "Girdeji üstünlikli goşuldy",
   "expenseAdded": "Çykdajy üstünlikli goşuldy",
@@ -261,5 +262,14 @@
   "added": "Goşulan (man)",
   "currencyTMT": "man",
   "geldi": "Geldi",
-  "satyldy": "Satyldy"
+  "satyldy": "Satyldy",
+  "paymentType": "Töleg görnüşi",
+  "credit": "Ýazgy",
+  "cash": "Nagt",
+  "nonCashPayment": "Nagt däl hasaplaşyk",
+  "ownerFullName": "Bellik (Familiýasy, ady)",
+  "creditPrice": "Harydyň ýazgy nyrhy",
+  "priceType": "Haryt",
+  "productNameList": "Harytlaryň ady",
+  "productList": "Sanawy"
 }

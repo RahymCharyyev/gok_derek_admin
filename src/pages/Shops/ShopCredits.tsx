@@ -33,6 +33,8 @@ const ShopCredits = () => {
     amount: '',
     createdAt: '',
     buyer: '',
+    productName: '',
+    quantity: '',
   });
 
   const handleSearch = useCallback(() => {
@@ -74,16 +76,30 @@ const ShopCredits = () => {
   }
 
   const data =
-    creditsQuery.data?.body.data?.map((item, index) => ({
-      key: item.id,
-      index: (page - 1) * perPage + (index + 1),
-      id: item.id,
-      createdAt: item.createdAt,
-      buyer: item, // Pass whole item for rendering
-      amount: item.amount || 0,
-      deducted: item.type === 'out' ? item.amount : null,
-      added: item.type === 'in' ? item.amount : null,
-    })) || [];
+    creditsQuery.data?.body.data?.map((item, index) => {
+      // Get units from product based on product type
+      let units: any[] = [];
+      if (item.product?.wood?.units) {
+        units = item.product.wood.units;
+      } else if (item.product?.units) {
+        units = item.product.units;
+      }
+
+      return {
+        key: item.id,
+        index: (page - 1) * perPage + (index + 1),
+        id: item.id,
+        createdAt: item.createdAt,
+        buyer: item, // Pass whole item for rendering
+        amount: item.amount || 0,
+        deducted: item.type === 'out' ? item.amount : null,
+        added: item.type === 'in' ? item.amount : null,
+        productName: item.product?.name || '-',
+        quantity: item.product?.productQuantity ?? 0,
+        units: units,
+        product: item.product, // Pass whole product for rendering
+      };
+    }) || [];
 
   return (
     <>
@@ -92,13 +108,6 @@ const ShopCredits = () => {
           <Toolbar
             customButton={
               <>
-                <Button
-                  type='default'
-                  icon={<ShoppingOutlined />}
-                  onClick={() => navigate(`/shops/${id}/products`)}
-                >
-                  {t('products')}
-                </Button>
                 <Button
                   type='default'
                   icon={<HistoryOutlined />}

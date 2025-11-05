@@ -3,7 +3,9 @@ import ErrorComponent from '@/components/ErrorComponent';
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
 import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
+import { formatQuantityOrPrice } from '@/utils/formatters';
 import {
   DeleteOutlined,
   DownOutlined,
@@ -15,8 +17,6 @@ import dayjs, { type Dayjs } from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
-import { formatQuantityOrPrice } from '@/utils/formatters';
 
 const ShopTransfers = () => {
   const { t } = useTranslation();
@@ -69,24 +69,6 @@ const ShopTransfers = () => {
     queryKey: ['wood-types'],
     queryData: {},
   });
-
-  // Sync URL params with local search state on mount and when URL params change
-  useEffect(() => {
-    const newSearchValues: { [key: string]: string } = {
-      name: searchParams.get('name') || '',
-      thickness: searchParams.get('thickness') || '',
-      width: searchParams.get('width') || '',
-      length: searchParams.get('length') || '',
-      quality: searchParams.get('quality') || '',
-      woodTypeId: searchParams.get('woodTypeId') || '',
-      quantity: searchParams.get('quantity') || '',
-      toStoreId: searchParams.get('toStoreId') || '',
-      code: searchParams.get('code') || '',
-      price: searchParams.get('price') || '',
-      priceSelection: searchParams.get('priceSelection') || '',
-    };
-    setSearchValues(newSearchValues);
-  }, [searchParams]);
 
   // Fetch current shop data
   const currentShopQuery = tsr.shop.getOne.useQuery({
