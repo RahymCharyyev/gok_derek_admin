@@ -77,32 +77,15 @@ export const useCreditsTableColumn = ({
           'buyer'
         ),
       filterIcon: () => <SearchOutlined />,
-      render: (item: any) => {
-        // Buyer is the person who created/received the credit
-        // Try createdBy first, then check if there's a store with user info
-        if (item?.createdBy) {
-          const name = `${item.createdBy.firstName || ''} ${
-            item.createdBy.lastName || ''
-          }`.trim();
-          if (name) return name;
-        }
-        if (item?.store?.user) {
-          const name = `${item.store.user.firstName || ''} ${
-            item.store.user.lastName || ''
-          }`.trim();
-          if (name) return name;
-        }
-        return '-';
-      },
     },
     {
-      title: t('productNameList'),
+      title: t('productName'),
       dataIndex: 'productName',
       key: 'productName',
       filterDropdown: () =>
         renderFilterDropdown(
           'productName',
-          t('productNameList'),
+          t('productName'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -139,15 +122,7 @@ export const useCreditsTableColumn = ({
       filterIcon: () => <SearchOutlined />,
       render: (quantity: number) => quantity ?? 0,
     },
-    {
-      title: t('productList'),
-      dataIndex: 'units',
-      key: 'units',
-      render: (units: any[]) => {
-        if (!Array.isArray(units) || units.length === 0) return '-';
-        return units.map((e) => t(e.unit)).join(' / ');
-      },
-    },
+
     {
       title: t('amountMan'),
       dataIndex: 'amount',

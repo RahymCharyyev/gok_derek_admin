@@ -3,6 +3,7 @@ import {commonQuery, sortDirection} from './common';
 import {productSchema} from './product';
 import {storeSchema} from './store';
 import {userSchema} from './user';
+import {productTransactionSchema} from './product-transactions';
 
 const schema = z.object({
   id: z.string().uuid(),
@@ -21,6 +22,7 @@ const schema = z.object({
   product: z.lazy(() => productSchema.schema.partial().nullish()),
   store: z.lazy(() => storeSchema.schema.partial().nullish()),
   createdBy: z.lazy(() => userSchema.schema.partial().nullish()),
+  productTransaction: z.lazy(() => productTransactionSchema.schema.partial().nullish()),
 });
 
 const sortKeys = schema.pick({

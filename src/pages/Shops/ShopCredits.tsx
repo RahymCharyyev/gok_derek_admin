@@ -90,12 +90,12 @@ const ShopCredits = () => {
         index: (page - 1) * perPage + (index + 1),
         id: item.id,
         createdAt: item.createdAt,
-        buyer: item, // Pass whole item for rendering
+        buyer: item.note, // Pass whole item for rendering
         amount: item.amount || 0,
         deducted: item.type === 'out' ? item.amount : null,
         added: item.type === 'in' ? item.amount : null,
         productName: item.product?.name || '-',
-        quantity: item.product?.productQuantity ?? 0,
+        quantity: item.productTransaction?.quantity ?? 0,
         units: units,
         product: item.product, // Pass whole product for rendering
       };
