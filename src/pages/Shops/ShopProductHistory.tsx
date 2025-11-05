@@ -4,7 +4,7 @@ import { useShopProductHistoryTableColumn } from '@/components/Shops/hooks/useSh
 import Toolbar from '@/components/Toolbar';
 import TableLayout from '@/layout/TableLayout';
 import { HistoryOutlined } from '@ant-design/icons';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router-dom';
 
@@ -23,6 +23,7 @@ const ShopProductHistory = () => {
     clearFilter,
     resetFilters,
     searchParams: hookSearchParams,
+    setSearchParams,
   } = useShops(undefined, undefined, id);
 
   // Set productId filter on mount
@@ -33,17 +34,76 @@ const ShopProductHistory = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productId]);
 
-  const searchValues = useMemo(() => ({}), []);
+  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
+    createdAt: '',
+    quantity: '',
+    type: '',
+    productName: '',
+    productType: '',
+    thickness: '',
+    width: '',
+    length: '',
+    quality: '',
+  });
 
   const handleSearch = useCallback(() => {
-    // No search functionality needed for this page
-  }, []);
+    const params = new URLSearchParams(hookSearchParams);
+    // Preserve productId if it exists
+    const existingProductId = hookSearchParams.get('productId');
+    if (existingProductId) {
+      params.set('productId', existingProductId);
+    }
+
+    Object.entries(searchValues).forEach(([key, value]) => {
+      if (value === null || value === '' || value === undefined) {
+        params.delete(key);
+      } else {
+        params.set(key, String(value));
+      }
+    });
+    params.set('page', '1'); // Reset to first page when searching
+    setSearchParams(params);
+  }, [searchValues, hookSearchParams, setSearchParams]);
+
+  const sortBy = hookSearchParams.get('sortBy');
+  const sortDirectionParam = hookSearchParams.get('sortDirection') as
+    | 'asc'
+    | 'desc'
+    | null;
+
+  const setSortBy = useCallback(
+    (value: string) => {
+      setFilter('sortBy', value);
+    },
+    [setFilter]
+  );
+
+  const setSortDirectionParam = useCallback(
+    (value: 'asc' | 'desc') => {
+      setFilter('sortDirection', value);
+    },
+    [setFilter]
+  );
+
+  const sortOptions = ['asc', 'desc'];
 
   const resetDisabled = useMemo(() => {
-    return !hookSearchParams.get('productId');
-  }, [hookSearchParams]);
+    const hasFilters = Object.values(searchValues).some((v) => v);
+    return !hookSearchParams.get('productId') && !hasFilters && !sortBy;
+  }, [hookSearchParams, searchValues, sortBy]);
 
-  const columns = useShopProductHistoryTableColumn({ t });
+  const columns = useShopProductHistoryTableColumn({
+    t,
+    searchValues,
+    setSearchValues,
+    sortBy,
+    setSortBy,
+    sortDirectionParam,
+    setSortDirectionParam,
+    handleSearch,
+    clearFilter,
+    sortOptions,
+  });
 
   if (shopProductHistoryQuery.isError) {
     return (
@@ -71,6 +131,7 @@ const ShopProductHistory = () => {
         quantity: item.quantity ?? 0,
         units: units,
         type: item.type,
+        product: item.product, // Include full product object for filtering columns
       };
     }) || [];
 

@@ -28,7 +28,7 @@ const ShopTransfers = () => {
   >('wood');
 
   const {
-    query,
+    // query,
     page,
     perPage,
     warehouseHistoryQuery,
@@ -100,8 +100,18 @@ const ShopTransfers = () => {
 
   const handleSearch = useCallback(() => {
     const params = new URLSearchParams(searchParams);
+    // Preserve important parameters
+    const existingType = searchParams.get('type');
+    if (existingType) {
+      params.set('type', existingType);
+    }
+    const existingCreatedAt = searchParams.get('createdAt');
+    if (existingCreatedAt) {
+      params.set('createdAt', existingCreatedAt);
+    }
+
     Object.entries(searchValues).forEach(([key, value]) => {
-      if (value === null || value === '') {
+      if (value === null || value === '' || value === undefined) {
         params.delete(key);
       } else {
         params.set(key, String(value));
@@ -112,13 +122,8 @@ const ShopTransfers = () => {
   }, [searchValues, searchParams, setSearchParams]);
 
   const resetDisabled = useMemo(() => {
-    return (
-      Object.values(searchValues).every((v) => !v) &&
-      !query.sortBy &&
-      !query.sortDirection &&
-      !selectedDate
-    );
-  }, [searchValues, query, selectedDate]);
+    return Object.values(searchValues).every((v) => !v) && !selectedDate;
+  }, [searchValues, selectedDate]);
 
   const handleDelete = useCallback(
     async (id: string) => {

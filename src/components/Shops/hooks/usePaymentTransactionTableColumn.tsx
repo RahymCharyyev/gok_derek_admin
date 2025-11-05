@@ -1,5 +1,7 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
-import { SearchOutlined } from '@ant-design/icons';
+import { formatQuantityOrPrice } from '@/utils/formatters';
+import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 
@@ -14,6 +16,7 @@ interface UsePaymentTransactionTableColumnProps {
   handleSearch: () => void;
   clearFilter: (key: string) => void;
   sortOptions: string[];
+  onCancelSale?: (record: any) => void;
 }
 
 export const usePaymentTransactionTableColumn = ({
@@ -26,6 +29,7 @@ export const usePaymentTransactionTableColumn = ({
   handleSearch,
   clearFilter,
   sortOptions,
+  onCancelSale,
 }: UsePaymentTransactionTableColumnProps): ColumnsType<any> => {
   return [
     {
@@ -36,13 +40,13 @@ export const usePaymentTransactionTableColumn = ({
       width: 70,
     },
     {
-      title: t('date'),
+      title: t('soldTime'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       filterDropdown: () =>
         renderFilterDropdown(
           'createdAt',
-          t('date'),
+          t('soldTime'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -55,7 +59,7 @@ export const usePaymentTransactionTableColumn = ({
           'createdAt'
         ),
       filterIcon: () => <SearchOutlined />,
-      render: (date: string) => dayjs(date).format('DD.MM.YYYY HH:mm'),
+      render: (date: string) => dayjs(date).format('HH:mm'),
     },
     {
       title: t('productName'),
@@ -79,9 +83,59 @@ export const usePaymentTransactionTableColumn = ({
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('amount'),
+      title: t('dimensions'),
+      children: [
+        {
+          title: t('woodThickness'),
+          dataIndex: 'thickness',
+          key: 'thickness',
+          render: (value: number) => value || '-',
+        },
+        {
+          title: t('woodWidth'),
+          dataIndex: 'width',
+          key: 'width',
+          render: (value: number) => value || '-',
+        },
+        {
+          title: t('woodLength'),
+          dataIndex: 'length',
+          key: 'length',
+          render: (value: number) => value || '-',
+        },
+      ],
+    },
+    {
+      title: t('woodUnit'),
+      dataIndex: 'units',
+      key: 'units',
+      render: (value: any[]) => {
+        if (!Array.isArray(value) || value.length === 0) return '-';
+        return value.map((e) => t(e.unit)).join(' / ');
+      },
+    },
+    {
+      title: t('productQuantity'),
+      dataIndex: 'quantity',
+      key: 'quantity',
+      render: (value: number) => (value ? formatQuantityOrPrice(value) : '-'),
+    },
+    {
+      title: t('m2Price'),
+      dataIndex: 'm2',
+      key: 'm2',
+      render: (value: string) => value || '-',
+    },
+    {
+      title: t('oneItemPrice'),
+      dataIndex: 'unitPrice',
+      key: 'unitPrice',
+      render: (value: number) => (value ? formatQuantityOrPrice(value) : '-'),
+    },
+    {
+      title: t('totalPrice'),
       dataIndex: 'amount',
-      key: 'amount',
+      key: 'totalAmount',
       filterDropdown: () =>
         renderFilterDropdown(
           'amount',
@@ -98,7 +152,7 @@ export const usePaymentTransactionTableColumn = ({
           'amount'
         ),
       filterIcon: () => <SearchOutlined />,
-      render: (amount: number) => `${amount} TMT`,
+      render: (amount: number) => `${formatQuantityOrPrice(amount)} TMT`,
     },
     {
       title: t('type'),
@@ -123,7 +177,7 @@ export const usePaymentTransactionTableColumn = ({
       render: (type: string) => t(type === 'in' ? 'income' : 'outcome'),
     },
     {
-      title: t('method'),
+      title: t('saleMethod'),
       dataIndex: 'method',
       key: 'method',
       render: (method: string) => t(method),
@@ -142,5 +196,26 @@ export const usePaymentTransactionTableColumn = ({
           ? `${createdBy.firstName || ''} ${createdBy.lastName || ''}`.trim()
           : '-',
     },
+    ...(onCancelSale
+      ? [
+          {
+            title: t('actions'),
+            key: 'actions',
+            fixed: 'right' as const,
+            width: 120,
+            render: (_: any, record: any) => (
+              <Button
+                size='small'
+                type='primary'
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() => onCancelSale(record)}
+              >
+                {t('cancelSale')}
+              </Button>
+            ),
+          },
+        ]
+      : []),
   ];
 };

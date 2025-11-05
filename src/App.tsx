@@ -15,7 +15,7 @@ import Wood from './pages/Products/Wood';
 import WoodTypes from './pages/Products/WoodTypes';
 import Report from './pages/Report';
 import ShopCredits from './pages/Shops/ShopCredits';
-import ShopIsSale from './pages/Shops/ShopIsSale';
+import ShopSales from './pages/Shops/ShopSales';
 import ShopProductHistory from './pages/Shops/ShopProductHistory';
 import ShopProducts from './pages/Shops/ShopProducts';
 import Shops from './pages/Shops/Shops';
@@ -146,7 +146,7 @@ function App() {
             path='/shops/:id/sales'
             element={
               <LayoutComponent>
-                <ShopIsSale />
+                <ShopSales />
               </LayoutComponent>
             }
           />

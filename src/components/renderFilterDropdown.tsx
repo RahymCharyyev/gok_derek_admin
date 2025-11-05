@@ -38,7 +38,7 @@ export const renderFilterDropdown = (
           options={selectOptions}
           value={searchValues[key] || undefined}
           onChange={(value) => {
-            setSearchValues({ ...searchValues, [key]: value });
+            setSearchValues({ ...searchValues, [key]: value || '' });
           }}
           allowClear
           showSearch

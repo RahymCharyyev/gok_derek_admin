@@ -29,7 +29,7 @@
   "upload": "Ýüklemek",
   "okText": "Tassyklamak",
   "cancelText": "Yza",
-  "actions": "Hereketler",
+  "actions": "Amallar",
   "unknownError": "Ýalňyşlyk ýüze çykdy",
   "deleteConfirmTitle": "Pozmak",
   "deleteConfirmMessage": "Siz hakykatdanam pozmak isleýärsiňizmi?",
@@ -215,7 +215,7 @@
   "selectType": "Görnüşi saýlaň",
   "widthAndLength": "Ini × Boýy",
   "M3": "Harydyň jemi metr kuby (M3)",
-  "history": "Ýagdaýy",
+  "history": "Hereketler",
   "sendProduct": "Haryt ibermek",
   "allPrice": "Jemi M3 bahasy:",
   "fromStore": "Nireden",
@@ -271,5 +271,10 @@
   "creditPrice": "Harydyň ýazgy nyrhy",
   "priceType": "Haryt",
   "productNameList": "Harytlaryň ady",
-  "productList": "Sanawy"
+  "productList": "Sanawy",
+  "soldTime": "Satyş sagady",
+  "cancelSale": "Satyşy ýatyrmak",
+  "totalPrice": "Jemi nyrhy (man)",
+  "saleMethod": "Söwdanyň görnüşi",
+  "createdBy": "Satyjynyň ady"
 }
