@@ -129,7 +129,7 @@ const ShopSales = () => {
           m2 = ((width * length) / 1000000).toFixed(4);
         }
 
-        quantity = product.productQuantity;
+        quantity = item?.productTransaction?.quantity ?? 0;
 
         // Calculate unit price if quantity available
         if (quantity && item.amount) {
