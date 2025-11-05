@@ -4,6 +4,10 @@ import {storeWarehouseSchema} from './store-warehouse';
 import {storeWorkshopSchema} from './store-workshop';
 import {storeShopSchema} from './store-shop';
 
+const createWorkshopSchema = (): z.ZodType => storeWorkshopSchema.schema.partial().nullish();
+const createShopSchema = (): z.ZodType => storeShopSchema.schema.partial().nullish();
+const createWarehouseSchema = (): z.ZodType => storeWarehouseSchema.schema.partial().nullish();
+
 const schema = z.object({
   id: z.string().uuid(),
   type: z.enum(['warehouse', 'workshop', 'shop']),
@@ -11,9 +15,9 @@ const schema = z.object({
   createdAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullish(),
 
-  warehouse: z.lazy(() => storeWarehouseSchema.schema.partial().nullish()),
-  workshop: z.lazy(() => storeWorkshopSchema.schema.partial().nullish()),
-  shop: z.lazy(() => storeShopSchema.schema.partial().nullish()),
+  warehouse: z.lazy(createWarehouseSchema),
+  workshop: z.lazy(createWorkshopSchema),
+  shop: z.lazy(createShopSchema),
 });
 
 const sortable = schema.pick({type: true, createdAt: true}).keyof();

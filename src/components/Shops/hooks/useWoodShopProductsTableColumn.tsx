@@ -212,7 +212,7 @@ export const useWoodShopProductsTableColumn = ({
       },
     },
     {
-      title: t('oneProductPrice'),
+      title: t('oneItemPrice'),
       children: [
         {
           title: t('actual'),
@@ -233,15 +233,17 @@ export const useWoodShopProductsTableColumn = ({
       children: [
         {
           title: t('actual'),
-          dataIndex: 'price',
-          key: 'price',
-          render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
+          render: () => <div>-</div>,
+          // dataIndex: 'price',
+          // key: 'price',
+          // render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
         },
         {
           title: t('priceSelection'),
-          dataIndex: 'priceSelection',
-          key: 'priceSelection',
-          render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
+          render: () => <div>-</div>,
+          // dataIndex: 'priceSelection',
+          // key: 'priceSelection',
+          // render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
         },
       ],
     },
@@ -257,7 +259,7 @@ export const useWoodShopProductsTableColumn = ({
       render: (_: any, record: any) => (
         <div className='flex items-center gap-2'>
           {isShopProducts ? (
-            <>
+            <div className='flex flex-col gap-4'>
               <Button
                 size='small'
                 type='primary'
@@ -286,9 +288,9 @@ export const useWoodShopProductsTableColumn = ({
               >
                 {t('history')}
               </Button>
-            </>
+            </div>
           ) : (
-            <>
+            <div className='flex flex-col gap-4'>
               <Button
                 size='small'
                 type='primary'
@@ -307,7 +309,7 @@ export const useWoodShopProductsTableColumn = ({
               >
                 {t('history')}
               </Button>
-            </>
+            </div>
           )}
         </div>
       ),

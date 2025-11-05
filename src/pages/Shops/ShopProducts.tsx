@@ -191,6 +191,8 @@ const ShopProducts = () => {
         productId: item.id,
         productName: item?.name || '',
         quantity: item.productQuantity ?? 0,
+        price: item?.price ?? 0,
+        priceSelection: item?.priceSelection ?? 0,
       };
 
       // Furniture-specific fields

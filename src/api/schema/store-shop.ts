@@ -1,7 +1,7 @@
 import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
 import {userSchema} from './user';
-import {productSchema} from './product';
+import {paymentTransactionSchema} from './payment-transaction';
 
 const schema = z.object({
   storeId: z.string().uuid(),
@@ -49,6 +49,8 @@ const addIncome = z.object({
 const sale = z.object({
   productId: z.string().uuid(),
   quantity: z.coerce.number().int(),
+  method: paymentTransactionSchema.schema.shape.method,
+  note: z.string().nullish(),
 });
 
 type Schema = z.infer<typeof schema>;

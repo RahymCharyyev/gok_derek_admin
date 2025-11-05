@@ -71,13 +71,13 @@ const SaleProductModal: FC<SaleProductModalProps> = ({
         </Form.Item>
 
         <Form.Item
-          name='paymentType'
+          name='method'
           label={t('paymentType')}
           rules={[{ required: true, message: t('notEmptyField') }]}
         >
           <Radio.Group onChange={handlePaymentTypeChange} value={paymentType}>
             <Radio value='credit'>{t('credit')}</Radio>
-            <Radio value='nonCash'>{t('nonCashPayment')}</Radio>
+            <Radio value='bank'>{t('nonCashPayment')}</Radio>
             <Radio value='cash'>{t('cash')}</Radio>
           </Radio.Group>
         </Form.Item>

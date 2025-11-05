@@ -7,6 +7,7 @@ import {
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { renderFilterDropdown } from '../../renderFilterDropdown';
+import { formatQuantityOrPrice } from '@/utils/formatters';
 
 interface UseWoodTableColumnProps {
   t: (key: string) => string;
@@ -201,13 +202,15 @@ export const useWoodTableColumn = ({
       children: [
         {
           title: t('actual'),
-          // dataIndex: 'price',
-          // key: 'price',
+          dataIndex: 'price',
+          key: 'price',
+          render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
         },
         {
           title: t('priceSelection'),
-          // dataIndex: 'priceSelection',
-          // key: 'priceSelection',
+          dataIndex: 'priceSelection',
+          key: 'priceSelection',
+          render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
         },
       ],
     },
@@ -216,9 +219,11 @@ export const useWoodTableColumn = ({
       children: [
         {
           title: t('actual'),
+          render: () => <div>-</div>,
         },
         {
           title: t('priceSelection'),
+          render: () => <div>-</div>,
         },
       ],
     },
