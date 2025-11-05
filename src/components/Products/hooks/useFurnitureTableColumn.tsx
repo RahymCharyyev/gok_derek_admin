@@ -1,3 +1,4 @@
+import { formatQuantityOrPrice } from '@/utils/formatters';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -92,17 +93,19 @@ export const useFurnitureTableColumn = ({
       title: t('actualPrice'),
       dataIndex: 'price',
       key: 'price',
-      render: (value) => <div>{t(value)}</div>,
+      render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
     },
     {
       title: t('sellPrice'),
       dataIndex: 'priceSelection',
       key: 'priceSelection',
+      render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
     },
     {
       title: t('benefit'),
       dataIndex: 'benefit',
       key: 'benefit',
+      render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
     },
     {
       title: t('actions'),

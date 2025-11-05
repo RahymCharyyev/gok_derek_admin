@@ -167,6 +167,30 @@ export const useShops = (
     queryData: { query: isSaleQueryParams },
   });
 
+  const shopProductHistoryQueryParams: Record<string, any> = {
+    page,
+    perPage,
+    storeId: storeId || undefined,
+    productId: searchParams.get('productId') || undefined,
+    sortBy: getEnumParam(
+      searchParams,
+      'sortBy',
+      ['createdAt', 'quantity', 'type'] as const,
+      'createdAt'
+    ),
+    sortDirection,
+  };
+
+  const shopProductHistoryQuery = tsr.productTransaction.getAll.useQuery({
+    queryKey: [
+      'shop-product-history',
+      Object.fromEntries(searchParams.entries()),
+      storeId,
+    ],
+    queryData: { query: shopProductHistoryQueryParams },
+    enabled: !!storeId && !!searchParams.get('productId'),
+  });
+
   const createShopMutation = useMutation({
     mutationFn: (body: any) => tsr.shop.create.mutate({ body }),
     onSuccess: () => {
@@ -230,6 +254,7 @@ export const useShops = (
     perPage,
     shopsQuery,
     shopProductsQuery,
+    shopProductHistoryQuery,
     createShopMutation,
     updateShopMutation,
     deleteShopMutation,

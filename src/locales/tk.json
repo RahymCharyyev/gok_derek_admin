@@ -259,5 +259,7 @@
   "buyer": "Alan",
   "deducted": "Aýrylan (man)",
   "added": "Goşulan (man)",
-  "currencyTMT": "man"
+  "currencyTMT": "man",
+  "geldi": "Geldi",
+  "satyldy": "Satyldy"
 }

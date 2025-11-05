@@ -171,6 +171,7 @@ const ShopProducts = () => {
     handleOpenTransferModal: handleOpenAddModal,
     handleOpenSaleModal: handleOpenSaleModal,
     woodTypes: woodTypesQuery.data?.body.data,
+    shopId: id,
   };
 
   // Conditionally use the appropriate column hook
@@ -189,7 +190,7 @@ const ShopProducts = () => {
         id: item.id,
         productId: item.id,
         productName: item?.name || '',
-        quantity: item.productQuantity || '',
+        quantity: item.productQuantity ?? 0,
       };
 
       // Furniture-specific fields
@@ -197,9 +198,9 @@ const ShopProducts = () => {
         return {
           ...baseData,
           productCode: item?.furniture?.code || '',
-          actualPrice: item?.price || '',
-          sellPrice: item?.priceSelection || '',
-          benefit: (item?.priceSelection || 0) - (item?.price || 0),
+          actualPrice: item?.price ?? 0,
+          sellPrice: item?.priceSelection ?? 0,
+          benefit: (item?.priceSelection ?? 0) - (item?.price ?? 0),
         };
       }
 
@@ -213,7 +214,7 @@ const ShopProducts = () => {
           productQuality: item.wood.quality || '',
           productUnits: item.wood.units || [],
           productWoodType: item.wood.woodType?.name || '',
-          productQuantity: item.productQuantity || '',
+          productQuantity: item.productQuantity ?? 0,
         };
       }
 
@@ -221,7 +222,7 @@ const ShopProducts = () => {
       return {
         ...baseData,
         productUnits: item?.units || [],
-        price: item?.price || '',
+        price: item?.price ?? 0,
       };
     });
   }, [shopProductsQuery.data, page, perPage, shopType, activeProductType]);
@@ -233,10 +234,12 @@ const ShopProducts = () => {
       ? woodColumns
       : otherColumns;
 
-  // Combine warehouses and shops for transfer modal
+  // Combine warehouses and shops for transfer modal (only wood-type shops)
   const transferDestinations = useMemo(() => {
     const warehouses = warehousesQuery.data?.body.data || [];
-    const shops = shopsQuery.data?.body.data || [];
+    const shops = (shopsQuery.data?.body.data || []).filter(
+      (shop: any) => shop?.type === 'wood' || shop?.shop?.type === 'wood'
+    );
     return [...warehouses, ...shops];
   }, [warehousesQuery.data, shopsQuery.data]);
 

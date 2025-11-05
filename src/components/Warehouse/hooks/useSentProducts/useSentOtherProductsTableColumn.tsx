@@ -1,4 +1,5 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
+import { formatQuantityOrPrice } from '@/utils/formatters';
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -83,6 +84,7 @@ export const useSentOtherProductsTableColumn = ({
       title: t('sentQuantity'),
       dataIndex: 'quantity',
       key: 'quantity',
+      render: (record) => <div>{formatQuantityOrPrice(record)}</div>,
       filterDropdown: () =>
         renderFilterDropdown(
           'quantity',

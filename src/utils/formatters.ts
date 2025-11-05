@@ -40,3 +40,8 @@ export const formatTime = (seconds: number) => {
   const remainingSeconds = seconds % 60;
   return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 };
+
+// Format null/undefined values as 0 for quantity and price fields
+export const formatQuantityOrPrice = (value: number | null | undefined): number => {
+  return value ?? 0;
+};

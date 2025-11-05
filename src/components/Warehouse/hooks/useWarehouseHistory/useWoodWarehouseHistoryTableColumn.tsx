@@ -1,4 +1,5 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
+import { formatQuantityOrPrice } from '@/utils/formatters';
 import {
   DownOutlined,
   SearchOutlined,
@@ -222,7 +223,7 @@ export const useWoodWarehouseHistoryTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
-      render: (record) => <div>{record}</div>,
+      render: (record) => <div>{formatQuantityOrPrice(record)}</div>,
     },
     {
       title: t('createdAt'),

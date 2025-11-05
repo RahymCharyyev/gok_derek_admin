@@ -1,15 +1,22 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
+import { renderFilterDropdown } from '@/components/renderFilterDropdown';
 import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import TableLayout from '@/layout/TableLayout';
-import { DeleteOutlined, HistoryOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  DownOutlined,
+  HistoryOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 import { Button, DatePicker, message, Segmented } from 'antd';
 import dayjs, { type Dayjs } from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
+import { formatQuantityOrPrice } from '@/utils/formatters';
 
 const ShopTransfers = () => {
   const { t } = useTranslation();
@@ -30,14 +37,56 @@ const ShopTransfers = () => {
     clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
     handleTypeChange,
     deleteProductHistoryMutation,
   } = useWarehouse(id, activeProductType);
 
-  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(() => {
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+
+  // Sync selectedDate from URL params on mount and when URL params change
+  useEffect(() => {
     const dateParam = searchParams.get('createdAt');
-    return dateParam ? dayjs(dateParam) : null;
+    setSelectedDate(dateParam ? dayjs(dateParam) : null);
+  }, [searchParams]);
+
+  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
+    name: '',
+    thickness: '',
+    width: '',
+    length: '',
+    quality: '',
+    woodTypeId: '',
+    quantity: '',
+    toStoreId: '',
+    code: '',
+    price: '',
+    priceSelection: '',
   });
+
+  // Fetch wood types for filtering (only needed for wood products)
+  const woodTypesQuery = tsr.woodType.getAll.useQuery({
+    queryKey: ['wood-types'],
+    queryData: {},
+  });
+
+  // Sync URL params with local search state on mount and when URL params change
+  useEffect(() => {
+    const newSearchValues: { [key: string]: string } = {
+      name: searchParams.get('name') || '',
+      thickness: searchParams.get('thickness') || '',
+      width: searchParams.get('width') || '',
+      length: searchParams.get('length') || '',
+      quality: searchParams.get('quality') || '',
+      woodTypeId: searchParams.get('woodTypeId') || '',
+      quantity: searchParams.get('quantity') || '',
+      toStoreId: searchParams.get('toStoreId') || '',
+      code: searchParams.get('code') || '',
+      price: searchParams.get('price') || '',
+      priceSelection: searchParams.get('priceSelection') || '',
+    };
+    setSearchValues(newSearchValues);
+  }, [searchParams]);
 
   // Fetch current shop data
   const currentShopQuery = tsr.shop.getOne.useQuery({
@@ -67,9 +116,27 @@ const ShopTransfers = () => {
     []
   );
 
+  const handleSearch = useCallback(() => {
+    const params = new URLSearchParams(searchParams);
+    Object.entries(searchValues).forEach(([key, value]) => {
+      if (value === null || value === '') {
+        params.delete(key);
+      } else {
+        params.set(key, String(value));
+      }
+    });
+    params.set('page', '1'); // Reset to first page when searching
+    setSearchParams(params);
+  }, [searchValues, searchParams, setSearchParams]);
+
   const resetDisabled = useMemo(() => {
-    return !query.sortBy && !query.sortDirection && !selectedDate;
-  }, [query, selectedDate]);
+    return (
+      Object.values(searchValues).every((v) => !v) &&
+      !query.sortBy &&
+      !query.sortDirection &&
+      !selectedDate
+    );
+  }, [searchValues, query, selectedDate]);
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -109,6 +176,26 @@ const ShopTransfers = () => {
       title: t('transferDate'),
       dataIndex: 'createdAt',
       key: 'createdAt',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'createdAt',
+          t('transferDate'),
+          searchValues,
+          setSearchValues,
+          ['asc', 'desc'],
+          (searchParams.get('sortDirection') as 'asc' | 'desc' | null) || null,
+          (value: string) => setFilter('sortBy', value),
+          (value: 'asc' | 'desc') => setFilter('sortDirection', value),
+          handleSearch,
+          (key: string) => {
+            setSearchValues((prev) => ({ ...prev, [key]: '' }));
+            clearFilter(key);
+          },
+          t,
+          'createdAt',
+          false
+        ),
+      filterIcon: () => <DownOutlined />,
       render: (date: string) => dayjs(date).format('DD.MM.YYYY HH:mm'),
     },
   ];
@@ -118,6 +205,27 @@ const ShopTransfers = () => {
       title: t('productName'),
       dataIndex: 'productName',
       key: 'productName',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'name',
+          t('productName'),
+          searchValues,
+          setSearchValues,
+          ['asc', 'desc'],
+          (searchParams.get('sortDirection') as 'asc' | 'desc' | null) || null,
+          (value: string) => setFilter('sortBy', value),
+          (value: 'asc' | 'desc') => setFilter('sortDirection', value),
+          handleSearch,
+          (key: string) => {
+            setSearchValues((prev) => ({ ...prev, [key]: '' }));
+            clearFilter(key);
+          },
+          t,
+          'name',
+          true
+        ),
+      filterIcon: () => <SearchOutlined />,
+      render: (value: string) => <div>{value}</div>,
     },
     {
       title: t('dimensions'),
@@ -126,16 +234,82 @@ const ShopTransfers = () => {
           title: t('woodThickness'),
           dataIndex: 'productThickness',
           key: 'productThickness',
+          filterDropdown: () =>
+            renderFilterDropdown(
+              'thickness',
+              t('woodThickness'),
+              searchValues,
+              setSearchValues,
+              ['asc', 'desc'],
+              (searchParams.get('sortDirection') as 'asc' | 'desc' | null) ||
+                null,
+              (value: string) => setFilter('sortBy', value),
+              (value: 'asc' | 'desc') => setFilter('sortDirection', value),
+              handleSearch,
+              (key: string) => {
+                setSearchValues((prev) => ({ ...prev, [key]: '' }));
+                clearFilter(key);
+              },
+              t,
+              'thickness',
+              true
+            ),
+          filterIcon: () => <SearchOutlined />,
+          render: (value: string) => <div>{value}</div>,
         },
         {
           title: t('woodWidth'),
           dataIndex: 'productWidth',
           key: 'productWidth',
+          filterDropdown: () =>
+            renderFilterDropdown(
+              'width',
+              t('woodWidth'),
+              searchValues,
+              setSearchValues,
+              ['asc', 'desc'],
+              (searchParams.get('sortDirection') as 'asc' | 'desc' | null) ||
+                null,
+              (value: string) => setFilter('sortBy', value),
+              (value: 'asc' | 'desc') => setFilter('sortDirection', value),
+              handleSearch,
+              (key: string) => {
+                setSearchValues((prev) => ({ ...prev, [key]: '' }));
+                clearFilter(key);
+              },
+              t,
+              'width',
+              true
+            ),
+          filterIcon: () => <SearchOutlined />,
+          render: (value: string) => <div>{value}</div>,
         },
         {
           title: t('woodLength'),
           dataIndex: 'productLength',
           key: 'productLength',
+          filterDropdown: () =>
+            renderFilterDropdown(
+              'length',
+              t('woodLength'),
+              searchValues,
+              setSearchValues,
+              ['asc', 'desc'],
+              (searchParams.get('sortDirection') as 'asc' | 'desc' | null) ||
+                null,
+              (value: string) => setFilter('sortBy', value),
+              (value: 'asc' | 'desc') => setFilter('sortDirection', value),
+              handleSearch,
+              (key: string) => {
+                setSearchValues((prev) => ({ ...prev, [key]: '' }));
+                clearFilter(key);
+              },
+              t,
+              'length',
+              true
+            ),
+          filterIcon: () => <SearchOutlined />,
+          render: (value: string) => <div>{value}</div>,
         },
       ],
     },
@@ -152,16 +326,63 @@ const ShopTransfers = () => {
       title: t('woodType'),
       dataIndex: 'productWoodType',
       key: 'productWoodType',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'woodTypeId',
+          t('woodType'),
+          searchValues,
+          setSearchValues,
+          ['asc', 'desc'],
+          (searchParams.get('sortDirection') as 'asc' | 'desc' | null) || null,
+          (value: string) => setFilter('sortBy', value),
+          (value: 'asc' | 'desc') => setFilter('sortDirection', value),
+          handleSearch,
+          (key: string) => {
+            setSearchValues((prev) => ({ ...prev, [key]: '' }));
+            clearFilter(key);
+          },
+          t,
+          'woodTypeId',
+          false,
+          woodTypesQuery.data?.body.data?.map((wt) => ({
+            label: wt.name,
+            value: wt.id,
+          }))
+        ),
+      filterIcon: () => <DownOutlined />,
+      render: (value: string) => <div>{value}</div>,
     },
     {
       title: t('productQuantity'),
       dataIndex: 'quantity',
       key: 'quantity',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'quantity',
+          t('productQuantity'),
+          searchValues,
+          setSearchValues,
+          ['asc', 'desc'],
+          (searchParams.get('sortDirection') as 'asc' | 'desc' | null) || null,
+          (value: string) => setFilter('sortBy', value),
+          (value: 'asc' | 'desc') => setFilter('sortDirection', value),
+          handleSearch,
+          (key: string) => {
+            setSearchValues((prev) => ({ ...prev, [key]: '' }));
+            clearFilter(key);
+          },
+          t,
+          'quantity',
+          true
+        ),
+      filterIcon: () => <SearchOutlined />,
+      render: (value: number) => <div>{formatQuantityOrPrice(value)}</div>,
     },
     {
       title: t('m2Price'),
       dataIndex: 'm2',
       key: 'm2',
+      render: (value: string) => <div>{value}</div>,
     },
   ];
 
@@ -170,26 +391,111 @@ const ShopTransfers = () => {
       title: t('productCode'),
       dataIndex: 'productCode',
       key: 'productCode',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'code',
+          t('productCode'),
+          searchValues,
+          setSearchValues,
+          ['asc', 'desc'],
+          null,
+          () => {},
+          () => {},
+          handleSearch,
+          (key: string) => {
+            setSearchValues((prev) => ({ ...prev, [key]: '' }));
+            clearFilter(key);
+          },
+          t,
+          'code',
+          true
+        ),
+      filterIcon: () => <SearchOutlined />,
+      render: (value: string) => <div>{value}</div>,
     },
     {
       title: t('name'),
       dataIndex: 'productName',
       key: 'productName',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'name',
+          t('name'),
+          searchValues,
+          setSearchValues,
+          ['asc', 'desc'],
+          (searchParams.get('sortDirection') as 'asc' | 'desc' | null) || null,
+          (value: string) => setFilter('sortBy', value),
+          (value: 'asc' | 'desc') => setFilter('sortDirection', value),
+          handleSearch,
+          (key: string) => {
+            setSearchValues((prev) => ({ ...prev, [key]: '' }));
+            clearFilter(key);
+          },
+          t,
+          'name',
+          true
+        ),
+      filterIcon: () => <SearchOutlined />,
+      render: (value: string) => <div>{value}</div>,
     },
     {
       title: t('actualPrice'),
       dataIndex: 'actualPrice',
       key: 'actualPrice',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'price',
+          t('actualPrice'),
+          searchValues,
+          setSearchValues,
+          ['asc', 'desc'],
+          (searchParams.get('sortDirection') as 'asc' | 'desc' | null) || null,
+          (value: string) => setFilter('sortBy', value),
+          (value: 'asc' | 'desc') => setFilter('sortDirection', value),
+          handleSearch,
+          (key: string) => {
+            setSearchValues((prev) => ({ ...prev, [key]: '' }));
+            clearFilter(key);
+          },
+          t,
+          'price',
+          true
+        ),
+      filterIcon: () => <SearchOutlined />,
+      render: (value: number) => <div>{formatQuantityOrPrice(value)}</div>,
     },
     {
       title: t('sellPrice'),
       dataIndex: 'sellPrice',
       key: 'sellPrice',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'priceSelection',
+          t('sellPrice'),
+          searchValues,
+          setSearchValues,
+          ['asc', 'desc'],
+          (searchParams.get('sortDirection') as 'asc' | 'desc' | null) || null,
+          (value: string) => setFilter('sortBy', value),
+          (value: 'asc' | 'desc') => setFilter('sortDirection', value),
+          handleSearch,
+          (key: string) => {
+            setSearchValues((prev) => ({ ...prev, [key]: '' }));
+            clearFilter(key);
+          },
+          t,
+          'priceSelection',
+          true
+        ),
+      filterIcon: () => <SearchOutlined />,
+      render: (value: number) => <div>{formatQuantityOrPrice(value)}</div>,
     },
     {
       title: t('benefit'),
       dataIndex: 'benefit',
       key: 'benefit',
+      render: (value: number) => <div>{formatQuantityOrPrice(value)}</div>,
     },
   ];
 
@@ -198,11 +504,53 @@ const ShopTransfers = () => {
       title: t('name'),
       dataIndex: 'productName',
       key: 'productName',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'name',
+          t('name'),
+          searchValues,
+          setSearchValues,
+          ['asc', 'desc'],
+          (searchParams.get('sortDirection') as 'asc' | 'desc' | null) || null,
+          (value: string) => setFilter('sortBy', value),
+          (value: 'asc' | 'desc') => setFilter('sortDirection', value),
+          handleSearch,
+          (key: string) => {
+            setSearchValues((prev) => ({ ...prev, [key]: '' }));
+            clearFilter(key);
+          },
+          t,
+          'name',
+          true
+        ),
+      filterIcon: () => <SearchOutlined />,
+      render: (value: string) => <div>{value}</div>,
     },
     {
       title: t('productQuantity'),
       dataIndex: 'quantity',
       key: 'quantity',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'quantity',
+          t('productQuantity'),
+          searchValues,
+          setSearchValues,
+          ['asc', 'desc'],
+          (searchParams.get('sortDirection') as 'asc' | 'desc' | null) || null,
+          (value: string) => setFilter('sortBy', value),
+          (value: 'asc' | 'desc') => setFilter('sortDirection', value),
+          handleSearch,
+          (key: string) => {
+            setSearchValues((prev) => ({ ...prev, [key]: '' }));
+            clearFilter(key);
+          },
+          t,
+          'quantity',
+          true
+        ),
+      filterIcon: () => <SearchOutlined />,
+      render: (value: number) => <div>{formatQuantityOrPrice(value)}</div>,
     },
     {
       title: t('woodUnit'),
@@ -220,6 +568,27 @@ const ShopTransfers = () => {
       title: t('sentStore'),
       dataIndex: 'toStore',
       key: 'toStore',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'toStoreId',
+          t('sentStore'),
+          searchValues,
+          setSearchValues,
+          ['asc', 'desc'],
+          (searchParams.get('sortDirection') as 'asc' | 'desc' | null) || null,
+          (value: string) => setFilter('sortBy', value),
+          (value: 'asc' | 'desc') => setFilter('sortDirection', value),
+          handleSearch,
+          (key: string) => {
+            setSearchValues((prev) => ({ ...prev, [key]: '' }));
+            clearFilter(key);
+          },
+          t,
+          'toStoreId',
+          true
+        ),
+      filterIcon: () => <SearchOutlined />,
+      render: (value: string) => <div>{value}</div>,
     },
     {
       title: t('actions'),
@@ -256,7 +625,7 @@ const ShopTransfers = () => {
         id: item.id,
         createdAt: item.createdAt || '',
         productName: item.product?.name || '',
-        quantity: item.quantity || '',
+        quantity: item.quantity ?? 0,
         toStore:
           item.toStore?.type != 'shop'
             ? t(item.toStore?.type || '')
@@ -285,10 +654,10 @@ const ShopTransfers = () => {
         return {
           ...baseData,
           productCode: item.product.furniture.code || '',
-          actualPrice: item.product.price || '',
-          sellPrice: item.product.priceSelection || '',
+          actualPrice: item.product.price ?? 0,
+          sellPrice: item.product.priceSelection ?? 0,
           benefit:
-            (item.product.priceSelection || 0) - (item.product.price || 0),
+            (item.product.priceSelection ?? 0) - (item.product.price ?? 0),
         };
       }
 
@@ -350,6 +719,19 @@ const ShopTransfers = () => {
           <Toolbar
             onReset={() => {
               setSelectedDate(null);
+              setSearchValues({
+                name: '',
+                thickness: '',
+                width: '',
+                length: '',
+                quality: '',
+                woodTypeId: '',
+                quantity: '',
+                toStoreId: '',
+                code: '',
+                price: '',
+                priceSelection: '',
+              });
               resetFilters();
             }}
             resetDisabled={resetDisabled}

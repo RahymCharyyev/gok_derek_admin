@@ -1,4 +1,5 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
+import { formatQuantityOrPrice } from '@/utils/formatters';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -213,6 +214,7 @@ export const useOrderedWoodTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
+      render: (record) => <div>{formatQuantityOrPrice(record)}</div>,
     },
     {
       title: t('warehouseQuantity'),
@@ -235,6 +237,7 @@ export const useOrderedWoodTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
+      render: (record) => <div>{formatQuantityOrPrice(record)}</div>,
     },
     {
       title: t('noSendQuantity'),
@@ -257,6 +260,7 @@ export const useOrderedWoodTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
+      render: (record) => <div>{formatQuantityOrPrice(record)}</div>,
     },
     {
       title: t('woodUnitWide'),

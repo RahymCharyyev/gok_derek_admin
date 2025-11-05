@@ -1,4 +1,5 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
+import { formatQuantityOrPrice } from '@/utils/formatters';
 import {
   HistoryOutlined,
   SearchOutlined,
@@ -23,6 +24,7 @@ interface UseFurnitureShopProductsTableColumnProps {
   handleOpenTransferModal?: (record: any) => void;
   handleOpenSaleModal?: (record: any) => void;
   onSort?: (sortBy: string, sortDirection: 'asc' | 'desc') => void;
+  shopId?: string;
 }
 
 export const useFurnitureShopProductsTableColumn = ({
@@ -39,6 +41,7 @@ export const useFurnitureShopProductsTableColumn = ({
   handleOpenTransferModal,
   handleOpenSaleModal,
   onSort,
+  shopId,
 }: UseFurnitureShopProductsTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
   return [
@@ -102,25 +105,25 @@ export const useFurnitureShopProductsTableColumn = ({
       title: t('actualPrice'),
       dataIndex: 'actualPrice',
       key: 'actualPrice',
-      render: (value) => <div>{value}</div>,
+      render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
     },
     {
       title: t('sellPrice'),
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      render: (value) => <div>{value}</div>,
+      render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
     },
     {
       title: t('benefit'),
       dataIndex: 'benefit',
       key: 'benefit',
-      render: (value) => <div>{value}</div>,
+      render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
     },
     {
       title: t('productQuantity'),
       dataIndex: 'quantity',
       key: 'quantity',
-      render: (record) => <div>{record}</div>,
+      render: (record) => <div>{formatQuantityOrPrice(record)}</div>,
     },
     {
       title: t('actions'),
@@ -144,6 +147,18 @@ export const useFurnitureShopProductsTableColumn = ({
                 onClick={() => handleOpenSaleModal?.(record)}
               >
                 {t('saleProduct')}
+              </Button>
+              <Button
+                size='small'
+                type='primary'
+                icon={<HistoryOutlined />}
+                onClick={() =>
+                  navigate(
+                    `/shops/${shopId}/products/history?productId=${record.productId}`
+                  )
+                }
+              >
+                {t('history')}
               </Button>
             </>
           ) : (

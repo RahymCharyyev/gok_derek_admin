@@ -1,4 +1,5 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
+import { formatQuantityOrPrice } from '@/utils/formatters';
 import {
   DownOutlined,
   HistoryOutlined,
@@ -23,6 +24,7 @@ interface UseOtherShopProductsTableColumnProps {
   isShopProducts?: boolean;
   handleOpenTransferModal?: (record: any) => void;
   handleOpenSaleModal?: (record: any) => void;
+  shopId?: string;
 }
 
 export const useOtherShopProductsTableColumn = ({
@@ -38,6 +40,7 @@ export const useOtherShopProductsTableColumn = ({
   isShopProducts,
   handleOpenTransferModal,
   handleOpenSaleModal,
+  shopId,
 }: UseOtherShopProductsTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
   return [
@@ -90,7 +93,7 @@ export const useOtherShopProductsTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
-      render: (record) => <div>{record}</div>,
+      render: (record) => <div>{formatQuantityOrPrice(record)}</div>,
     },
     {
       title: t('woodUnit'),
@@ -139,6 +142,7 @@ export const useOtherShopProductsTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
+      render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
     },
     {
       title: t('actions'),
@@ -162,6 +166,18 @@ export const useOtherShopProductsTableColumn = ({
                 onClick={() => handleOpenSaleModal?.(record)}
               >
                 {t('saleProduct')}
+              </Button>
+              <Button
+                size='small'
+                type='primary'
+                icon={<HistoryOutlined />}
+                onClick={() =>
+                  navigate(
+                    `/shops/${shopId}/products/history?productId=${record.productId}`
+                  )
+                }
+              >
+                {t('history')}
               </Button>
             </>
           ) : (

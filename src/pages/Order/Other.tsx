@@ -82,9 +82,9 @@ const OtherOrder = () => {
       index: (page - 1) * perPage + (index + 1),
       id: item.id,
       name: item.name || '',
-      price: item.price || '',
-      priceNonCash: item.priceNonCash || '',
-      priceSelection: item.priceSelection || '',
+      price: item.price ?? 0,
+      priceNonCash: item.priceNonCash ?? 0,
+      priceSelection: item.priceSelection ?? 0,
       units: item.units || '',
     })) || [];
 

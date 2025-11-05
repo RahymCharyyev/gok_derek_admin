@@ -1,4 +1,5 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
+import { formatQuantityOrPrice } from '@/utils/formatters';
 import {
   DownOutlined,
   HistoryOutlined,
@@ -25,6 +26,7 @@ interface UseWoodShopProductsTableColumnProps {
   handleOpenSaleModal?: (record: any) => void;
   woodTypes?: Array<{ id: string; name: string }>;
   onSort?: (sortBy: string, sortDirection: 'asc' | 'desc') => void;
+  shopId?: string;
 }
 
 export const useWoodShopProductsTableColumn = ({
@@ -42,6 +44,7 @@ export const useWoodShopProductsTableColumn = ({
   handleOpenSaleModal,
   woodTypes,
   onSort,
+  shopId,
 }: UseWoodShopProductsTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
   return [
@@ -213,13 +216,15 @@ export const useWoodShopProductsTableColumn = ({
       children: [
         {
           title: t('actual'),
-          // dataIndex: 'price',
-          // key: 'price',
+          dataIndex: 'price',
+          key: 'price',
+          render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
         },
         {
           title: t('priceSelection'),
-          // dataIndex: 'priceSelection',
-          // key: 'priceSelection',
+          dataIndex: 'priceSelection',
+          key: 'priceSelection',
+          render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
         },
       ],
     },
@@ -228,13 +233,15 @@ export const useWoodShopProductsTableColumn = ({
       children: [
         {
           title: t('actual'),
-          // dataIndex: 'price',
-          // key: 'price',
+          dataIndex: 'price',
+          key: 'price',
+          render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
         },
         {
           title: t('priceSelection'),
-          // dataIndex: 'priceSelection',
-          // key: 'priceSelection',
+          dataIndex: 'priceSelection',
+          key: 'priceSelection',
+          render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
         },
       ],
     },
@@ -242,7 +249,7 @@ export const useWoodShopProductsTableColumn = ({
       title: t('productQuantity'),
       dataIndex: 'productQuantity',
       key: 'productQuantity',
-      render: (record) => <div>{record}</div>,
+      render: (record) => <div>{formatQuantityOrPrice(record)}</div>,
     },
     {
       title: t('actions'),
@@ -266,6 +273,18 @@ export const useWoodShopProductsTableColumn = ({
                 onClick={() => handleOpenSaleModal?.(record)}
               >
                 {t('saleProduct')}
+              </Button>
+              <Button
+                size='small'
+                type='primary'
+                icon={<HistoryOutlined />}
+                onClick={() =>
+                  navigate(
+                    `/shops/${shopId}/products/history?productId=${record.productId}`
+                  )
+                }
+              >
+                {t('history')}
               </Button>
             </>
           ) : (

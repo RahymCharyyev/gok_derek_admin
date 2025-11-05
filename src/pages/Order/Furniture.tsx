@@ -81,9 +81,9 @@ const FurnitureOrder = () => {
       id: item.id,
       name: item.name || '',
       furniture: item.furniture || '',
-      price: item.price || '',
-      priceNonCash: item.priceNonCash || '',
-      priceSelection: item.priceSelection || '',
+      price: item.price ?? 0,
+      priceNonCash: item.priceNonCash ?? 0,
+      priceSelection: item.priceSelection ?? 0,
       type: item.type || '',
     })) || [];
 

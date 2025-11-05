@@ -1,3 +1,4 @@
+import { formatQuantityOrPrice } from '@/utils/formatters';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -83,6 +84,7 @@ export const useWoodTypesTableColumn = ({
           'price'
         ),
       filterIcon: () => <SearchOutlined />,
+      render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
     },
     {
       title: t('selectionPriceDollar'),
@@ -104,6 +106,7 @@ export const useWoodTypesTableColumn = ({
           'priceSelection'
         ),
       filterIcon: () => <SearchOutlined />,
+      render: (value) => <div>{formatQuantityOrPrice(value)}</div>,
     },
 
     {

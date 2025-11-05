@@ -5,6 +5,7 @@ import {storeSchema} from './store';
 import {userSchema} from './user';
 import {storeWorkshopSchema} from './store-workshop';
 import {orderSchema} from './order';
+import {productWoodSchema} from './product-wood';
 
 const schema = z.object({
   id: z.string().uuid(),
@@ -36,7 +37,10 @@ const sortKeys = schema.pick({
   createdAt: true,
 });
 
-const sortable = sortKeys.merge(productSchema.sortKeys).keyof();
+const sortable = sortKeys
+  .merge(productSchema.sortKeys)
+  .merge(productWoodSchema.sortKeys.pick({woodTypeId: true, quality: true, thickness: true, length: true, width: true}))
+  .keyof();
 const sort = z.object({sortBy: sortable.default('createdAt'), sortDirection: sortDirection.default('desc')});
 
 const getAll = schema
@@ -80,6 +84,8 @@ export const productTransactionSchema = {
   getOneRes,
   create,
   edit,
+  sortKeys,
+  sortable,
 };
 
 export type ProductTransactionSchema = {

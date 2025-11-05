@@ -16,6 +16,7 @@ import WoodTypes from './pages/Products/WoodTypes';
 import Report from './pages/Report';
 import ShopCredits from './pages/Shops/ShopCredits';
 import ShopIsSale from './pages/Shops/ShopIsSale';
+import ShopProductHistory from './pages/Shops/ShopProductHistory';
 import ShopProducts from './pages/Shops/ShopProducts';
 import Shops from './pages/Shops/Shops';
 import Users from './pages/Users';
@@ -146,6 +147,14 @@ function App() {
             element={
               <LayoutComponent>
                 <ShopIsSale />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/shops/:id/products/history'
+            element={
+              <LayoutComponent>
+                <ShopProductHistory />
               </LayoutComponent>
             }
           />

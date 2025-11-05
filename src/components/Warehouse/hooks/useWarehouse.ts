@@ -57,6 +57,10 @@ export const useWarehouse = (
       'price',
       'createdAt',
       'name',
+      'thickness',
+      'width',
+      'length',
+      'woodTypeId',
     ] as const,
     'createdAt'
   );
@@ -85,7 +89,14 @@ export const useWarehouse = (
     'createdAt'
   );
 
-  const query: ProductTransactionSchema['GetAll'] = {
+  const query: ProductTransactionSchema['GetAll'] & {
+    name?: string;
+    thickness?: number;
+    width?: number;
+    length?: number;
+    woodTypeId?: string;
+    code?: string;
+  } = {
     page,
     perPage,
     storeId,
@@ -106,6 +117,19 @@ export const useWarehouse = (
     sortBy,
     sortDirection,
     productType,
+    // Product-related filters (may be supported by backend through product relationships)
+    name: searchParams.get('name') || undefined,
+    thickness: searchParams.get('thickness')
+      ? Number(searchParams.get('thickness'))
+      : undefined,
+    width: searchParams.get('width')
+      ? Number(searchParams.get('width'))
+      : undefined,
+    length: searchParams.get('length')
+      ? Number(searchParams.get('length'))
+      : undefined,
+    woodTypeId: searchParams.get('woodTypeId') || undefined,
+    code: searchParams.get('code') || undefined,
   };
 
   const warehouseQueryParams: StoreWarehouseSchema['GetProducts'] = {

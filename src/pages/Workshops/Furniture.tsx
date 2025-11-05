@@ -110,7 +110,7 @@ const FurnitureWorkshop: FC = () => {
       id: item.id,
       code: item.product?.furniture?.code,
       productName: item.product?.name || '',
-      quantity: item.quantity || '',
+      quantity: item.quantity ?? 0,
     })) || [];
 
   //   const handleSubmitModal = async (values: any) => {

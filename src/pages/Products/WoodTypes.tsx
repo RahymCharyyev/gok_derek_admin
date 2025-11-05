@@ -99,8 +99,8 @@ const WoodTypes = () => {
       index: (page - 1) * perPage + (index + 1),
       id: item.id,
       name: item.name || '',
-      price: item.price || '',
-      priceSelection: item.priceSelection || '',
+      price: item.price ?? 0,
+      priceSelection: item.priceSelection ?? 0,
     })) || [];
 
   const handleSubmitModal = async (values: any) => {

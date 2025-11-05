@@ -1,4 +1,5 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
+import { formatQuantityOrPrice } from '@/utils/formatters';
 import {
   DeleteOutlined,
   DownOutlined,
@@ -217,6 +218,7 @@ export const useWorkshopTableColumn = ({
       title: t('productQuantity'),
       dataIndex: 'quantity',
       key: 'quantity',
+      render: (record) => <div>{formatQuantityOrPrice(record)}</div>,
       filterDropdown: () =>
         renderFilterDropdown(
           'quantity',

@@ -1,4 +1,5 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
+import { formatQuantityOrPrice } from '@/utils/formatters';
 import { DownOutlined, PlusCircleFilled } from '@ant-design/icons';
 import { Button, Select, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -102,6 +103,7 @@ export const useOrderedOtherTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
+      render: (record) => <div>{formatQuantityOrPrice(record)}</div>,
     },
     {
       title: t('warehouseQuantity'),
@@ -124,6 +126,7 @@ export const useOrderedOtherTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
+      render: (record) => <div>{formatQuantityOrPrice(record)}</div>,
     },
     {
       title: t('noSendQuantity'),
@@ -146,6 +149,7 @@ export const useOrderedOtherTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
+      render: (record) => <div>{formatQuantityOrPrice(record)}</div>,
     },
     {
       title: t('woodUnitWide'),

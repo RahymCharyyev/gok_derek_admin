@@ -125,7 +125,7 @@ const WoodWorkshop: FC = () => {
       productUnits: item.product?.wood?.units || [],
       productWoodType: item.product?.wood?.woodType?.name || '',
       m3: '',
-      quantity: item.quantity || '',
+      quantity: item.quantity ?? 0,
     })) || [];
 
   //   const handleSubmitModal = async (values: any) => {
