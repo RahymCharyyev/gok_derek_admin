@@ -102,7 +102,6 @@ export const useSentOtherProductsTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
-      render: (record) => <div>{record}</div>,
     },
     {
       title: t('sentStore'),

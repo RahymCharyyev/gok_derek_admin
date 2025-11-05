@@ -236,7 +236,6 @@ export const useWorkshopTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
-      render: (record) => <div>{record}</div>,
     },
     {
       title: t('woodUnitWide'),

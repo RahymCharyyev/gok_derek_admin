@@ -240,7 +240,6 @@ export const useSentWoodProductsTableColumn = ({
           false
         ),
       filterIcon: () => <DownOutlined />,
-      render: (record) => <div>{record}</div>,
     },
     {
       title: t('sentStore'),
