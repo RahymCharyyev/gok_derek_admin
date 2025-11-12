@@ -12,6 +12,7 @@ import {storeWorkshopContract} from './store-workshop';
 import {userContract} from './user';
 import {userRoleContract} from './user-role';
 import {woodTypeContract} from './wood-type';
+import {clientContract} from './client';
 
 const c = initContract();
 
@@ -29,4 +30,5 @@ export const contract = c.router({
   productTransaction: productTransactionContract,
   paymentTransaction: paymentTransactionContract,
   order: orderContract,
+  client: clientContract,
 });

@@ -1,19 +1,22 @@
 import {z} from 'zod';
-import {commonQuery, sortDirection} from './common';
+import {commonQuery, sortDirection, paymentMethods} from './common';
 import {productSchema} from './product';
 import {storeSchema} from './store';
 import {userSchema} from './user';
 import {productTransactionSchema} from './product-transactions';
+import {clientSchema} from './client';
 
 const schema = z.object({
   id: z.string().uuid(),
   type: z.enum(['in', 'out']),
-  method: z.enum(['cash', 'bank', 'credit']),
+  method: paymentMethods,
   amount: z.coerce.number().int(),
   createdById: z.string().uuid(),
 
   storeId: z.string().uuid().nullish(),
   productTransactionId: z.string().uuid().nullish(),
+  clientId: z.string().uuid().nullish(),
+
   note: z.string().nullish(),
 
   createdAt: z.coerce.date(),
@@ -23,6 +26,7 @@ const schema = z.object({
   store: z.lazy(() => storeSchema.schema.partial().nullish()),
   createdBy: z.lazy(() => userSchema.schema.partial().nullish()),
   productTransaction: z.lazy(() => productTransactionSchema.schema.partial().nullish()),
+  client: z.lazy(() => clientSchema.schema.partial().nullish()),
 });
 
 const sortKeys = schema.pick({
@@ -81,6 +85,8 @@ export const paymentTransactionSchema = {
   create,
   edit,
 };
+
+export {paymentMethods};
 
 export type PaymentTransactionSchema = {
   Schema: Schema;

@@ -131,7 +131,7 @@ export const useShops = (
     page,
     perPage,
     method: 'credit',
-    storeId: storeId || undefined,
+    // storeId: storeId || undefined,
     amount: searchParams.get('amount')
       ? Number(searchParams.get('amount'))
       : undefined,
@@ -157,7 +157,7 @@ export const useShops = (
     sortDirection,
   };
 
-  const creditsQuery = tsr.paymentTransaction.getAll.useQuery({
+  const creditsQuery = tsr.shop.getClients.useQuery({
     queryKey: ['credits', Object.fromEntries(searchParams.entries()), storeId],
     queryData: { query: creditsQueryParams },
   });

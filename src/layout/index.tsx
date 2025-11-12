@@ -143,9 +143,19 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
       ],
     },
     {
-      key: '/shops',
+      key: '/shops-list',
       icon: <FaStore />,
       label: <div className='text-base'>{t('shops')}</div>,
+      children: [
+        {
+          key: '/shops',
+          label: <div className='text-base'>{t('shopsList')}</div>,
+        },
+        {
+          key: '/shop-clients',
+          label: <div className='text-base'>{t('shopsClients')}</div>,
+        },
+      ],
     },
     {
       key: '/warehouse',
@@ -229,7 +239,7 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
     <Layout className='min-h-screen'>
       {!isMobile ? (
         <Sider
-          width={200}
+          width={250}
           theme='light'
           collapsible
           collapsed={collapsed}

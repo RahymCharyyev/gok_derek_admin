@@ -15,12 +15,15 @@ import {
   MinusCircleOutlined,
   ShoppingCartOutlined,
   TransactionOutlined,
+  AppstoreOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
-import { Button, Dropdown, message, Segmented, type MenuProps } from 'antd';
+import { Button, Dropdown, message, type MenuProps } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import TransferShopProductModal from '../../components/Shops/TransferShopProductModal';
+import { BiStats } from 'react-icons/bi';
 
 const ShopProducts = () => {
   const { t } = useTranslation();
@@ -111,6 +114,22 @@ const ShopProducts = () => {
     setEditingData(null);
     setIsSaleModalOpen(true);
     setSelectedProductId(record.productId);
+  };
+
+  // Get menu items for product type selection
+  const getProductTypeMenuItems = (): MenuProps['items'] => {
+    return [
+      {
+        key: 'wood',
+        label: t('woodProducts'),
+        onClick: () => setActiveProductType('wood'),
+      },
+      {
+        key: 'other',
+        label: t('otherProducts'),
+        onClick: () => setActiveProductType('other'),
+      },
+    ];
   };
 
   // Get menu items based on shop type
@@ -318,20 +337,32 @@ const ShopProducts = () => {
               customButton={
                 <>
                   {shopType === 'wood' && (
-                    <div className='mt-4 mb-4'>
-                      <Segmented
-                        options={[
-                          { label: t('woodProducts'), value: 'wood' },
-                          { label: t('otherProducts'), value: 'other' },
-                        ]}
-                        value={activeProductType}
-                        onChange={(value) =>
-                          setActiveProductType(value as 'wood' | 'other')
-                        }
-                        size='middle'
-                      />
-                    </div>
+                    <Dropdown
+                      menu={{ items: getProductTypeMenuItems() }}
+                      trigger={['click']}
+                    >
+                      <Button type='default' icon={<AppstoreOutlined />}>
+                        {t('productsList')} <DownOutlined />
+                      </Button>
+                    </Dropdown>
                   )}
+                  <Dropdown
+                    menu={{ items: getMenuItems() }}
+                    trigger={['click']}
+                  >
+                    <Button icon={<TransactionOutlined />}>
+                      {t('addOrder')} <DownOutlined />
+                    </Button>
+                  </Dropdown>
+                  <Button
+                    icon={<MinusCircleOutlined />}
+                    onClick={() => {
+                      setIsIncome(false);
+                      setIsExpenseModalOpen(true);
+                    }}
+                  >
+                    {t('dailyExpenses')}
+                  </Button>
                   <Button
                     type='default'
                     icon={<HistoryOutlined />}
@@ -339,44 +370,30 @@ const ShopProducts = () => {
                   >
                     {t('transfers')}
                   </Button>
-                  <Dropdown
-                    menu={{ items: getMenuItems() }}
-                    trigger={['click']}
+                  <Button
+                    icon={<TransactionOutlined />}
+                    onClick={() => {
+                      setIsIncome(true);
+                      setIsIncomeModalOpen(true);
+                    }}
                   >
-                    <Button type='primary' icon={<TransactionOutlined />}>
-                      {t('addOrder')}
-                    </Button>
-                  </Dropdown>
+                    {t('dailyIncomes')}
+                  </Button>
+                  <Button
+                    icon={<CreditCardOutlined />}
+                    onClick={() => navigate(`/shops/${id}/credits`)}
+                  >
+                    {t('credits')}
+                  </Button>
+                  <Button
+                    icon={<ShoppingCartOutlined />}
+                    onClick={() => navigate(`/shops/${id}/sales`)}
+                  >
+                    {t('sales')}
+                  </Button>
+                  <Button icon={<BiStats />}>Hasabat</Button>
                 </>
               }
-              additionalButtons={[
-                {
-                  title: t('addIncome'),
-                  icon: <TransactionOutlined />,
-                  onClick: () => {
-                    setIsIncome(true);
-                    setIsIncomeModalOpen(true);
-                  },
-                },
-                {
-                  title: t('addExpense'),
-                  icon: <MinusCircleOutlined />,
-                  onClick: () => {
-                    setIsIncome(false);
-                    setIsExpenseModalOpen(true);
-                  },
-                },
-                {
-                  title: t('credits'),
-                  icon: <CreditCardOutlined />,
-                  onClick: () => navigate(`/shops/${id}/credits`),
-                },
-                {
-                  title: t('sales'),
-                  icon: <ShoppingCartOutlined />,
-                  onClick: () => navigate(`/shops/${id}/sales`),
-                },
-              ]}
               onReset={resetFilters}
               resetDisabled={resetDisabled}
               count={`${shopProductsQuery.data?.body.count} haryt = ${shopProductsQuery.data?.body.totalPrice} TMT`}

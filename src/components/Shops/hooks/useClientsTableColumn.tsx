@@ -1,9 +1,14 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
-import { SearchOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
+import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 
-interface UseCreditsTableColumnProps {
+interface UseClientsTableColumnProps {
   t: (key: string) => string;
   searchValues: { [key: string]: string };
   setSearchValues: (values: { [key: string]: string }) => void;
@@ -14,9 +19,11 @@ interface UseCreditsTableColumnProps {
   handleSearch: () => void;
   clearFilter: (key: string) => void;
   sortOptions: string[];
+  handleOpenEditModal: (record: any) => void;
+  confirmDelete: (options: { id: string }) => void;
 }
 
-export const useCreditsTableColumn = ({
+export const useClientsTableColumn = ({
   t,
   searchValues,
   setSearchValues,
@@ -26,7 +33,9 @@ export const useCreditsTableColumn = ({
   handleSearch,
   clearFilter,
   sortOptions,
-}: UseCreditsTableColumnProps): ColumnsType<any> => {
+  handleOpenEditModal,
+  confirmDelete,
+}: UseClientsTableColumnProps): ColumnsType<any> => {
   return [
     {
       title: '№',
@@ -36,7 +45,53 @@ export const useCreditsTableColumn = ({
       width: 70,
     },
     {
-      title: t('dateTime'),
+      title: t('fullName'),
+      dataIndex: 'fullName',
+      key: 'fullName',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'fullName',
+          t('fullName'),
+          searchValues,
+          setSearchValues,
+          sortOptions,
+          sortDirectionParam,
+          setSortBy,
+          setSortDirectionParam,
+          handleSearch,
+          clearFilter,
+          t,
+          'fullName',
+          true
+        ),
+      filterIcon: () => <SearchOutlined />,
+      render: (value: string) => <div>{value}</div>,
+    },
+    {
+      title: t('phone'),
+      dataIndex: 'phone',
+      key: 'phone',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'phone',
+          t('phone'),
+          searchValues,
+          setSearchValues,
+          sortOptions,
+          sortDirectionParam,
+          setSortBy,
+          setSortDirectionParam,
+          handleSearch,
+          clearFilter,
+          t,
+          'phone',
+          true
+        ),
+      filterIcon: () => <SearchOutlined />,
+      render: (value: string | null) => <div>{value || '-'}</div>,
+    },
+    {
+      title: t('createdAt'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       filterDropdown: () =>
@@ -58,65 +113,27 @@ export const useCreditsTableColumn = ({
       render: (date: string) => dayjs(date).format('DD.MM.YYYY HH:mm'),
     },
     {
-      title: t('buyer'),
-      dataIndex: 'buyer',
-      key: 'buyer',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'buyer',
-          t('buyer'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'buyer'
-        ),
-      filterIcon: () => <SearchOutlined />,
-    },
-    {
-      title: t('amountMan'),
-      dataIndex: 'amount',
-      key: 'amount',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'amount',
-          t('amount'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'amount'
-        ),
-      filterIcon: () => <SearchOutlined />,
-      render: (amount: number) => `${amount} ${t('currencyTMT')}`,
-    },
-    {
-      title: t('deducted'),
-      dataIndex: 'deducted',
-      key: 'deducted',
-      render: (deducted: number | null) =>
-        deducted !== null && deducted !== undefined
-          ? `${deducted} ${t('currencyTMT')}`
-          : '-',
-    },
-    {
-      title: t('added'),
-      dataIndex: 'added',
-      key: 'added',
-      render: (added: number | null) =>
-        added !== null && added !== undefined
-          ? `${added} ${t('currencyTMT')}`
-          : '-',
+      title: t('actions'),
+      key: 'actions',
+      fixed: 'right',
+      width: 120,
+      render: (_: any, record: any) => (
+        <div className='flex gap-2'>
+          <Button
+            size='small'
+            type='primary'
+            icon={<EditOutlined />}
+            onClick={() => handleOpenEditModal(record)}
+          />
+          <Button
+            size='small'
+            type='primary'
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => confirmDelete({ id: record.id })}
+          />
+        </div>
+      ),
     },
   ];
 };

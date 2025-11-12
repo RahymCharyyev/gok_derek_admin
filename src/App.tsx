@@ -32,6 +32,7 @@ import OtherSentProducts from './pages/Warehouse/SentProducts/OtherSentProducts'
 import FurnitureWorkshop from './pages/Workshops/Furniture';
 import WoodWorkshop from './pages/Workshops/Wood';
 import ShopTransfers from './pages/Shops/ShopTransfers';
+import ShopClients from './pages/Shops/ShopClients';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -115,6 +116,14 @@ function App() {
             element={
               <LayoutComponent>
                 <Shops />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/shop-clients'
+            element={
+              <LayoutComponent>
+                <ShopClients />
               </LayoutComponent>
             }
           />

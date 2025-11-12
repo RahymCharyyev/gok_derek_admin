@@ -19,6 +19,8 @@ export const sortDirection = z.enum(['asc', 'desc']);
 
 export const paramsId = z.object({id: z.string().uuid()});
 
+export const paymentMethods = z.enum(['cash', 'bank', 'credit']);
+
 const boolStr = z
   .union([z.enum(['true', 'false']), z.coerce.boolean()])
   .transform(v => (v === 'true' || v === true ? true : false));

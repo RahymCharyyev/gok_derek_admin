@@ -40,10 +40,12 @@ const transferProduct = z.object({
 const addExpense = z.object({
   amount: z.coerce.number().int(),
   note: z.string().nullish(),
+  clientId: z.string().uuid().nullish(),
 });
 const addIncome = z.object({
   amount: z.coerce.number().int(),
   note: z.string().nullish(),
+  clientId: z.string().uuid().nullish(),
 });
 
 const sale = z.object({
@@ -51,6 +53,7 @@ const sale = z.object({
   quantity: z.coerce.number().int(),
   method: paymentTransactionSchema.schema.shape.method,
   note: z.string().nullish(),
+  clientId: z.string().uuid().nullish(),
 });
 
 type Schema = z.infer<typeof schema>;
