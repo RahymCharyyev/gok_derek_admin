@@ -296,5 +296,15 @@
   "clientUpdated": "Müşderi üstünlikli üýtgedildi",
   "updateError": "Müşderi üýtgedilende ýalňyşlyk döredi",
   "clientDeleted": "Müşderi üstünlikli pozuldy",
-  "clientDeleteError": "Müşderi pozulanda ýalňyşlyk döredi"
+  "clientDeleteError": "Müşderi pozulanda ýalňyşlyk döredi",
+  "client": "Müşderi",
+  "selectClient": "Müşderi saýlaň",
+  "clientNotFound": "Müşderi tapylmady",
+  "clientSearch": "Müşderi gözlemek",
+  "clientSearchPlaceholder": "Müşderi gözlemek",
+  "clientSearchButton": "Müşderi gözlemek",
+  "clientSearchClear": "Müşderi gözlemek",
+  "clientSearchLoading": "Müşderi gözlemek",
+  "clientSearchNotFound": "Müşderi gözlemek",
+  "clientSearchNotFoundText": "Müşderi gözlemek"
 }

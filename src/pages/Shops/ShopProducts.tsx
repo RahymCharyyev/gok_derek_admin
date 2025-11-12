@@ -421,6 +421,7 @@ const ShopProducts = () => {
       <SaleProductModal
         open={isSaleModalOpen}
         productId={selectedProductId}
+        storeId={id}
         onCancel={() => setIsSaleModalOpen(false)}
         onSubmit={handleSaleProduct}
       />
