@@ -49,6 +49,7 @@ const getAll = schema
     productTransactionId: true,
     createdById: true,
     storeId: true,
+    clientId: true
   })
   .extend({isSale: z.coerce.boolean()})
   .partial()

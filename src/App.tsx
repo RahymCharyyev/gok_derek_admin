@@ -33,6 +33,8 @@ import FurnitureWorkshop from './pages/Workshops/Furniture';
 import WoodWorkshop from './pages/Workshops/Wood';
 import ShopTransfers from './pages/Shops/ShopTransfers';
 import ShopClients from './pages/Shops/ShopClients';
+import ClientProductTransactions from './pages/Shops/ClientProductTransactions';
+import ClientPaymentTransactions from './pages/Shops/ClientPaymentTransactions';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -124,6 +126,22 @@ function App() {
             element={
               <LayoutComponent>
                 <ShopClients />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/clients/:id/products'
+            element={
+              <LayoutComponent>
+                <ClientProductTransactions />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/clients/:id/payments'
+            element={
+              <LayoutComponent>
+                <ClientPaymentTransactions />
               </LayoutComponent>
             }
           />

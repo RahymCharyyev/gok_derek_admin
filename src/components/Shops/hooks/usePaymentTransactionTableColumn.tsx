@@ -17,6 +17,7 @@ interface UsePaymentTransactionTableColumnProps {
   clearFilter: (key: string) => void;
   sortOptions: string[];
   onCancelSale?: (record: any) => void;
+  dateFormat?: string;
 }
 
 export const usePaymentTransactionTableColumn = ({
@@ -30,6 +31,7 @@ export const usePaymentTransactionTableColumn = ({
   clearFilter,
   sortOptions,
   onCancelSale,
+  dateFormat = 'HH:mm',
 }: UsePaymentTransactionTableColumnProps): ColumnsType<any> => {
   return [
     {
@@ -59,7 +61,7 @@ export const usePaymentTransactionTableColumn = ({
           'createdAt'
         ),
       filterIcon: () => <SearchOutlined />,
-      render: (date: string) => dayjs(date).format('HH:mm'),
+      render: (date: string) => dayjs(date).format(dateFormat),
     },
     {
       title: t('productName'),

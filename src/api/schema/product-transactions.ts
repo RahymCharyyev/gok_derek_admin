@@ -50,6 +50,8 @@ const getAll = schema
     workshopType: z.lazy(() => storeWorkshopSchema.schema.shape.type),
     productType: z.lazy(() => productSchema.schema.shape.type),
     productName: z.lazy(() => productSchema.schema.shape.name),
+    paymentTransactionId: z.string().uuid(),
+    clientId: z.string().uuid()
   })
   .extend(productWoodSchema.schema.pick({length: true, quality: true, thickness: true, width: true}).shape)
   .partial()

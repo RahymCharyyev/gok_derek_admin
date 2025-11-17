@@ -1,15 +1,10 @@
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
-import {
-  SearchOutlined,
-  ShoppingOutlined,
-  TransactionOutlined,
-} from '@ant-design/icons';
-import { Button } from 'antd';
+import { formatQuantityOrPrice } from '@/utils/formatters';
+import { SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { useNavigate } from 'react-router-dom';
 
-interface UseCreditsTableColumnProps {
+interface UseClientProductTransactionsTableColumnProps {
   t: (key: string) => string;
   searchValues: { [key: string]: string };
   setSearchValues: (values: { [key: string]: string }) => void;
@@ -22,7 +17,7 @@ interface UseCreditsTableColumnProps {
   sortOptions: string[];
 }
 
-export const useCreditsTableColumn = ({
+export const useClientProductTransactionsTableColumn = ({
   t,
   searchValues,
   setSearchValues,
@@ -32,8 +27,14 @@ export const useCreditsTableColumn = ({
   handleSearch,
   clearFilter,
   sortOptions,
-}: UseCreditsTableColumnProps): ColumnsType<any> => {
-  const navigate = useNavigate();
+}: UseClientProductTransactionsTableColumnProps): ColumnsType<any> => {
+  const typeOptions = [
+    { label: t('transfer'), value: 'transfer' },
+    { label: t('sale'), value: 'sale' },
+    { label: t('production'), value: 'production' },
+    { label: t('receipt'), value: 'receipt' },
+  ];
+
   return [
     {
       title: '№',
@@ -65,13 +66,13 @@ export const useCreditsTableColumn = ({
       render: (date: string) => dayjs(date).format('DD.MM.YYYY HH:mm'),
     },
     {
-      title: t('buyer'),
-      dataIndex: 'buyer',
-      key: 'buyer',
+      title: t('productName'),
+      dataIndex: 'productName',
+      key: 'productName',
       filterDropdown: () =>
         renderFilterDropdown(
-          'buyer',
-          t('buyer'),
+          'productName',
+          t('productName'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -81,18 +82,18 @@ export const useCreditsTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'buyer'
+          'productName'
         ),
       filterIcon: () => <SearchOutlined />,
     },
     {
-      title: t('amountMan'),
-      dataIndex: 'amount',
-      key: 'amount',
+      title: t('productQuantity'),
+      dataIndex: 'quantity',
+      key: 'quantity',
       filterDropdown: () =>
         renderFilterDropdown(
-          'amount',
-          t('amount'),
+          'quantity',
+          t('productQuantity'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -102,36 +103,34 @@ export const useCreditsTableColumn = ({
           handleSearch,
           clearFilter,
           t,
-          'amount'
+          'quantity'
         ),
       filterIcon: () => <SearchOutlined />,
-      render: (amount: number) => `${amount} ${t('currencyTMT')}`,
+      render: (value: number | null) =>
+        value ? formatQuantityOrPrice(value) : '-',
     },
     {
-      title: t('actions'),
-      key: 'actions',
-      fixed: 'right',
-      width: 200,
-      render: (_: any, record: any) => (
-        <div className='flex gap-2'>
-          <Button
-            size='small'
-            type='default'
-            icon={<ShoppingOutlined />}
-            onClick={() => navigate(`/clients/${record.id}/products`)}
-          >
-            {t('products')}
-          </Button>
-          <Button
-            size='small'
-            type='default'
-            icon={<TransactionOutlined />}
-            onClick={() => navigate(`/clients/${record.id}/payments`)}
-          >
-            {t('history')}
-          </Button>
-        </div>
-      ),
+      title: t('price'),
+      dataIndex: 'price',
+      key: 'price',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'price',
+          t('price'),
+          searchValues,
+          setSearchValues,
+          sortOptions,
+          sortDirectionParam,
+          setSortBy,
+          setSortDirectionParam,
+          handleSearch,
+          clearFilter,
+          t,
+          'price'
+        ),
+      filterIcon: () => <SearchOutlined />,
+      render: (value: number | null) =>
+        value ? `${formatQuantityOrPrice(value)} TMT` : '-',
     },
   ];
 };
