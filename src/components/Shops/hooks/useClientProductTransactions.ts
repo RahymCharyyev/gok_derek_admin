@@ -43,11 +43,28 @@ export const useClientProductTransactions = (clientId?: string) => {
     'desc'
   );
 
+  const typeParam = searchParams.get('type');
+  const type =
+    typeParam === 'transfer' ||
+    typeParam === 'sale' ||
+    typeParam === 'production' ||
+    typeParam === 'receipt'
+      ? typeParam
+      : undefined;
+
+  const productTypeParam = searchParams.get('productType');
+  const productType =
+    productTypeParam === 'furniture' ||
+    productTypeParam === 'wood' ||
+    productTypeParam === 'other'
+      ? productTypeParam
+      : undefined;
+
   const query: ProductTransactionSchema['GetAll'] = {
     page,
     perPage,
     clientId: clientId || undefined,
-    type: searchParams.get('type') || undefined,
+    type,
     quantity: searchParams.get('quantity')
       ? Number(searchParams.get('quantity'))
       : undefined,
@@ -58,7 +75,7 @@ export const useClientProductTransactions = (clientId?: string) => {
       ? new Date(searchParams.get('createdAt') as string)
       : undefined,
     productId: searchParams.get('productId') ?? undefined,
-    productType: searchParams.get('productType') || undefined,
+    productType,
     productName: searchParams.get('productName') || undefined,
     length: searchParams.get('length')
       ? Number(searchParams.get('length'))
@@ -67,7 +84,7 @@ export const useClientProductTransactions = (clientId?: string) => {
       const val = searchParams.get('quality');
       if (val === null || val === undefined || val === '') return undefined;
       if (['0', '1', '2', '3', 'extra', 'premium'].includes(val)) {
-        return val;
+        return val as '0' | '1' | '2' | '3' | 'extra' | 'premium';
       }
       return undefined;
     })(),
@@ -81,15 +98,17 @@ export const useClientProductTransactions = (clientId?: string) => {
     sortDirection,
   };
 
-  const clientProductTransactionsQuery = tsr.productTransaction.getAll.useQuery({
-    queryKey: [
-      'client-product-transactions',
-      Object.fromEntries(searchParams.entries()),
-      clientId,
-    ],
-    queryData: { query },
-    enabled: !!clientId,
-  });
+  const clientProductTransactionsQuery = tsr.productTransaction.getAll.useQuery(
+    {
+      queryKey: [
+        'client-product-transactions',
+        Object.fromEntries(searchParams.entries()),
+        clientId,
+      ],
+      queryData: { query },
+      enabled: !!clientId,
+    }
+  );
 
   return {
     query,
@@ -104,4 +123,3 @@ export const useClientProductTransactions = (clientId?: string) => {
     resetFilters,
   };
 };
-
