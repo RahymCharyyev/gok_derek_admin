@@ -109,7 +109,10 @@ const SaleProductModal: FC<SaleProductModalProps> = ({
       <Form
         form={form}
         layout='vertical'
-        onFinish={(values) => onSubmit({ ...values, productId, paymentType })}
+        onFinish={(values) => {
+          const finalPaymentType = paymentType || 'cash';
+          onSubmit({ ...values, productId, paymentType: finalPaymentType });
+        }}
         className='max-h-[70vh] overflow-y-auto'
         initialValues={{ paymentType: 'cash', priceType: 'regular' }}
       >
@@ -124,15 +127,10 @@ const SaleProductModal: FC<SaleProductModalProps> = ({
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item
-          name='method'
-          label={t('paymentType')}
-          rules={[{ required: true, message: t('notEmptyField') }]}
-        >
+        <Form.Item name='method' label={t('paymentType')}>
           <Radio.Group onChange={handlePaymentTypeChange} value={paymentType}>
             <Radio value='credit'>{t('credit')}</Radio>
             <Radio value='bank'>{t('nonCashPayment')}</Radio>
-            <Radio value='cash'>{t('cash')}</Radio>
           </Radio.Group>
         </Form.Item>
 
