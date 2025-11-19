@@ -306,5 +306,12 @@
   "clientSearchClear": "Müşderi gözlemek",
   "clientSearchLoading": "Müşderi gözlemek",
   "clientSearchNotFound": "Müşderi gözlemek",
-  "clientSearchNotFoundText": "Müşderi gözlemek"
+  "clientSearchNotFoundText": "Müşderi gözlemek",
+  "date": "Senesi",
+  "moneyAmount": "Pul möçberi (man)",
+  "actionType": "Hereketiň görnüşi",
+  "in": "Goşuldy",
+  "out": "Aýryldy",
+  "woodOrders": "Agaç sargytlar",
+  "otherOrders": "Beýleki sargytlar"
 }

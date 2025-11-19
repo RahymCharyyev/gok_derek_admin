@@ -142,6 +142,19 @@ const ShopSales = () => {
             label: t('otherProducts'),
             onClick: () => navigate(`/shops/order/other`),
           },
+          {
+            type: 'divider',
+          },
+          {
+            key: 'wood-orders',
+            label: t('woodOrders'),
+            onClick: () => navigate(`/shops/${id}/orders/wood`),
+          },
+          {
+            key: 'other-orders',
+            label: t('otherOrders'),
+            onClick: () => navigate(`/shops/${id}/orders/other`),
+          },
         ];
       default:
         return [
@@ -149,6 +162,14 @@ const ShopSales = () => {
             key: 'other',
             label: t('otherOrder'),
             onClick: () => navigate(`/shops/other/order?shop=${id}`),
+          },
+          {
+            type: 'divider',
+          },
+          {
+            key: 'other-orders',
+            label: t('otherOrders'),
+            onClick: () => navigate(`/shops/${id}/orders/other`),
           },
         ];
     }

@@ -1,13 +1,13 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
 import { useClientPaymentTransactions } from '@/components/Shops/hooks/useClientPaymentTransactions';
-import { usePaymentTransactionTableColumn } from '@/components/Shops/hooks/usePaymentTransactionTableColumn';
+import { useClientPaymentTransactionsTableColumn } from '@/components/Shops/hooks/useClientPaymentTransactionsTableColumn';
 import Toolbar from '@/components/Toolbar';
 import TableLayout from '@/layout/TableLayout';
 import { TransactionOutlined } from '@ant-design/icons';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const ClientPaymentTransactions = () => {
   const { t } = useTranslation();
@@ -59,7 +59,7 @@ const ClientPaymentTransactions = () => {
     );
   }, [searchValues, searchParams]);
 
-  const columns = usePaymentTransactionTableColumn({
+  const columns = useClientPaymentTransactionsTableColumn({
     t,
     searchValues,
     setSearchValues,

@@ -35,6 +35,8 @@ import ShopTransfers from './pages/Shops/ShopTransfers';
 import ShopClients from './pages/Shops/ShopClients';
 import ClientProductTransactions from './pages/Shops/ClientProductTransactions';
 import ClientPaymentTransactions from './pages/Shops/ClientPaymentTransactions';
+import ShopWoodOrders from './pages/Shops/ShopWoodOrders';
+import ShopOtherOrders from './pages/Shops/ShopOtherOrders';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -150,6 +152,22 @@ function App() {
             element={
               <LayoutComponent>
                 <ShopProducts />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/shops/:id/orders/wood'
+            element={
+              <LayoutComponent>
+                <ShopWoodOrders />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/shops/:id/orders/other'
+            element={
+              <LayoutComponent>
+                <ShopOtherOrders />
               </LayoutComponent>
             }
           />
