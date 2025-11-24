@@ -150,12 +150,12 @@ const ShopProducts = () => {
           {
             key: 'wood',
             label: t('woodProducts'),
-            onClick: () => navigate(`/shops/order/wood`),
+            onClick: () => navigate(`/shops/order/${id}/wood`),
           },
           {
             key: 'other',
             label: t('otherProducts'),
-            onClick: () => navigate(`/shops/order/other`),
+            onClick: () => navigate(`/shops/order/${id}/other`),
           },
           {
             type: 'divider',

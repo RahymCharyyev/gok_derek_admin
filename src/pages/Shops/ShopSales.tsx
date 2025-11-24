@@ -127,7 +127,7 @@ const ShopSales = () => {
           {
             key: 'furniture',
             label: t('furnitureProducts'),
-            onClick: () => navigate(`/shops/order/furniture`),
+            onClick: () => navigate(`/shops/order/${id}/furniture`),
           },
         ];
       case 'wood':
@@ -135,12 +135,12 @@ const ShopSales = () => {
           {
             key: 'wood',
             label: t('woodProducts'),
-            onClick: () => navigate(`/shops/order/wood`),
+            onClick: () => navigate(`/shops/order/${id}/wood`),
           },
           {
             key: 'other',
             label: t('otherProducts'),
-            onClick: () => navigate(`/shops/order/other`),
+            onClick: () => navigate(`/shops/order/${id}/other`),
           },
           {
             type: 'divider',

@@ -31,7 +31,11 @@ const create = schema.pick({userId: true, address: true, geoLocation: true, cred
 
 const edit = create.partial();
 
-const addOrder = z.object({productId: z.string().uuid(), quantity: z.coerce.number().int().nullish()});
+const addOrder = z.object({
+  productId: z.string().uuid(),
+  quantity: z.coerce.number().int().nullish(),
+  storeId: z.string().uuid().optional(),
+});
 const transferProduct = z.object({
   productId: z.string().uuid(),
   toStoreId: z.string().uuid(),

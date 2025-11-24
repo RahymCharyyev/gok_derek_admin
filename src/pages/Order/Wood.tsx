@@ -3,14 +3,15 @@ import AddOrderModal from '@/components/Order/AddOrderModal';
 import { useWoodOrderTableColumn } from '@/components/Order/hooks/useWoodOrderTableColumn';
 import { useProducts } from '@/components/Products/hooks/useProducts';
 import SecondToolbar from '@/components/SecondToolbar';
-import Toolbar from '@/components/Toolbar';
 import TableLayout from '@/layout/TableLayout';
 import { message } from 'antd';
 import { useCallback, useMemo, useState, type FC } from 'react';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const WoodOrder: FC = () => {
   const { t } = useTranslation();
+  const { id } = useParams<{ id: string }>();
 
   const {
     query,
@@ -141,6 +142,7 @@ const WoodOrder: FC = () => {
       <AddOrderModal
         open={isOrderModalOpen}
         productId={selectedProductId}
+        storeId={id}
         onCancel={() => setIsOrderModalOpen(false)}
         onSubmit={handleAddProduct}
       />

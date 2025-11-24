@@ -313,5 +313,8 @@
   "in": "Goşuldy",
   "out": "Aýryldy",
   "woodOrders": "Agaç sargytlar",
-  "otherOrders": "Beýleki sargytlar"
+  "otherOrders": "Beýleki sargytlar",
+  "gotBackMoney": "Pul getirdi",
+  "moneyGotBackSuccess": "Pul üstünlikli getirdi",
+  "moneyGotBackError": "Pul getirilende ýalňyşlyk döredi"
 }

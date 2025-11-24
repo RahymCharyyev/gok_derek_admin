@@ -2,6 +2,7 @@ import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
 import {productSchema} from './product';
 import {userSchema} from './user';
+import { storeSchema } from './store';
 
 const schema = z.object({
   id: z.string().uuid(),
@@ -9,12 +10,14 @@ const schema = z.object({
   productId: z.string().uuid(),
   quantity: z.coerce.number().int().nullish(),
   createdById: z.string().uuid(),
+  storeId: z.string().uuid().nullish(),
 
   createdAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullish(),
 
   createdBy: z.lazy(() => userSchema.schema.partial().nullish()),
   product: z.lazy(() => productSchema.schema.partial().nullish()),
+  store: z.lazy(() => storeSchema.schema.partial().nullish()),
 });
 
 const sortable = schema.pick({status: true, createdAt: true}).keyof();
@@ -33,7 +36,7 @@ const getAllRes = z.object({
 
 const getOneRes = schema;
 
-const create = schema.pick({productId: true, quantity: true});
+const create = schema.pick({productId: true, quantity: true, storeId: true});
 
 const edit = schema.pick({quantity: true});
 

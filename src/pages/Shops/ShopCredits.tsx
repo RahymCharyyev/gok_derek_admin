@@ -6,20 +6,22 @@ import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
 import Toolbar from '@/components/Toolbar';
 import TableLayout from '@/layout/TableLayout';
 import {
+  AppstoreOutlined,
   CreditCardOutlined,
+  DownOutlined,
   HistoryOutlined,
-  ShoppingOutlined,
-  TransactionOutlined,
   MinusCircleOutlined,
   ShoppingCartOutlined,
-  AppstoreOutlined,
-  DownOutlined,
+  ShoppingOutlined,
+  TransactionOutlined,
 } from '@ant-design/icons';
 import { Button, Dropdown, message, type MenuProps } from 'antd';
-import { BiStats } from 'react-icons/bi';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BiStats } from 'react-icons/bi';
 import { useNavigate, useParams } from 'react-router-dom';
+
+import GotBackMoneyModal from '@/components/Shops/GotBackMoneyModal';
 
 const ShopCredits = () => {
   const { t } = useTranslation();
@@ -37,10 +39,13 @@ const ShopCredits = () => {
     searchParams,
     addIncomeMutation,
     addExpenseMutation,
+    gotBackMoneyMutation,
   } = useShops(undefined, undefined, id);
 
   const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+  const [isGotBackMoneyModalOpen, setIsGotBackMoneyModalOpen] = useState(false);
+  const [selectedClientId, setSelectedClientId] = useState<string>('');
   const [isIncome, setIsIncome] = useState(false);
   const [activeProductType, setActiveProductType] = useState<'wood' | 'other'>(
     'wood'
@@ -97,7 +102,7 @@ const ShopCredits = () => {
           {
             key: 'furniture',
             label: t('furnitureProducts'),
-            onClick: () => navigate(`/shops/order/furniture`),
+            onClick: () => navigate(`/shops/order/${id}/furniture`),
           },
         ];
       case 'wood':
@@ -105,12 +110,12 @@ const ShopCredits = () => {
           {
             key: 'wood',
             label: t('woodProducts'),
-            onClick: () => navigate(`/shops/order/wood`),
+            onClick: () => navigate(`/shops/order/${id}/wood`),
           },
           {
             key: 'other',
             label: t('otherProducts'),
-            onClick: () => navigate(`/shops/order/other`),
+            onClick: () => navigate(`/shops/order/${id}/other`),
           },
           {
             type: 'divider',
@@ -165,6 +170,24 @@ const ShopCredits = () => {
     }
   };
 
+  const handleGotBackMoney = async (values: { amount: number }) => {
+    try {
+      const res = await gotBackMoneyMutation.mutateAsync({
+        clientId: selectedClientId,
+        amount: values.amount,
+        type: 'in',
+        method: 'cash',
+      });
+      if (res.status !== 201 && res.status !== 200) {
+        message.error(t('moneyGotBackError'));
+      }
+      message.success(t('moneyGotBackSuccess'));
+      setIsGotBackMoneyModalOpen(false);
+    } catch (error) {
+      message.error(t('moneyGotBackError'));
+    }
+  };
+
   const resetDisabled = useMemo(() => {
     return (
       Object.values(searchValues).every((v) => !v) &&
@@ -187,6 +210,10 @@ const ShopCredits = () => {
       clearFilter(key);
     },
     sortOptions: ['asc', 'desc'],
+    onGotBackMoney: (record) => {
+      setSelectedClientId(record.id);
+      setIsGotBackMoneyModalOpen(true);
+    },
   });
 
   if (creditsQuery.isError) {
@@ -295,6 +322,12 @@ const ShopCredits = () => {
         }
         onSubmit={handleAddExpenseOrIncome}
         isIncome={isIncome}
+      />
+      <GotBackMoneyModal
+        open={isGotBackMoneyModalOpen}
+        onCancel={() => setIsGotBackMoneyModalOpen(false)}
+        onSubmit={handleGotBackMoney}
+        loading={gotBackMoneyMutation.isPending}
       />
     </>
   );

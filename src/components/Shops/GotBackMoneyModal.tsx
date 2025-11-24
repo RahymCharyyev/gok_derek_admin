@@ -1,26 +1,30 @@
 import { Form, InputNumber, Modal } from 'antd';
-import { type FC } from 'react';
+import { useEffect, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const { useForm } = Form;
 
-interface AddOrderModalProps {
+interface GotBackMoneyModalProps {
   open: boolean;
   onCancel: () => void;
-  onSubmit: (values: any) => void;
-  productId: string;
-  storeId?: string;
+  onSubmit: (values: { amount: number }) => void;
+  loading?: boolean;
 }
 
-const AddOrderModal: FC<AddOrderModalProps> = ({
+const GotBackMoneyModal: FC<GotBackMoneyModalProps> = ({
   open,
   onCancel,
   onSubmit,
-  productId,
-  storeId,
+  loading,
 }) => {
   const [form] = useForm();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (open) {
+      form.resetFields();
+    }
+  }, [open, form]);
 
   return (
     <Modal
@@ -29,7 +33,8 @@ const AddOrderModal: FC<AddOrderModalProps> = ({
       onOk={() => form.submit()}
       okText={t('okText')}
       cancelText={t('cancelText')}
-      title={t('addOrder')}
+      title={t('gotBackMoney')}
+      confirmLoading={loading}
       width='100%'
       style={{ maxWidth: 500 }}
       styles={{ body: { padding: 16 } }}
@@ -38,10 +43,14 @@ const AddOrderModal: FC<AddOrderModalProps> = ({
       <Form
         form={form}
         layout='vertical'
-        onFinish={(values) => onSubmit({ ...values, productId, storeId })}
+        onFinish={onSubmit}
         className='max-h-[70vh] overflow-y-auto'
       >
-        <Form.Item name='quantity' label={t('productQuantity')}>
+        <Form.Item
+          name='amount'
+          label={t('amount')}
+          rules={[{ required: true, message: t('notEmptyField') }]}
+        >
           <InputNumber className='w-full' />
         </Form.Item>
       </Form>
@@ -49,4 +58,4 @@ const AddOrderModal: FC<AddOrderModalProps> = ({
   );
 };
 
-export default AddOrderModal;
+export default GotBackMoneyModal;

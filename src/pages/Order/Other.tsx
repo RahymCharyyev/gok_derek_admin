@@ -3,22 +3,21 @@ import AddOrderModal from '@/components/Order/AddOrderModal';
 import { useOtherOrderTableColumn } from '@/components/Order/hooks/useOtherOrderTableColumn';
 import { useProducts } from '@/components/Products/hooks/useProducts';
 import SecondToolbar from '@/components/SecondToolbar';
-import Toolbar from '@/components/Toolbar';
-import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
 import { message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const OtherOrder = () => {
   const { t } = useTranslation();
+  const { id } = useParams<{ id: string }>();
 
   const {
     query,
     page,
     perPage,
     productsQuery,
-    deleteProductMutation,
     addOrder,
     handleTableChange,
     setFilter,
@@ -128,6 +127,7 @@ const OtherOrder = () => {
       <AddOrderModal
         open={isOrderModalOpen}
         productId={selectedProductId}
+        storeId={id}
         onCancel={() => setIsOrderModalOpen(false)}
         onSubmit={handleAddProduct}
       />

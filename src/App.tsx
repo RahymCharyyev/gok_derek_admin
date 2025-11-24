@@ -204,7 +204,7 @@ function App() {
             }
           />
           <Route
-            path='/shops/order/wood'
+            path='/shops/order/:id/wood'
             element={
               <LayoutComponent>
                 <WoodOrder />
@@ -212,7 +212,7 @@ function App() {
             }
           />
           <Route
-            path='/shops/order/furniture'
+            path='/shops/order/:id/furniture'
             element={
               <LayoutComponent>
                 <FurnitureOrder />
@@ -220,7 +220,7 @@ function App() {
             }
           />
           <Route
-            path='/shops/order/other'
+            path='/shops/order/:id/other'
             element={
               <LayoutComponent>
                 <OtherOrder />

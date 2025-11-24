@@ -243,6 +243,14 @@ export const useShops = (
     },
   });
 
+ const gotBackMoneyMutation = useMutation({
+    mutationFn: (body: any) => tsr.paymentTransaction.create.mutate({ body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shops'] });
+      queryClient.invalidateQueries({ queryKey: ['credits'] });
+    },
+  });
+
   const updateShopMutation = useMutation({
     mutationFn: ({ id, body }: { id: string; body: any }) =>
       tsr.shop.edit.mutate({ params: { id }, body }),
@@ -307,6 +315,7 @@ export const useShops = (
     addExpenseMutation,
     addIncomeMutation,
     saleMutation,
+    gotBackMoneyMutation,
     creditsQuery,
     isSaleQuery,
     handleTableChange,

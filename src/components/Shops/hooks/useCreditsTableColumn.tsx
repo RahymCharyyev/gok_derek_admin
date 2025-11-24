@@ -20,6 +20,7 @@ interface UseCreditsTableColumnProps {
   handleSearch: () => void;
   clearFilter: (key: string) => void;
   sortOptions: string[];
+  onGotBackMoney: (record: any) => void;
 }
 
 export const useCreditsTableColumn = ({
@@ -32,6 +33,7 @@ export const useCreditsTableColumn = ({
   handleSearch,
   clearFilter,
   sortOptions,
+  onGotBackMoney,
 }: UseCreditsTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
   return [
@@ -114,6 +116,13 @@ export const useCreditsTableColumn = ({
       width: 200,
       render: (_: any, record: any) => (
         <div className='flex gap-2'>
+          <Button
+            size='small'
+            type='primary'
+            onClick={() => onGotBackMoney(record)}
+          >
+       {t('gotBackMoney')}
+          </Button>
           <Button
             size='small'
             type='default'

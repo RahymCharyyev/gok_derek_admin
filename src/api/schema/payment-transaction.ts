@@ -49,7 +49,7 @@ const getAll = schema
     productTransactionId: true,
     createdById: true,
     storeId: true,
-    clientId: true
+    clientId: true,
   })
   .extend({isSale: z.coerce.boolean()})
   .partial()
@@ -69,6 +69,7 @@ const create = schema.pick({
   productTransactionId: true,
   storeId: true,
   note: true,
+  clientId: true,
 });
 
 const edit = create.partial();

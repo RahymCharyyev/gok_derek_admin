@@ -3,14 +3,15 @@ import AddOrderModal from '@/components/Order/AddOrderModal';
 import { useFurnitureOtherTableColumn } from '@/components/Order/hooks/useFurnitureOtherTableColumn';
 import { useProducts } from '@/components/Products/hooks/useProducts';
 import SecondToolbar from '@/components/SecondToolbar';
-import Toolbar from '@/components/Toolbar';
 import TableLayout from '@/layout/TableLayout';
 import { message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const FurnitureOrder = () => {
   const { t } = useTranslation();
+  const { id } = useParams<{ id: string }>();
 
   const {
     query,
@@ -128,6 +129,7 @@ const FurnitureOrder = () => {
       <AddOrderModal
         open={isOrderModalOpen}
         productId={selectedProductId}
+        storeId={id}
         onCancel={() => setIsOrderModalOpen(false)}
         onSubmit={handleAddProduct}
       />
