@@ -58,6 +58,7 @@ const sale = z.object({
   method: paymentTransactionSchema.schema.shape.method,
   note: z.string().nullish(),
   clientId: z.string().uuid().nullish(),
+  customPrice: z.coerce.number().int().nullish(),
 });
 
 type Schema = z.infer<typeof schema>;

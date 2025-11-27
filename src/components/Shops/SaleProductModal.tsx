@@ -75,6 +75,7 @@ const SaleProductModal: FC<SaleProductModalProps> = ({
       form.setFieldsValue({
         clientId: undefined,
         note: undefined,
+        customPrice: undefined,
       });
       setClientSearchValue('');
       setDebouncedSearchValue('');
@@ -170,6 +171,13 @@ const SaleProductModal: FC<SaleProductModalProps> = ({
 
         {paymentType === 'credit' && (
           <>
+            <Form.Item
+              name='customPrice'
+              label={t('creditPrice')}
+              rules={[{ required: true, message: t('notEmptyField') }]}
+            >
+              <InputNumber className='w-full' min={0} />
+            </Form.Item>
             <Form.Item name='note' label={t('note')}>
               <Input placeholder={t('note')} allowClear />
             </Form.Item>
