@@ -297,7 +297,9 @@ const ShopCredits = () => {
                 >
                   {t('sales')}
                 </Button>
-                <Button icon={<BiStats />}>Hasabat</Button>
+                <Button icon={<BiStats />} onClick={() => navigate(`/shops/${id}/report`)}>
+                  {t('report')}
+                </Button>
               </>
             }
             onReset={resetFilters}

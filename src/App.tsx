@@ -214,6 +214,14 @@ function App() {
             }
           />
           <Route
+            path='/shops/:id/report'
+            element={
+              <LayoutComponent>
+                <Report />
+              </LayoutComponent>
+            }
+          />
+          <Route
             path='/shops/:id/products/history'
             element={
               <LayoutComponent>

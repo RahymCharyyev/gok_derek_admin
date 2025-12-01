@@ -323,10 +323,7 @@ const ShopSales = () => {
                     {t('productsList')}
                   </Button>
                 )}
-                <Dropdown
-                  menu={{ items: getMenuItems() }}
-                  trigger={['click']}
-                >
+                <Dropdown menu={{ items: getMenuItems() }} trigger={['click']}>
                   <Button icon={<TransactionOutlined />}>
                     {t('addOrder')} <DownOutlined />
                   </Button>
@@ -362,13 +359,13 @@ const ShopSales = () => {
                 >
                   {t('credits')}
                 </Button>
-                <Button
-                  type='primary'
-                  icon={<ShoppingCartOutlined />}
-                >
+                <Button type='primary' icon={<ShoppingCartOutlined />}>
                   {t('sales')}
                 </Button>
-                <Button icon={<BiStats />}>Hasabat</Button>
+                <Button icon={<BiStats />} onClick={() => navigate(`/shops/${id}/report`)}>
+                  {t('report')}
+                </Button>
+
                 <div className='flex items-center gap-2'>
                   <span className='font-medium'>{t('filterByDate')}:</span>
                   <DatePicker

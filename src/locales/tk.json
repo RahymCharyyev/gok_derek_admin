@@ -317,5 +317,19 @@
   "gotBackMoney": "Pul getirdi",
   "moneyGotBackSuccess": "Pul üstünlikli getirdi",
   "moneyGotBackError": "Pul getirilende ýalňyşlyk döredi",
-  "content": "Beýany"
+  "content": "Beýany",
+  "incomeExpenseReport": "Girdeji (+) / Çykdajy (-)",
+  "debtReport": "Algy (+) / Bergi (-)",
+  "dailyExpense": "Günlük çykdajy",
+  "dailyOtherIncome": "Günlük gaýry girdeji",
+  "dailyWoodTrade": "Günlük agaç söwda",
+  "dailyOtherTrade": "Günlük beýleki söwda",
+  "warehouseInOut": "Ýazgydan gelen, ýazga giden",
+  "dailyNonCash": "Günlük nagt däl hasaplaşyk",
+  "total": "Jemi",
+  "amountToDeliver": "Tabşyrylmaly pul möçberi (man)",
+  "amountDelivered": "Tabşyrylan pul möçberi (man)",
+  "dailyDebtChange": "Günlük algy / bergi (man)",
+  "previousDebtChange": "Öňki algy / bergi (man)",
+  "totalDebtChange": "Jemi algy / bergi (man)"
 }

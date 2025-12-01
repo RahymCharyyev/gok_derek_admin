@@ -856,10 +856,7 @@ const ShopTransfers = () => {
                     {t('productsList')}
                   </Button>
                 )}
-                <Dropdown
-                  menu={{ items: getMenuItems() }}
-                  trigger={['click']}
-                >
+                <Dropdown menu={{ items: getMenuItems() }} trigger={['click']}>
                   <Button icon={<TransactionOutlined />}>
                     {t('addOrder')} <DownOutlined />
                   </Button>
@@ -873,10 +870,7 @@ const ShopTransfers = () => {
                 >
                   {t('dailyExpenses')}
                 </Button>
-                <Button
-                  type='primary'
-                  icon={<HistoryOutlined />}
-                >
+                <Button type='primary' icon={<HistoryOutlined />}>
                   {t('transfers')}
                 </Button>
                 <Button
@@ -900,7 +894,10 @@ const ShopTransfers = () => {
                 >
                   {t('sales')}
                 </Button>
-                <Button icon={<BiStats />}>Hasabat</Button>
+                <Button icon={<BiStats />} onClick={() => navigate(`/shops/${id}/report`)}>
+                  {t('report')}
+                </Button>
+
                 {availableTypes.length > 1 && (
                   <Dropdown
                     menu={{ items: getProductTypeMenuItems() }}

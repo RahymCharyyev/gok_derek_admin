@@ -286,10 +286,7 @@ const ShopProductHistory = () => {
                   {t('productsList')}
                 </Button>
               )}
-              <Dropdown
-                menu={{ items: getMenuItems() }}
-                trigger={['click']}
-              >
+              <Dropdown menu={{ items: getMenuItems() }} trigger={['click']}>
                 <Button icon={<TransactionOutlined />}>
                   {t('addOrder')} <DownOutlined />
                 </Button>
@@ -331,7 +328,9 @@ const ShopProductHistory = () => {
               >
                 {t('sales')}
               </Button>
-              <Button icon={<BiStats />}>Hasabat</Button>
+              <Button icon={<BiStats />} onClick={() => navigate(`/shops/${id}/report`)}>
+                {t('report')}
+              </Button>
             </>
           }
           onReset={resetFilters}
