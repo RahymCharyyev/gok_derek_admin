@@ -297,7 +297,10 @@ const ShopCredits = () => {
                 >
                   {t('sales')}
                 </Button>
-                <Button icon={<BiStats />} onClick={() => navigate(`/shops/${id}/report`)}>
+                <Button
+                  icon={<BiStats />}
+                  onClick={() => navigate(`/shops/${id}/report`)}
+                >
                   {t('report')}
                 </Button>
               </>
