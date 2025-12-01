@@ -47,15 +47,50 @@ const IncomeExpenseModal: FC<IncomeExpenseModalProps> = ({
       <Form
         form={form}
         layout='vertical'
-        onFinish={onSubmit}
+        onFinish={(values) => {
+          // Ensure amount is a valid number
+          if (values.amount === null || values.amount === undefined) {
+            form.setFields([
+              {
+                name: 'amount',
+                errors: [t('notEmptyField')],
+              },
+            ]);
+            return;
+          }
+          
+          const amount = Number(values.amount);
+          
+          if (isNaN(amount) || amount <= 0) {
+            form.setFields([
+              {
+                name: 'amount',
+                errors: [t('notEmptyField')],
+              },
+            ]);
+            return;
+          }
+          
+          onSubmit({
+            ...values,
+            amount: Math.round(amount), // API expects integer
+          });
+        }}
         className='max-h-[70vh] overflow-y-auto'
       >
         <Form.Item
           name='amount'
           label={t('amount')}
-          rules={[{ required: !initialValues, message: t('notEmptyField') }]}
+          rules={[
+            { required: !initialValues, message: t('notEmptyField') },
+            {
+              type: 'number',
+              min: 0.01,
+              message: t('amountMustBePositive') || t('notEmptyField'),
+            },
+          ]}
         >
-          <InputNumber className='w-full' />
+          <InputNumber className='w-full' min={1} precision={0} />
         </Form.Item>
         <Form.Item name='note' label={t('note')}>
           <TextArea />

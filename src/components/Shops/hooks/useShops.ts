@@ -276,18 +276,20 @@ export const useShops = (
   });
 
   const addExpenseMutation = useMutation({
-    mutationFn: (body: any) => tsr.shop.addExpense.mutate({ body }),
+    mutationFn: ({ body }: { body: any }) => tsr.shop.addExpense.mutate({ body }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shops'] });
       queryClient.invalidateQueries({ queryKey: ['shop-products'] });
+      queryClient.invalidateQueries({ queryKey: ['daily-expenses'] });
     },
   });
 
   const addIncomeMutation = useMutation({
-    mutationFn: (body: any) => tsr.shop.addIncome.mutate({ body }),
+    mutationFn: ({ body }: { body: any }) => tsr.shop.addIncome.mutate({ body }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shops'] });
       queryClient.invalidateQueries({ queryKey: ['shop-products'] });
+      queryClient.invalidateQueries({ queryKey: ['daily-incomes'] });
     },
   });
 

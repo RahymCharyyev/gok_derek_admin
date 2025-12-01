@@ -4,7 +4,6 @@ import { useShops } from '@/components/Shops/hooks/useShops';
 import { useFurnitureShopProductsTableColumn } from '@/components/Shops/hooks/useFurnitureShopProductsTableColumn';
 import { useOtherShopProductsTableColumn } from '@/components/Shops/hooks/useOtherShopProductsTableColumn';
 import { useWoodShopProductsTableColumn } from '@/components/Shops/hooks/useWoodShopProductsTableColumn';
-import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
 import SaleProductModal from '@/components/Shops/SaleProductModal';
 import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
@@ -34,9 +33,6 @@ const ShopProducts = () => {
   // State declarations
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
-  const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
-  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
-  const [isIncome, setIsIncome] = useState(false);
   const [searchProductValue, setSearchProductValue] = useState('');
   const [editingData, setEditingData] = useState<any | null>(null);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
@@ -72,8 +68,6 @@ const ShopProducts = () => {
     shopsQuery,
     shopProductsQuery,
     transferProductMutation,
-    addIncomeMutation,
-    addExpenseMutation,
     saleMutation,
     page,
     perPage,
@@ -327,28 +321,6 @@ const ShopProducts = () => {
     }
   };
 
-  const handleAddExpenseOrIncome = async (values: any) => {
-    try {
-      if (isIncome) {
-        await addIncomeMutation.mutateAsync({
-          // id: editingData.key,
-          body: values,
-        });
-        message.success(t('incomeAdded'));
-      } else {
-        await addExpenseMutation.mutateAsync({
-          // id: editingData.key,
-          body: values,
-        });
-        message.success(t('expenseAdded'));
-      }
-      setIsIncomeModalOpen(false);
-      setIsExpenseModalOpen(false);
-    } catch (error) {
-      message.error(t('incomeOrExpenseAddError'));
-    }
-  };
-
   return (
     <>
       <TableLayout
@@ -377,10 +349,7 @@ const ShopProducts = () => {
                   </Dropdown>
                   <Button
                     icon={<MinusCircleOutlined />}
-                    onClick={() => {
-                      setIsIncome(false);
-                      setIsExpenseModalOpen(true);
-                    }}
+                    onClick={() => navigate(`/shops/${id}/expenses`)}
                   >
                     {t('dailyExpenses')}
                   </Button>
@@ -393,10 +362,7 @@ const ShopProducts = () => {
                   </Button>
                   <Button
                     icon={<TransactionOutlined />}
-                    onClick={() => {
-                      setIsIncome(true);
-                      setIsIncomeModalOpen(true);
-                    }}
+                    onClick={() => navigate(`/shops/${id}/incomes`)}
                   >
                     {t('dailyIncomes')}
                   </Button>
@@ -430,14 +396,6 @@ const ShopProducts = () => {
           total: shopProductsQuery.data?.body?.count,
           onChange: handleTableChange,
         }}
-      />
-      <IncomeExpenseModal
-        open={isIncome ? isIncomeModalOpen : isExpenseModalOpen}
-        onCancel={() =>
-          isIncome ? setIsIncomeModalOpen(false) : setIsExpenseModalOpen(false)
-        }
-        onSubmit={handleAddExpenseOrIncome}
-        isIncome={isIncome}
       />
       <SaleProductModal
         open={isSaleModalOpen}

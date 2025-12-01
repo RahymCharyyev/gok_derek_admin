@@ -37,6 +37,8 @@ import ClientProductTransactions from './pages/Shops/ClientProductTransactions';
 import ClientPaymentTransactions from './pages/Shops/ClientPaymentTransactions';
 import ShopWoodOrders from './pages/Shops/ShopWoodOrders';
 import ShopOtherOrders from './pages/Shops/ShopOtherOrders';
+import DailyExpenses from './pages/Shops/DailyExpenses';
+import DailyIncomes from './pages/Shops/DailyIncomes';
 
 function App() {
   const { darkMode } = useThemeStore();
@@ -192,6 +194,22 @@ function App() {
             element={
               <LayoutComponent>
                 <ShopSales />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/shops/:id/expenses'
+            element={
+              <LayoutComponent>
+                <DailyExpenses />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/shops/:id/incomes'
+            element={
+              <LayoutComponent>
+                <DailyIncomes />
               </LayoutComponent>
             }
           />
