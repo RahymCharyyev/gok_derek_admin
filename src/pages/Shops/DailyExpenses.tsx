@@ -4,6 +4,7 @@ import { useDailyExpenses } from '@/components/Shops/hooks/useDailyExpenses';
 import { useDailyExpensesTableColumn } from '@/components/Shops/hooks/useDailyExpensesTableColumn';
 import { useShops } from '@/components/Shops/hooks/useShops';
 import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
+import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
@@ -33,6 +34,15 @@ const DailyExpenses = () => {
   } = useDailyExpenses(id);
 
   const { addExpenseMutation } = useShops(undefined, undefined, id);
+
+  // Fetch current shop data
+  const currentShopQuery = tsr.shop.getOne.useQuery({
+    queryKey: ['shop', id],
+    queryData: { params: { id: id || '' } },
+    enabled: !!id,
+  });
+
+  const shopType = currentShopQuery.data?.body?.type;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -137,6 +147,7 @@ const DailyExpenses = () => {
         id: editingData.id,
         body: {
           ...values,
+          storeId: id || '',
           amount: Math.round(amount), // API expects integer
         },
       });
@@ -168,6 +179,7 @@ const DailyExpenses = () => {
       await addExpenseMutation.mutateAsync({
         body: {
           ...values,
+          storeId: id || '',
           amount: Math.round(amount), // API expects integer
         },
       });
@@ -221,6 +233,11 @@ const DailyExpenses = () => {
                 >
                   {t('addExpense')}
                 </Button>
+                <ShopNavigationButtons
+                  shopId={id}
+                  shopType={shopType}
+                  currentPage='expenses'
+                />
                 <DatePicker
                   value={selectedDate}
                   onChange={handleDateChange}

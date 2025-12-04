@@ -50,8 +50,13 @@ const getAll = schema
     createdById: true,
     storeId: true,
     clientId: true,
+    createdAt: true,
   })
-  .extend({isSale: z.coerce.boolean()})
+  .extend({
+    isSale: z.coerce.boolean(),
+    productType: productSchema.schema.shape.type.optional(),
+    transactionType: productTransactionSchema.schema.shape.type.optional(),
+  })
   .partial()
   .merge(sort)
   .merge(commonQuery);

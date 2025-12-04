@@ -5,24 +5,15 @@ import { useFurnitureShopProductsTableColumn } from '@/components/Shops/hooks/us
 import { useOtherShopProductsTableColumn } from '@/components/Shops/hooks/useOtherShopProductsTableColumn';
 import { useWoodShopProductsTableColumn } from '@/components/Shops/hooks/useWoodShopProductsTableColumn';
 import SaleProductModal from '@/components/Shops/SaleProductModal';
+import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import TableLayout from '@/layout/TableLayout';
-import {
-  CreditCardOutlined,
-  HistoryOutlined,
-  MinusCircleOutlined,
-  ShoppingCartOutlined,
-  TransactionOutlined,
-  AppstoreOutlined,
-  DownOutlined,
-} from '@ant-design/icons';
-import { Button, Dropdown, message, type MenuProps } from 'antd';
+import { message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import TransferShopProductModal from '../../components/Shops/TransferShopProductModal';
-import { BiStats } from 'react-icons/bi';
 
 const ShopProducts = () => {
   const { t } = useTranslation();
@@ -108,80 +99,6 @@ const ShopProducts = () => {
     setEditingData(null);
     setIsSaleModalOpen(true);
     setSelectedProductId(record.productId);
-  };
-
-  // Get menu items for product type selection
-  const getProductTypeMenuItems = (): MenuProps['items'] => {
-    return [
-      {
-        key: 'wood',
-        label: t('woodProducts'),
-        onClick: () => setActiveProductType('wood'),
-      },
-      {
-        key: 'other',
-        label: t('otherProducts'),
-        onClick: () => setActiveProductType('other'),
-      },
-    ];
-  };
-
-  // Get menu items based on shop type
-  const getMenuItems = (): MenuProps['items'] => {
-    const shopType = currentShopQuery.data?.body?.type;
-
-    switch (shopType) {
-      case 'furniture':
-        return [
-          {
-            key: 'furniture',
-            label: t('furnitureProducts'),
-            onClick: () => navigate(`/shops/order/furniture`),
-          },
-        ];
-      case 'wood':
-        return [
-          {
-            key: 'wood',
-            label: t('woodProducts'),
-            onClick: () => navigate(`/shops/order/${id}/wood`),
-          },
-          {
-            key: 'other',
-            label: t('otherProducts'),
-            onClick: () => navigate(`/shops/order/${id}/other`),
-          },
-          {
-            type: 'divider',
-          },
-          {
-            key: 'wood-orders',
-            label: t('woodOrders'),
-            onClick: () => navigate(`/shops/${id}/orders/wood`),
-          },
-          {
-            key: 'other-orders',
-            label: t('otherOrders'),
-            onClick: () => navigate(`/shops/${id}/orders/other`),
-          },
-        ];
-      default:
-        return [
-          {
-            key: 'other',
-            label: t('otherOrder'),
-            onClick: () => navigate(`/shops/other/order?shop=${id}`),
-          },
-          {
-            type: 'divider',
-          },
-          {
-            key: 'other-orders',
-            label: t('otherOrders'),
-            onClick: () => navigate(`/shops/${id}/orders/other`),
-          },
-        ];
-    }
   };
 
   // Column configuration based on shop type
@@ -328,63 +245,13 @@ const ShopProducts = () => {
           <>
             <Toolbar
               customButton={
-                <>
-                  {shopType === 'wood' && (
-                    <Dropdown
-                      menu={{ items: getProductTypeMenuItems() }}
-                      trigger={['click']}
-                    >
-                      <Button type='default' icon={<AppstoreOutlined />}>
-                        {t('productsList')} <DownOutlined />
-                      </Button>
-                    </Dropdown>
-                  )}
-                  <Dropdown
-                    menu={{ items: getMenuItems() }}
-                    trigger={['click']}
-                  >
-                    <Button icon={<TransactionOutlined />}>
-                      {t('addOrder')} <DownOutlined />
-                    </Button>
-                  </Dropdown>
-                  <Button
-                    icon={<MinusCircleOutlined />}
-                    onClick={() => navigate(`/shops/${id}/expenses`)}
-                  >
-                    {t('dailyExpenses')}
-                  </Button>
-                  <Button
-                    type='default'
-                    icon={<HistoryOutlined />}
-                    onClick={() => navigate(`/shops/${id}/transfers`)}
-                  >
-                    {t('transfers')}
-                  </Button>
-                  <Button
-                    icon={<TransactionOutlined />}
-                    onClick={() => navigate(`/shops/${id}/incomes`)}
-                  >
-                    {t('dailyIncomes')}
-                  </Button>
-                  <Button
-                    icon={<CreditCardOutlined />}
-                    onClick={() => navigate(`/shops/${id}/credits`)}
-                  >
-                    {t('credits')}
-                  </Button>
-                  <Button
-                    icon={<ShoppingCartOutlined />}
-                    onClick={() => navigate(`/shops/${id}/sales`)}
-                  >
-                    {t('sales')}
-                  </Button>
-                  <Button
-                    icon={<BiStats />}
-                    onClick={() => navigate(`/shops/${id}/report`)}
-                  >
-                    {t('report')}
-                  </Button>
-                </>
+                <ShopNavigationButtons
+                  shopId={id}
+                  shopType={shopType}
+                  activeProductType={activeProductType}
+                  setActiveProductType={setActiveProductType}
+                  currentPage='products'
+                />
               }
               onReset={resetFilters}
               resetDisabled={resetDisabled}

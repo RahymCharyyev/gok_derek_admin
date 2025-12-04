@@ -1,6 +1,6 @@
 import {initContract} from '@ts-rest/core';
 import {z} from 'zod';
-import {storeShopSchema as schema, common, productSchema, clientSchema} from '../schema';
+import {storeShopSchema as schema, common, productSchema, clientSchema, paymentTransactionSchema} from '../schema';
 
 const c = initContract();
 
@@ -77,6 +77,14 @@ export const storeShopContract = c.router(
       query: clientSchema.getAll,
       responses: {
         200: clientSchema.getAllRes,
+      },
+    },
+    getStats: {
+      method: 'GET',
+      path: '/stats/all',
+      query: paymentTransactionSchema.getAll,
+      responses: {
+        200: clientSchema.getStatsRes,
       },
     },
 

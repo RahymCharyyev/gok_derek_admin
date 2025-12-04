@@ -1,8 +1,10 @@
+import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
 import { useDailyIncomes } from '@/components/Shops/hooks/useDailyIncomes';
 import { useDailyIncomesTableColumn } from '@/components/Shops/hooks/useDailyIncomesTableColumn';
 import { useShops } from '@/components/Shops/hooks/useShops';
 import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
+import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
 import TableLayout from '@/layout/TableLayout';
 import { PlusCircleOutlined } from '@ant-design/icons';
@@ -28,6 +30,15 @@ const DailyIncomes = () => {
   } = useDailyIncomes(id);
 
   const { addIncomeMutation } = useShops(undefined, undefined, id);
+
+  // Fetch current shop data
+  const currentShopQuery = tsr.shop.getOne.useQuery({
+    queryKey: ['shop', id],
+    queryData: { params: { id: id || '' } },
+    enabled: !!id,
+  });
+
+  const shopType = currentShopQuery.data?.body?.type;
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
@@ -108,6 +119,7 @@ const DailyIncomes = () => {
       await addIncomeMutation.mutateAsync({
         body: {
           ...values,
+          storeId: id || '',
           amount: Math.round(amount), // API expects integer
         },
       });
@@ -177,6 +189,11 @@ const DailyIncomes = () => {
                 >
                   {t('addIncome')}
                 </Button>
+                <ShopNavigationButtons
+                  shopId={id}
+                  shopType={shopType}
+                  currentPage='incomes'
+                />
                 <DatePicker
                   value={selectedDate}
                   onChange={handleDateChange}

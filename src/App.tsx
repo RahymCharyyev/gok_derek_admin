@@ -13,7 +13,7 @@ import FurnitureProducts from './pages/Products/Furniture';
 import OtherProducts from './pages/Products/Other';
 import Wood from './pages/Products/Wood';
 import WoodTypes from './pages/Products/WoodTypes';
-import Report from './pages/Report';
+import ShopReport from './pages/Shops/ShopReport';
 import ShopCredits from './pages/Shops/ShopCredits';
 import ShopSales from './pages/Shops/ShopSales';
 import ShopProductHistory from './pages/Shops/ShopProductHistory';
@@ -81,7 +81,7 @@ function App() {
             path='/report'
             element={
               <LayoutComponent>
-                <Report />
+                <ShopReport />
               </LayoutComponent>
             }
           />
@@ -217,7 +217,7 @@ function App() {
             path='/shops/:id/report'
             element={
               <LayoutComponent>
-                <Report />
+                <ShopReport />
               </LayoutComponent>
             }
           />

@@ -3,25 +3,17 @@ import ErrorComponent from '@/components/ErrorComponent';
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
 import Toolbar from '@/components/Toolbar';
 import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
-import { useShops } from '@/components/Shops/hooks/useShops';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
 import { formatQuantityOrPrice } from '@/utils/formatters';
 import {
   DeleteOutlined,
   DownOutlined,
-  HistoryOutlined,
   SearchOutlined,
-  TransactionOutlined,
-  MinusCircleOutlined,
-  ShoppingCartOutlined,
-  CreditCardOutlined,
-  ShoppingOutlined,
   AppstoreOutlined,
 } from '@ant-design/icons';
 import { Button, DatePicker, Dropdown, message, type MenuProps } from 'antd';
-import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
-import { BiStats } from 'react-icons/bi';
+import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import dayjs, { type Dayjs } from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,9 +25,6 @@ const ShopTransfers = () => {
   const navigate = useNavigate();
   const confirmDeleteModal = useDeleteConfirm();
 
-  const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
-  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
-  const [isIncome, setIsIncome] = useState(false);
   const [activeProductType, setActiveProductType] = useState<
     'wood' | 'other' | 'furniture'
   >('wood');
@@ -54,13 +43,6 @@ const ShopTransfers = () => {
     handleTypeChange,
     deleteProductHistoryMutation,
   } = useWarehouse(id, activeProductType);
-
-  // Get income/expense mutations from useShops
-  const { addIncomeMutation, addExpenseMutation } = useShops(
-    undefined,
-    undefined,
-    id
-  );
 
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
 
@@ -117,98 +99,6 @@ const ShopTransfers = () => {
     },
     []
   );
-
-  // Get menu items for product type selection
-  const getProductTypeMenuItems = (): MenuProps['items'] => {
-    return [
-      {
-        key: 'wood',
-        label: t('woodProducts'),
-        onClick: () => setActiveProductType('wood'),
-      },
-      {
-        key: 'other',
-        label: t('otherProducts'),
-        onClick: () => setActiveProductType('other'),
-      },
-    ];
-  };
-
-  // Get menu items for add order
-  const getMenuItems = (): MenuProps['items'] => {
-    switch (shopType) {
-      case 'furniture':
-        return [
-          {
-            key: 'furniture',
-            label: t('furnitureProducts'),
-            onClick: () => navigate(`/shops/order/${id}/furniture`),
-          },
-        ];
-      case 'wood':
-        return [
-          {
-            key: 'wood',
-            label: t('woodProducts'),
-            onClick: () => navigate(`/shops/order/${id}/wood`),
-          },
-          {
-            key: 'other',
-            label: t('otherProducts'),
-            onClick: () => navigate(`/shops/order/${id}/other`),
-          },
-          {
-            type: 'divider',
-          },
-          {
-            key: 'wood-orders',
-            label: t('woodOrders'),
-            onClick: () => navigate(`/shops/${id}/orders/wood`),
-          },
-          {
-            key: 'other-orders',
-            label: t('otherOrders'),
-            onClick: () => navigate(`/shops/${id}/orders/other`),
-          },
-        ];
-      default:
-        return [
-          {
-            key: 'other',
-            label: t('otherOrder'),
-            onClick: () => navigate(`/shops/other/order?shop=${id}`),
-          },
-          {
-            type: 'divider',
-          },
-          {
-            key: 'other-orders',
-            label: t('otherOrders'),
-            onClick: () => navigate(`/shops/${id}/orders/other`),
-          },
-        ];
-    }
-  };
-
-  const handleAddExpenseOrIncome = async (values: any) => {
-    try {
-      if (isIncome) {
-        await addIncomeMutation.mutateAsync({
-          body: values,
-        });
-        message.success(t('incomeAdded'));
-      } else {
-        await addExpenseMutation.mutateAsync({
-          body: values,
-        });
-        message.success(t('expenseAdded'));
-      }
-      setIsIncomeModalOpen(false);
-      setIsExpenseModalOpen(false);
-    } catch (error) {
-      message.error(t('incomeOrExpenseAddError'));
-    }
-  };
 
   const handleSearch = useCallback(() => {
     const params = new URLSearchParams(searchParams);
@@ -797,6 +687,15 @@ const ShopTransfers = () => {
     }
   }, [shopType]);
 
+  // Get menu items for available product types in transfers
+  const getProductTypeMenuItems = (): MenuProps['items'] => {
+    return availableTypes.map((type) => ({
+      key: type.value,
+      label: type.label,
+      onClick: () => setActiveProductType(type.value),
+    }));
+  };
+
   // Set type to 'transfer' for shop transfers on mount
   useEffect(() => {
     handleTypeChange('transfer');
@@ -837,69 +736,11 @@ const ShopTransfers = () => {
             count={warehouseHistoryQuery.data?.body.count}
             customButton={
               <>
-                {shopType === 'wood' && (
-                  <Dropdown
-                    menu={{ items: getProductTypeMenuItems() }}
-                    trigger={['click']}
-                  >
-                    <Button type='default' icon={<AppstoreOutlined />}>
-                      {t('productsList')} <DownOutlined />
-                    </Button>
-                  </Dropdown>
-                )}
-                {shopType !== 'wood' && (
-                  <Button
-                    type='default'
-                    icon={<ShoppingOutlined />}
-                    onClick={() => navigate(`/shops/${id}`)}
-                  >
-                    {t('productsList')}
-                  </Button>
-                )}
-                <Dropdown menu={{ items: getMenuItems() }} trigger={['click']}>
-                  <Button icon={<TransactionOutlined />}>
-                    {t('addOrder')} <DownOutlined />
-                  </Button>
-                </Dropdown>
-                <Button
-                  icon={<MinusCircleOutlined />}
-                  onClick={() => {
-                    setIsIncome(false);
-                    setIsExpenseModalOpen(true);
-                  }}
-                >
-                  {t('dailyExpenses')}
-                </Button>
-                <Button type='primary' icon={<HistoryOutlined />}>
-                  {t('transfers')}
-                </Button>
-                <Button
-                  icon={<TransactionOutlined />}
-                  onClick={() => {
-                    setIsIncome(true);
-                    setIsIncomeModalOpen(true);
-                  }}
-                >
-                  {t('dailyIncomes')}
-                </Button>
-                <Button
-                  icon={<CreditCardOutlined />}
-                  onClick={() => navigate(`/shops/${id}/credits`)}
-                >
-                  {t('credits')}
-                </Button>
-                <Button
-                  icon={<ShoppingCartOutlined />}
-                  onClick={() => navigate(`/shops/${id}/sales`)}
-                >
-                  {t('sales')}
-                </Button>
-                <Button
-                  icon={<BiStats />}
-                  onClick={() => navigate(`/shops/${id}/report`)}
-                >
-                  {t('report')}
-                </Button>
+                <ShopNavigationButtons
+                  shopId={id}
+                  shopType={shopType}
+                  currentPage='transfers'
+                />
 
                 {availableTypes.length > 1 && (
                   <Dropdown
@@ -941,14 +782,6 @@ const ShopTransfers = () => {
         onChange: handleTableChange,
       }}
     >
-      <IncomeExpenseModal
-        open={isIncome ? isIncomeModalOpen : isExpenseModalOpen}
-        onCancel={() =>
-          isIncome ? setIsIncomeModalOpen(false) : setIsExpenseModalOpen(false)
-        }
-        onSubmit={handleAddExpenseOrIncome}
-        isIncome={isIncome}
-      />
     </TableLayout>
   );
 };

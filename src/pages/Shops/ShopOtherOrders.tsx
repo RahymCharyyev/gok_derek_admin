@@ -1,6 +1,8 @@
+import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
 import { useShopOtherOrdersTableColumn } from '@/components/Shops/hooks/useShopOtherOrdersTableColumn';
 import { useShopOrders } from '@/components/Shops/hooks/useShopOrders';
+import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
 import TableLayout from '@/layout/TableLayout';
 import { useCallback, useMemo, useState } from 'react';
@@ -23,6 +25,15 @@ const ShopOtherOrders = () => {
     resetFilters,
     searchParams,
   } = useShopOrders('other', id);
+
+  // Fetch current shop data
+  const currentShopQuery = tsr.shop.getOne.useQuery({
+    queryKey: ['shop', id],
+    queryData: { params: { id: id || '' } },
+    enabled: !!id,
+  });
+
+  const shopType = currentShopQuery.data?.body?.type;
 
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     productName: '',
@@ -86,6 +97,13 @@ const ShopOtherOrders = () => {
         <Toolbar
           title={t('orderedProducts')}
           icon={<RiOrderPlayLine />}
+          customButton={
+            <ShopNavigationButtons
+              shopId={id}
+              shopType={shopType}
+              currentPage='orders'
+            />
+          }
           onReset={resetFilters}
           resetDisabled={resetDisabled}
           count={ordersQuery.data?.body.count}

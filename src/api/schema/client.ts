@@ -36,18 +36,29 @@ const create = schema.pick({fullName: true, phone: true});
 
 const edit = schema.pick({fullName: true, phone: true});
 
+const getStatsRes = z.object({
+  sumOut: z.number(),
+  sumIn: z.number(),
+  sumWood: z.number(),
+  sumOther: z.number(),
+  sumCreditSale: z.number(),
+  sumBank: z.number(),
+});
+
 type Schema = z.infer<typeof schema>;
 type GetAll = z.infer<typeof getAll>;
 type Create = z.infer<typeof create>;
 type Edit = z.infer<typeof edit>;
+type GetStatsRes = z.infer<typeof getStatsRes>;
 
 export const clientSchema = {
   schema,
   getAll,
-  getAllRes,
-  getOneRes,
   create,
   edit,
+  getAllRes,
+  getOneRes,
+  getStatsRes,
 };
 
 export type ClientSchema = {
@@ -55,4 +66,5 @@ export type ClientSchema = {
   GetAll: GetAll;
   Create: Create;
   Edit: Edit;
+  GetStatsRes: GetStatsRes;
 };

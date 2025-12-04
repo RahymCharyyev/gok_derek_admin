@@ -1,11 +1,13 @@
-import { Button, DatePicker } from 'antd';
+import { DatePicker, Spin } from 'antd';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { ArrowLeftOutlined } from '@ant-design/icons';
 import dayjs, { type Dayjs } from 'dayjs';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
+import { tsr } from '@/api';
+import ErrorComponent from '@/components/ErrorComponent';
+import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 
 interface IncomeExpenseData {
   key: string;
@@ -19,43 +21,61 @@ interface DebtData {
   amount: number;
 }
 
-const Report = () => {
+const ShopReport = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
+
+  // Fetch stats from API
+  const statsQuery = tsr.shop.getStats.useQuery({
+    queryKey: ['shop-stats', id, selectedDate?.format('YYYY-MM-DD')],
+    queryData: {
+      query: {
+        storeId: id || '',
+        createdAt: selectedDate?.toDate(),
+      },
+    },
+    enabled: !!id,
+  });
+
+  const stats = statsQuery.data?.body;
+
+  // Fetch current shop data
+  const currentShopQuery = tsr.shop.getOne.useQuery({
+    queryKey: ['shop', id],
+    queryData: { params: { id: id || '' } },
+    enabled: !!id,
+  });
+
+  const shopType = currentShopQuery.data?.body?.type;
 
   // Данные для первой таблицы (Доходы/Расходы)
   const incomeExpenseData: IncomeExpenseData[] = [
     {
       key: '1',
       label: t('dailyExpense'),
-      amount: -710,
+      amount: -(stats?.sumOut || 0),
     },
     {
       key: '2',
       label: t('dailyOtherIncome'),
-      amount: 300,
+      amount: stats?.sumIn || 0,
     },
     {
       key: '3',
       label: t('dailyWoodTrade'),
-      amount: 17054,
+      amount: stats?.sumWood || 0,
     },
     {
       key: '4',
       label: t('dailyOtherTrade'),
-      amount: 400,
-    },
-    {
-      key: '5',
-      label: t('warehouseInOut'),
-      amount: '110, -100',
+      amount: stats?.sumOther || 0,
     },
     {
       key: '6',
       label: t('dailyNonCash'),
-      amount: 856.6,
+      amount: stats?.sumBank || 0,
     },
   ];
 
@@ -64,27 +84,7 @@ const Report = () => {
     {
       key: '1',
       label: t('amountToDeliver'),
-      amount: 16964.6,
-    },
-    {
-      key: '2',
-      label: t('amountDelivered'),
-      amount: 16600,
-    },
-    {
-      key: '3',
-      label: t('dailyDebtChange'),
-      amount: -364.6,
-    },
-    {
-      key: '4',
-      label: t('previousDebtChange'),
-      amount: -340,
-    },
-    {
-      key: '5',
-      label: t('totalDebtChange'),
-      amount: -704.6,
+      amount: stats?.sumCreditSale || 0,
     },
   ];
 
@@ -150,34 +150,48 @@ const Report = () => {
     if (typeof item.amount === 'number') {
       return sum + item.amount;
     }
-    // Для "Ýazgydan gelen, ýazga giden" (110, -100)
-    return sum + 110 - 100;
+    return sum;
   }, 0);
 
   const handleDateChange = (date: Dayjs | null) => {
     setSelectedDate(date);
-    // TODO: Здесь будет логика для загрузки данных по выбранной дате
   };
+
+  if (statsQuery.isError) {
+    return <ErrorComponent message={statsQuery.error || t('unknownError')} />;
+  }
+
+  if (statsQuery.isLoading) {
+    return (
+      <div className='flex justify-center items-center h-screen'>
+        <Spin size='large' />
+      </div>
+    );
+  }
 
   return (
     <div className='p-6'>
-      <div className='mb-6 flex items-center justify-between'>
-        <div className='flex items-center gap-4'>
-          <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>
-            {t('back')}
-          </Button>
-          <h1 className='text-2xl font-bold'>{t('report')}</h1>
+      <div className='mb-6'>
+        <div className='mb-4 flex flex-wrap items-center gap-2'>
+          <ShopNavigationButtons
+            shopId={id}
+            shopType={shopType}
+            currentPage='report'
+          />
         </div>
-        <DatePicker
-          value={selectedDate}
-          onChange={handleDateChange}
-          format='DD.MM.YYYY'
-          placeholder={t('selectDate')}
-          style={{ width: 200 }}
-        />
+        <div className='flex items-center gap-2'>
+          <span className='font-medium'>{t('filterByDate')}:</span>
+          <DatePicker
+            value={selectedDate}
+            onChange={handleDateChange}
+            format='DD.MM.YYYY'
+            placeholder={t('selectDate')}
+            style={{ width: 200 }}
+          />
+        </div>
       </div>
 
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+      <div className='flex flex-col gap-6'>
         {/* Первая таблица - Доходы/Расходы */}
         <div className='bg-white rounded-lg shadow'>
           <div className='p-4 border-b'>
@@ -226,4 +240,4 @@ const Report = () => {
   );
 };
 
-export default Report;
+export default ShopReport;
