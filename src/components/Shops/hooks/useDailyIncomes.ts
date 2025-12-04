@@ -41,9 +41,7 @@ export const useDailyIncomes = (storeId?: string) => {
     page,
     perPage,
     type: 'out',
-    method: 'cash',
-    isSale: true,
-    storeId: storeId || undefined,
+    // method: 'cash',
     amount: searchParams.get('amount')
       ? Number(searchParams.get('amount'))
       : undefined,
@@ -95,4 +93,3 @@ export const useDailyIncomes = (storeId?: string) => {
     deleteMutation,
   };
 };
-

@@ -41,7 +41,7 @@ export const useDailyExpenses = (storeId?: string) => {
     page,
     perPage,
     type: 'out',
-    method: 'cash',
+    // method: 'cash',
     storeId: storeId || undefined,
     amount: searchParams.get('amount')
       ? Number(searchParams.get('amount'))
