@@ -11,7 +11,7 @@ interface ErrorComponentProps {
 const ErrorComponent: FC<ErrorComponentProps> = ({ message }) => {
   return (
     <Space
-      direction='vertical'
+      orientation='vertical'
       className='w-full h-screen justify-center items-center'
     >
       <WarningOutlined style={{ fontSize: 96, color: 'red' }} />

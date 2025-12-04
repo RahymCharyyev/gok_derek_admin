@@ -3,7 +3,7 @@ import { Space, Spin } from 'antd';
 
 const LoadingSpinner = () => {
   return (
-    <Space direction='horizontal' className='w-full h-screen justify-center'>
+    <Space orientation='horizontal' className='w-full h-screen justify-center'>
       <Spin indicator={<LoadingOutlined spin style={{ fontSize: 96 }} />} />
     </Space>
   );

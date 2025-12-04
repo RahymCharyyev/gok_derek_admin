@@ -92,7 +92,7 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
   if (!isAuthChecked) {
     return (
       <Space
-        direction='horizontal'
+        orientation='horizontal'
         className='w-full h-screen justify-center items-center'
       >
         <Spin indicator={<LoadingOutlined spin style={{ fontSize: 96 }} />} />
@@ -246,14 +246,14 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
           onCollapse={(value) => setCollapsed(value)}
           breakpoint='md'
           collapsedWidth={80}
-          className='sticky top-0 h-screen'
+          className='sticky top-0 h-screen flex flex-col overflow-hidden'
         >
           <div
-            className={`m-auto w-max py-4 text-xl ${
+            className={`m-auto w-max py-4 text-xl flex-shrink-0 ${
               darkMode ? 'text-[#0ade41]' : 'text-[#007e2b]'
             }`}
           >
-            <Link to={'/report'}>
+            <Link to={'/report'} className='hover:text-green-500'>
               {collapsed ? (
                 <Image src='/gokderek/logo_2.webp' width={50} preview={false} />
               ) : (
@@ -261,7 +261,7 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
               )}
             </Link>
           </div>
-          {SidebarMenu}
+          <div className='flex-1 overflow-y-auto'>{SidebarMenu}</div>
         </Sider>
       ) : (
         <Drawer
