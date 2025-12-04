@@ -2,7 +2,10 @@ import { theme } from 'antd';
 import type { ThemeConfig } from 'antd/es/config-provider/context';
 
 const sharedTheme: ThemeConfig = {
-  cssVar: true,
+  cssVar: {
+    prefix: 'gokderek',
+    key: 'default',
+  },
   token: {
     colorPrimary: '#007e2b',
     fontFamily: 'Inter',
