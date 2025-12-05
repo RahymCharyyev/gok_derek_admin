@@ -69,6 +69,7 @@ const SaleProductModal: FC<SaleProductModalProps> = ({
   const handlePaymentTypeChange = (e: any) => {
     const value = e.target.value;
     setPaymentType(value);
+    form.setFieldsValue({ method: value });
 
     // Clear credit-specific fields when switching away from credit
     if (value !== 'credit') {
@@ -111,11 +112,10 @@ const SaleProductModal: FC<SaleProductModalProps> = ({
         form={form}
         layout='vertical'
         onFinish={(values) => {
-          const finalPaymentType = paymentType || 'cash';
-          onSubmit({ ...values, productId, paymentType: finalPaymentType });
+          onSubmit({ ...values, productId });
         }}
         className='max-h-[70vh] overflow-y-auto'
-        initialValues={{ paymentType: 'cash', priceType: 'regular' }}
+        initialValues={{ method: 'cash', priceType: 'regular' }}
       >
         <Form.Item
           name='priceType'
@@ -130,6 +130,7 @@ const SaleProductModal: FC<SaleProductModalProps> = ({
 
         <Form.Item name='method' label={t('paymentType')}>
           <Radio.Group onChange={handlePaymentTypeChange} value={paymentType}>
+            <Radio value='cash'>{t('cash')}</Radio>
             <Radio value='credit'>{t('credit')}</Radio>
             <Radio value='bank'>{t('nonCashPayment')}</Radio>
           </Radio.Group>
@@ -142,17 +143,14 @@ const SaleProductModal: FC<SaleProductModalProps> = ({
         >
           <InputNumber className='w-full' min={0} />
         </Form.Item>
-        <Form.Item
-          name='clientId'
-          label={t('client')}
-          rules={[{ required: true, message: t('notEmptyField') }]}
-        >
+        <Form.Item name='clientId' label={t('client')}>
           <Select
-            showSearch
+            showSearch={{
+              filterOption: true,
+              onSearch: handleClientSearch,
+            }}
             allowClear
             placeholder={t('selectClient')}
-            filterOption={false}
-            onSearch={handleClientSearch}
             onClear={handleClientClear}
             loading={clientsQuery.isLoading}
             notFoundContent={
