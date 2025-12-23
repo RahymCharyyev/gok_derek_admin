@@ -1,48 +1,53 @@
+import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
+import { useProducts } from '@/components/Products/hooks/useProducts';
 import Toolbar from '@/components/Toolbar';
-import { useWorkshops } from '@/components/Workshops/hooks/useWorkshops';
-import { useWorkshopTableColumn } from '@/components/Workshops/hooks/useWorkshopTableColumn';
+import { useProduction } from '@/components/Workshops/hooks/useProduction';
+import { useProductionTableColumn } from '@/components/Workshops/hooks/useProductionTableColumn';
+import ProductionModal from '@/components/Workshops/ProductionModal';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
-import { PlusOutlined, TransactionOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
+import { message } from 'antd';
 import { useCallback, useMemo, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const FurnitureWorkshop: FC = () => {
   const { t } = useTranslation();
 
+  const storeQuery = tsr.store.getAll.useQuery({
+    queryKey: ['stores', 'workshop'],
+    queryData: { query: { type: 'workshop' } },
+  });
+
+  const storeId = useMemo(() => {
+    return storeQuery.data?.body.data?.find(
+      (s) => s.workshop?.type === 'furniture'
+    )?.id;
+  }, [storeQuery.data]);
+
   const {
     query,
     page,
     perPage,
-    workshopsQuery,
+    productionQuery,
     handleTableChange,
     setFilter,
-    clearFilter,
     resetFilters,
-    searchParams,
-  } = useWorkshops('furniture');
+    createMutation,
+    editMutation,
+    deleteMutation,
+  } = useProduction();
+
+  const { productsQuery } = useProducts('furniture');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    name: '',
+    // name: '',
   });
 
   const confirmDelete = useDeleteConfirm();
-
-  const [searchUserValue, setSearchUserValue] = useState('');
-  //   const [debouncedSearchUserValue] = useDebounce(searchUserValue, 500);
-
-  //   useEffect(() => {
-  //     const params = new URLSearchParams();
-  //     if (debouncedSearchUserValue.trim()) {
-  //       params.set('firstName', debouncedSearchUserValue.trim());
-  //     }
-
-  //     params.set('page', '1');
-  //     setUserSearchParams(params);
-  //   }, [debouncedSearchUserValue, setUserSearchParams]);
 
   const handleSearch = useCallback(() => {
     Object.entries(searchValues).forEach(([key, value]) => {
@@ -58,20 +63,8 @@ const FurnitureWorkshop: FC = () => {
     );
   }, [searchValues, query]);
 
-  const columns = useWorkshopTableColumn({
+  const columns = useProductionTableColumn({
     t,
-    searchValues,
-    setSearchValues,
-    sortBy: query.sortBy || '',
-    setSortBy: (value) => setFilter('sortBy', value),
-    sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
-    setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
-    sortOptions: ['asc', 'desc'],
     handleOpenEditModal: (record) => {
       setEditingData(record);
       setIsModalOpen(true);
@@ -79,65 +72,58 @@ const FurnitureWorkshop: FC = () => {
     confirmDelete: ({ id }) => {
       confirmDelete({
         onConfirm: () => {
-          //   deleteShopMutation.mutate(
-          //     { id },
-          //     {
-          //       onSuccess: () => {
-          //         message.success(t('shopDeleted'));
-          //         shopsQuery.refetch();
-          //       },
-          //       onError: () => message.error(t('shopDeleteError')),
-          //     }
-          //   );
-          <div>id</div>;
+          deleteMutation.mutate(
+            { id },
+            {
+              onSuccess: () => {
+                message.success(t('deleted'));
+              },
+              onError: () => message.error(t('error'))
+            }
+          );
         },
       });
     },
-    visibleColumns: ['code', 'productName', 'quantity', 'actions'],
-    isFurniture: true,
   });
 
-  if (workshopsQuery.isError) {
+  if (productionQuery.isError) {
     return (
-      <ErrorComponent message={workshopsQuery.error || t('unknownError')} />
+      <ErrorComponent message={productionQuery.error || t('unknownError')} />
     );
   }
 
   const data =
-    workshopsQuery.data?.body.data?.map((item, index) => ({
+    productionQuery.data?.body.data?.map((item, index) => ({
       key: item.id,
       index: (page - 1) * perPage + (index + 1),
-      id: item.id,
-      code: item.product?.furniture?.code,
-      productName: item.product?.name || '',
-      quantity: item.quantity ?? 0,
+      ...item,
     })) || [];
 
-  //   const handleSubmitModal = async (values: any) => {
-  //     try {
-  //       if (editingData) {
-  //         await updateShopMutation.mutateAsync({
-  //           id: editingData.key,
-  //           body: values,
-  //         });
-  //         message.success(t('shopUpdated'));
-  //       } else {
-  //         await createShopMutation.mutateAsync(values);
-  //         message.success(t('shopCreated'));
-  //       }
-  //       setIsModalOpen(false);
-  //       setEditingData(null);
-  //     } catch (error) {
-  //       message.error(t('shopCreateOrUpdateError'));
-  //     }
-  //   };
+  const handleSubmitModal = async (values: any) => {
+    try {
+      if (editingData) {
+        await editMutation.mutateAsync({
+          id: editingData.id,
+          body: values,
+        });
+        message.success(t('updated'));
+      } else {
+        await createMutation.mutateAsync(values);
+        message.success(t('created'));
+      }
+      setIsModalOpen(false);
+      setEditingData(null);
+    } catch (error) {
+      message.error(t('error'));
+    }
+  };
 
   return (
     <>
       <TableLayout
         title={() => (
           <Toolbar
-            title={t('addToWorkshop')}
+            title={t('furnitureWorkshop')}
             icon={<PlusOutlined />}
             onCreate={() => {
               setEditingData(null);
@@ -145,44 +131,30 @@ const FurnitureWorkshop: FC = () => {
             }}
             onReset={resetFilters}
             resetDisabled={resetDisabled}
-            count={workshopsQuery.data?.body.count}
-            additionalButtons={[
-              {
-                title: t('productTransaction'),
-                icon: <TransactionOutlined />,
-                onClick: () => {
-                  setEditingData(null);
-                  setIsModalOpen(true);
-                },
-              },
-            ]}
+            count={productionQuery.data?.body.count}
           />
         )}
-        loading={workshopsQuery.isLoading}
+        loading={productionQuery.isLoading || storeQuery.isLoading}
         columns={columns}
         data={data}
         pagination={{
           current: page,
           pageSize: perPage,
-          total: workshopsQuery.data?.body?.count,
+          total: productionQuery.data?.body?.count,
           onChange: handleTableChange,
         }}
       />
-      {/* <ShopModal
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        onSubmit={handleSubmitModal}
-        initialValues={editingData}
-        users={
-          (usersQuery.data?.body.data as Pick<
-            UserSchema['Schema'],
-            'id' | 'firstName' | 'lastName'
-          >[]) || []
-        }
-        loading={usersQuery.isLoading}
-        onSearchUser={(value) => setSearchUserValue(value)}
-        onClearUser={() => handleClearFilter('firstName')}
-      /> */}
+      {storeId && (
+        <ProductionModal
+          open={isModalOpen}
+          onCancel={() => setIsModalOpen(false)}
+          onSubmit={handleSubmitModal}
+          initialValues={editingData}
+          products={productsQuery.data?.body.data || []}
+          loading={createMutation.isPending || editMutation.isPending}
+          storeId={storeId}
+        />
+      )}
     </>
   );
 };

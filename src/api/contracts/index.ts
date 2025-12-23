@@ -1,9 +1,11 @@
 import {initContract} from '@ts-rest/core';
 import {authContract} from './auth';
+import {clientContract} from './client';
 import {orderContract} from './order';
 import {paymentTransactionContract} from './payment-transaction';
 import {productContract} from './product';
 import {productTransactionContract} from './product-transaction';
+import {productionContract} from './production';
 import {settingsContract} from './settings';
 import {storeContract} from './store';
 import {storeShopContract} from './store-shop';
@@ -12,7 +14,6 @@ import {storeWorkshopContract} from './store-workshop';
 import {userContract} from './user';
 import {userRoleContract} from './user-role';
 import {woodTypeContract} from './wood-type';
-import {clientContract} from './client';
 
 const c = initContract();
 
@@ -31,4 +32,5 @@ export const contract = c.router({
   paymentTransaction: paymentTransactionContract,
   order: orderContract,
   client: clientContract,
+  production: productionContract,
 });

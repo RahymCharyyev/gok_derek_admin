@@ -331,5 +331,13 @@
   "amountDelivered": "Tabşyrylan pul möçberi (man)",
   "dailyDebtChange": "Günlük algy / bergi (man)",
   "previousDebtChange": "Öňki algy / bergi (man)",
-  "totalDebtChange": "Jemi algy / bergi (man)"
+  "totalDebtChange": "Jemi algy / bergi (man)",
+  "woodWorkshop": "Agaç önümçiligi",
+  "furnitureWorkshop": "Mebel önümçiligi",
+  "items": "Önümler",
+  "createProduction": "Önümçilige goşmak",
+  "waste": "Galyndy",
+  "addItem": "Önüm goşmak",
+  "cancel": "Ýatyrmak"
+
 }

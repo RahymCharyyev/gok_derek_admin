@@ -45,13 +45,13 @@ const addExpense = z.object({
   amount: z.coerce.number().int(),
   note: z.string().nullish(),
   clientId: z.string().uuid().nullish(),
-  storeId: z.string().uuid().nullish(),
+  storeId: z.string().uuid(),
 });
 const addIncome = z.object({
   amount: z.coerce.number().int(),
   note: z.string().nullish(),
   clientId: z.string().uuid().nullish(),
-  storeId: z.string().uuid().nullish(),
+  storeId: z.string().uuid(),
 });
 
 const sale = z.object({

@@ -12,4 +12,6 @@ export * from './product-furniture';
 export * from './product-other';
 export * from './payment-transaction';
 export * from './order';
-export * from './client'
+export * from './client';
+export * from './production';
+export * from './production-item';

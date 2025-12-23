@@ -56,6 +56,8 @@ const getAll = schema
     isSale: z.coerce.boolean(),
     productType: productSchema.schema.shape.type.optional(),
     transactionType: productTransactionSchema.schema.shape.type.optional(),
+    methods: schema.shape.method.array().optional(),
+    types: schema.shape.type.array().optional()
   })
   .partial()
   .merge(sort)
