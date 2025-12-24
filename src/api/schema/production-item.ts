@@ -1,7 +1,6 @@
 import {z} from 'zod';
 import {commonQuery, sortDirection} from './common';
 import {productSchema} from './product';
-import {productionSchema} from './production';
 
 export const productionItemTypes = z.enum(['in', 'out', 'waste']);
 
@@ -10,11 +9,12 @@ const schema = z.object({
   productionId: z.string().uuid(),
   productId: z.string().uuid(),
   type: productionItemTypes,
+  amount: z.number().min(0),
 
   createdAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullish(),
 
-  product: productSchema.schema.nullish(),
+  product: productSchema.schema.omit({availableProductCount: true, productQuantity: true}).nullish(),
 });
 
 const sortKeys = schema.pick({
@@ -35,7 +35,7 @@ const getAllRes = z.object({
 
 const getOneRes = schema;
 
-const create = schema.pick({productionId: true, productId: true, type: true});
+const create = schema.pick({productionId: true, productId: true, type: true, amount: true});
 
 const edit = create.partial();
 

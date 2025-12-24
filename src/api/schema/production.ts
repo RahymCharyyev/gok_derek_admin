@@ -25,13 +25,13 @@ const getAll = schema
   .merge(commonQuery);
 const getAllRes = z.object({
   count: z.number(),
-  data: schema.partial().array(),
+  data: schema.extend({items: productionItemSchema.schema.array()}).partial().array(),
 });
 
 const getOneRes = schema;
 
 const create = schema.pick({storeId: true}).extend({
-  items: z.object({productId: z.string().uuid(), type: productionItemTypes}).array(),
+  items: z.object({productId: z.string().uuid(), type: productionItemTypes, amount: z.number().min(0)}).array(),
 });
 
 const edit = create.partial();

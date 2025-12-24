@@ -1,6 +1,5 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
-import { useProducts } from '@/components/Products/hooks/useProducts';
 import Toolbar from '@/components/Toolbar';
 import { useProduction } from '@/components/Workshops/hooks/useProduction';
 import { useProductionTableColumn } from '@/components/Workshops/hooks/useProductionTableColumn';
@@ -9,7 +8,7 @@ import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
 import { PlusOutlined } from '@ant-design/icons';
 import { message } from 'antd';
-import { useCallback, useMemo, useState, type FC } from 'react';
+import { useMemo, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const WoodWorkshop: FC = () => {
@@ -21,9 +20,8 @@ const WoodWorkshop: FC = () => {
   });
 
   const storeId = useMemo(() => {
-    return storeQuery.data?.body.data?.find(
-      (s) => s.workshop?.type === 'wood'
-    )?.id;
+    return storeQuery.data?.body.data?.find((s) => s.workshop?.type === 'wood')
+      ?.id;
   }, [storeQuery.data]);
 
   const {
@@ -39,29 +37,14 @@ const WoodWorkshop: FC = () => {
     deleteMutation,
   } = useProduction();
 
-  const { productsQuery } = useProducts('wood');
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    // name: '',
-  });
 
   const confirmDelete = useDeleteConfirm();
 
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
-
   const resetDisabled = useMemo(() => {
-    return (
-      Object.values(searchValues).every((v) => !v) &&
-      !query.sortBy &&
-      !query.sortDirection
-    );
-  }, [searchValues, query]);
+    return !query.sortBy && !query.sortDirection;
+  }, [query]);
 
   const columns = useProductionTableColumn({
     t,
@@ -78,7 +61,7 @@ const WoodWorkshop: FC = () => {
               onSuccess: () => {
                 message.success(t('deleted'));
               },
-              onError: () => message.error(t('error'))
+              onError: () => message.error(t('error')),
             }
           );
         },
@@ -118,7 +101,6 @@ const WoodWorkshop: FC = () => {
     }
   };
 
-
   return (
     <>
       <TableLayout
@@ -151,9 +133,9 @@ const WoodWorkshop: FC = () => {
           onCancel={() => setIsModalOpen(false)}
           onSubmit={handleSubmitModal}
           initialValues={editingData}
-          products={productsQuery.data?.body.data || []}
           loading={createMutation.isPending || editMutation.isPending}
           storeId={storeId}
+          productType='wood'
         />
       )}
     </>

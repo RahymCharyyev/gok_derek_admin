@@ -32,12 +32,24 @@ export const useProductionTableColumn = ({
       dataIndex: 'items',
       key: 'items',
       render: (items: any[]) => (
-        <div className="flex flex-col gap-1">
+        <div className='flex flex-col gap-1'>
           {items?.map((item, idx) => (
-            <div key={idx} className="flex gap-2 items-center">
-              <span className="font-medium">{item.product?.name}</span>
-              <Tag color={item.type === 'in' ? 'green' : item.type === 'out' ? 'blue' : 'red'}>
-                {t(item.type)}
+            <div key={idx} className='flex gap-2 items-center'>
+              <span className='font-medium'>{item.product?.name}</span>
+              <Tag
+                color={
+                  item.type === 'in'
+                    ? 'green'
+                    : item.type === 'out'
+                    ? 'blue'
+                    : 'red'
+                }
+              >
+                {item.type === 'in'
+                  ? 'ulanyldy'
+                  : item.type === 'out'
+                  ? 'öndürildi'
+                  : 'galyndy'}
               </Tag>
             </div>
           ))}
@@ -49,7 +61,7 @@ export const useProductionTableColumn = ({
       key: 'actions',
       width: 100,
       render: (_, record) => (
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           {/* <Button
             size="small"
             type="primary"
@@ -57,8 +69,8 @@ export const useProductionTableColumn = ({
             onClick={() => handleOpenEditModal(record)}
           /> */}
           <Button
-            size="small"
-            type="primary"
+            size='small'
+            type='primary'
             danger
             icon={<DeleteOutlined />}
             onClick={() => confirmDelete({ id: record.id })}

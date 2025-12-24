@@ -338,6 +338,7 @@
   "createProduction": "Önümçilige goşmak",
   "waste": "Galyndy",
   "addItem": "Önüm goşmak",
-  "cancel": "Ýatyrmak"
-
+  "cancel": "Ýatyrmak",
+  "produced": "Öndürildi",
+  "sent": "Iberildi"
 }

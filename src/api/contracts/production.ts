@@ -23,15 +23,15 @@ export const productionContract = c.router(
         201: schema.getOneRes,
       },
     },
-    // getOne: {
-    //   method: 'GET',
-    //   path: '/:id',
-    //   pathParams: paramsId,
-    //   responses: {
-    //     200: schema.getOneRes,
-    //     404: z.null(),
-    //   },
-    // },
+    getOne: {
+      method: 'GET',
+      path: '/:id',
+      pathParams: paramsId,
+      responses: {
+        200: schema.getOneRes,
+        404: z.null(),
+      },
+    },
     edit: {
       method: 'PUT',
       path: '/:id',
