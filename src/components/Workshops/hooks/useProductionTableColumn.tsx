@@ -5,13 +5,11 @@ import dayjs from 'dayjs';
 
 interface UseProductionTableColumnProps {
   t: (key: string) => string;
-  handleOpenEditModal: (record: any) => void;
   confirmDelete: (options: { id: string }) => void;
 }
 
 export const useProductionTableColumn = ({
   t,
-  handleOpenEditModal,
   confirmDelete,
 }: UseProductionTableColumnProps): ColumnsType<any> => {
   return [

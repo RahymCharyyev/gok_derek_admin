@@ -49,10 +49,6 @@ const FurnitureWorkshop: FC = () => {
 
   const columns = useProductionTableColumn({
     t,
-    handleOpenEditModal: (record) => {
-      setEditingData(record);
-      setIsModalOpen(true);
-    },
     confirmDelete: ({ id }) => {
       confirmDelete({
         onConfirm: () => {

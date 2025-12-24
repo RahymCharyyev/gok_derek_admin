@@ -7,12 +7,10 @@ import {
   InputNumber,
   Modal,
   Select,
-  Space,
   Typography,
 } from 'antd';
 import { useEffect, useMemo, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-
 const { useForm } = Form;
 const { Title } = Typography;
 
@@ -42,7 +40,6 @@ type FormRow = {
   length?: number;
   unit?: UnitType;
   amount?: number;
-  type?: ProductionItemType;
 };
 
 interface ProductionModalProps {
@@ -87,14 +84,11 @@ const ProductionModal: FC<ProductionModalProps> = ({
     []
   );
 
-  const typeOptions = useMemo(
-    () => [
-      { label: t('in'), value: 'in' as const },
-      { label: t('out'), value: 'out' as const },
-      { label: t('waste'), value: 'waste' as const },
-    ],
-    [t]
-  );
+  // Types are fixed per section:
+  // - Ulanylan önümler => in
+  // - Öndürilen önümler => out
+  const usedType: Extract<ProductionItemType, 'in'> = 'in';
+  const producedType: Extract<ProductionItemType, 'out'> = 'out';
 
   const getRowKey = (listName: 'sentItems' | 'receivedItems', index: number) =>
     `${listName}:${index}`;
@@ -299,27 +293,27 @@ const ProductionModal: FC<ProductionModalProps> = ({
 
   useEffect(() => {
     if (initialValues) {
-      const sentItems =
+      const usedItems =
         (initialValues.items || [])
-          .filter((i: any) => i?.type !== 'in')
+          .filter((i: any) => i?.type === usedType)
           .map((i: any) => ({
             productId: i.productId,
-            type: i.type,
             amount: i.amount,
           })) || [];
-      const receivedItems =
+
+      // Backwards-compat: if backend has old `waste`, treat it as `out` in UI.
+      const producedItems =
         (initialValues.items || [])
-          .filter((i: any) => i?.type === 'in')
+          .filter((i: any) => i?.type === producedType || i?.type === 'waste')
           .map((i: any) => ({
             productId: i.productId,
-            type: i.type,
             amount: i.amount,
           })) || [];
 
       form.setFieldsValue({
         ...initialValues,
-        sentItems: sentItems.length ? sentItems : [{}],
-        receivedItems: receivedItems.length ? receivedItems : [{}],
+        sentItems: usedItems.length ? usedItems : [{}],
+        receivedItems: producedItems.length ? producedItems : [{}],
       });
     } else {
       form.resetFields();
@@ -347,12 +341,25 @@ const ProductionModal: FC<ProductionModalProps> = ({
     const sent = (values.sentItems || []) as FormRow[];
     const received = (values.receivedItems || []) as FormRow[];
 
+    const all = [
+      ...sent.map((item) => ({ ...item, __fixedType: usedType })),
+      ...received.map((item) => ({ ...item, __fixedType: producedType })),
+    ];
+
+    // Hard validation to avoid sending invalid payload
+    const missingProduct = all.find((i) => !i.productId);
+    if (missingProduct) {
+      // trigger form validation messages (hidden productId has rules)
+      form.validateFields();
+      return;
+    }
+
     const formattedValues = {
       ...values,
       storeId,
-      items: [...sent, ...received].map((item) => ({
+      items: all.map((item) => ({
         productId: item.productId,
-        type: item.type,
+        type: item.__fixedType,
         amount: item.amount,
       })),
     };
@@ -390,7 +397,7 @@ const ProductionModal: FC<ProductionModalProps> = ({
                     icon={<PlusOutlined />}
                     onClick={() => add({})}
                   >
-                    + Goş
+                    Goş
                   </Button>
                 )}
               </Form.List>
@@ -415,14 +422,14 @@ const ProductionModal: FC<ProductionModalProps> = ({
                           >
                             <Select
                               placeholder={t('selectProduct')}
-                              showSearch
+                              showSearch={{
+                                filterOption: false,
+                                onSearch: (txt) =>
+                                  handleSearchNames('sentItems', name, txt),
+                              }}
                               allowClear
                               loading={rowLoading}
-                              filterOption={false}
-                              onSearch={(txt) =>
-                                handleSearchNames('sentItems', name, txt)
-                              }
-                              onDropdownVisibleChange={(visible) => {
+                              onOpenChange={(visible) => {
                                 if (visible)
                                   handleSearchNames('sentItems', name, '');
                               }}
@@ -450,14 +457,14 @@ const ProductionModal: FC<ProductionModalProps> = ({
                           >
                             <Select
                               placeholder={t('selectProduct')}
-                              showSearch
+                              showSearch={{
+                                filterOption: false,
+                                onSearch: (txt) =>
+                                  handleSearchProducts('sentItems', name, txt),
+                              }}
                               allowClear
                               loading={rowLoading}
-                              filterOption={false}
-                              onSearch={(txt) =>
-                                handleSearchProducts('sentItems', name, txt)
-                              }
-                              onDropdownVisibleChange={(visible) => {
+                              onOpenChange={(visible) => {
                                 if (visible)
                                   handleSearchProducts('sentItems', name, '');
                               }}
@@ -486,6 +493,12 @@ const ProductionModal: FC<ProductionModalProps> = ({
                             name={[name, 'productId']}
                             className='mb-0'
                             hidden
+                            rules={[
+                              {
+                                required: true,
+                                message: 'Выберите размеры',
+                              },
+                            ]}
                           >
                             <Input />
                           </Form.Item>
@@ -691,20 +704,6 @@ const ProductionModal: FC<ProductionModalProps> = ({
                           />
                         </Form.Item>
 
-                        <Form.Item
-                          {...restField}
-                          name={[name, 'type']}
-                          rules={[{ required: true, message: t('selectType') }]}
-                          className='mb-0'
-                          style={{ width: 140 }}
-                          initialValue='out'
-                        >
-                          <Select
-                            placeholder={t('selectType')}
-                            options={typeOptions}
-                          />
-                        </Form.Item>
-
                         <Button
                           danger
                           type='primary'
@@ -733,7 +732,7 @@ const ProductionModal: FC<ProductionModalProps> = ({
                     icon={<PlusOutlined />}
                     onClick={() => add({})}
                   >
-                    + Goş
+                    Goş
                   </Button>
                 )}
               </Form.List>
@@ -758,14 +757,14 @@ const ProductionModal: FC<ProductionModalProps> = ({
                           >
                             <Select
                               placeholder={t('selectProduct')}
-                              showSearch
+                              showSearch={{
+                                filterOption: false,
+                                onSearch: (txt) =>
+                                  handleSearchNames('receivedItems', name, txt),
+                              }}
                               allowClear
                               loading={rowLoading}
-                              filterOption={false}
-                              onSearch={(txt) =>
-                                handleSearchNames('receivedItems', name, txt)
-                              }
-                              onDropdownVisibleChange={(visible) => {
+                              onOpenChange={(visible) => {
                                 if (visible)
                                   handleSearchNames('receivedItems', name, '');
                               }}
@@ -794,14 +793,18 @@ const ProductionModal: FC<ProductionModalProps> = ({
                           >
                             <Select
                               placeholder={t('selectProduct')}
-                              showSearch
+                              showSearch={{
+                                filterOption: false,
+                                onSearch: (txt) =>
+                                  handleSearchProducts(
+                                    'receivedItems',
+                                    name,
+                                    txt
+                                  ),
+                              }}
                               allowClear
                               loading={rowLoading}
-                              filterOption={false}
-                              onSearch={(txt) =>
-                                handleSearchProducts('receivedItems', name, txt)
-                              }
-                              onDropdownVisibleChange={(visible) => {
+                              onOpenChange={(visible) => {
                                 if (visible)
                                   handleSearchProducts(
                                     'receivedItems',
@@ -833,6 +836,12 @@ const ProductionModal: FC<ProductionModalProps> = ({
                             name={[name, 'productId']}
                             className='mb-0'
                             hidden
+                            rules={[
+                              {
+                                required: true,
+                                message: 'Выберите размеры',
+                              },
+                            ]}
                           >
                             <Input />
                           </Form.Item>
@@ -1035,20 +1044,6 @@ const ProductionModal: FC<ProductionModalProps> = ({
                                   amount: val ?? undefined,
                                 });
                             }}
-                          />
-                        </Form.Item>
-
-                        <Form.Item
-                          {...restField}
-                          name={[name, 'type']}
-                          rules={[{ required: true, message: t('selectType') }]}
-                          className='mb-0'
-                          style={{ width: 140 }}
-                          initialValue='in'
-                        >
-                          <Select
-                            placeholder={t('selectType')}
-                            options={typeOptions}
                           />
                         </Form.Item>
 
