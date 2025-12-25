@@ -1,7 +1,7 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
-import { usePaymentTransactionTableColumn } from '@/components/Shops/hooks/usePaymentTransactionTableColumn';
-import { useShops } from '@/components/Shops/hooks/useShops';
+import { usePaymentTransactionTableColumn } from '@/components/Shops/hooks/TableColumns/usePaymentTransactionTableColumn';
+import { useShopSales } from '@/components/Shops/hooks/useShopSales';
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
 import TableLayout from '@/layout/TableLayout';
@@ -30,7 +30,7 @@ const ShopSales = () => {
     clearFilter,
     resetFilters,
     searchParams,
-  } = useShops(undefined, undefined, id);
+  } = useShopSales(id);
 
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
 

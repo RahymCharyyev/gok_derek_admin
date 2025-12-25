@@ -53,11 +53,9 @@ const TransferShopProductModal: FC<TransferShopProductModalProps> = ({
           rules={[{ required: true, message: t('notEmptyField') }]}
         >
           <Select
-            showSearch
+            showSearch={{ filterOption: false, onSearch: onSearchProduct }}
             allowClear
             placeholder={t('selectShop')}
-            filterOption={false}
-            onSearch={onSearchProduct}
             loading={loading}
             notFoundContent={loading ? t('loading') : t('noResults')}
             options={shops.map((e) => ({

@@ -1,7 +1,5 @@
 import ErrorComponent from '@/components/ErrorComponent';
 import Toolbar from '@/components/Toolbar';
-import { useOtherWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWarehouseHistory/useOtherWarehouseHistoryTableColumn';
-import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
 import TableLayout from '@/layout/TableLayout';
 import { SendOutlined } from '@ant-design/icons';
 import { DatePicker } from 'antd';
@@ -9,6 +7,7 @@ import dayjs, { type Dayjs } from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSentOtherProductsTableColumn } from '@/components/Warehouse/hooks/useSentProducts/useSentOtherProductsTableColumn';
+import { useWarehouseSentProducts } from '@/components/Warehouse/hooks/useWarehouseSentProducts';
 
 const OtherSentProducts = () => {
   const { t } = useTranslation();
@@ -22,7 +21,7 @@ const OtherSentProducts = () => {
     clearFilter,
     resetFilters,
     searchParams,
-  } = useWarehouse();
+  } = useWarehouseSentProducts('other');
 
   // Get productId from URL params and set it as a filter
   useEffect(() => {

@@ -1,8 +1,7 @@
 import ErrorComponent from '@/components/ErrorComponent';
 import Toolbar from '@/components/Toolbar';
 import { useSentWoodProductsTableColumn } from '@/components/Warehouse/hooks/useSentProducts/useSentWoodProductsTableColumn';
-import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
-import { useWoodWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWarehouseHistory/useWoodWarehouseHistoryTableColumn';
+import { useWarehouseSentProducts } from '@/components/Warehouse/hooks/useWarehouseSentProducts';
 import TableLayout from '@/layout/TableLayout';
 import { SendOutlined } from '@ant-design/icons';
 import { DatePicker } from 'antd';
@@ -22,7 +21,7 @@ const WoodSentProducts = () => {
     clearFilter,
     resetFilters,
     searchParams,
-  } = useWarehouse();
+  } = useWarehouseSentProducts('wood');
 
   // Get productId from URL params and set it as a filter
   useEffect(() => {

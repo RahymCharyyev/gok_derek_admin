@@ -53,6 +53,7 @@ const SaleProductModal: FC<SaleProductModalProps> = ({
         perPage: 50,
       },
     },
+    enabled: open,
   });
 
   const handleCancel = () => {

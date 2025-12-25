@@ -64,11 +64,9 @@ const ShopModal: FC<ShopModalProps> = ({
           rules={[{ required: !initialValues, message: t('notEmptyField') }]}
         >
           <Select
-            showSearch
+            showSearch={{ filterOption: false, onSearch: onSearchUser }}
             allowClear
             placeholder={t('selectSeller')}
-            filterOption={false}
-            onSearch={onSearchUser}
             loading={loading}
             notFoundContent={loading ? t('loading') : t('noResults')}
             options={users.map((e: any) => ({

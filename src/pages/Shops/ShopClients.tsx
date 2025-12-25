@@ -1,6 +1,6 @@
 import ErrorComponent from '@/components/ErrorComponent';
 import ClientModal from '@/components/Shops/ClientModal';
-import { useClientsTableColumn } from '@/components/Shops/hooks/useClientsTableColumn';
+import { useClientsTableColumn } from '@/components/Shops/hooks/TableColumns/useClientsTableColumn';
 import { useShopClients } from '@/components/Shops/hooks/useShopClients';
 import Toolbar from '@/components/Toolbar';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';

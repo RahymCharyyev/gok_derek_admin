@@ -2,7 +2,7 @@ import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
 import Toolbar from '@/components/Toolbar';
-import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
+import { useShopTransfersHistory } from '@/components/Shops/hooks/useShopTransfersHistory';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
 import { formatQuantityOrPrice } from '@/utils/formatters';
@@ -30,19 +30,17 @@ const ShopTransfers = () => {
   >('wood');
 
   const {
-    // query,
     page,
     perPage,
-    warehouseHistoryQuery,
     handleTableChange,
     setFilter,
     clearFilter,
     resetFilters,
     searchParams,
     setSearchParams,
-    handleTypeChange,
-    deleteProductHistoryMutation,
-  } = useWarehouse(id, activeProductType);
+    transfersQuery,
+    deleteTransferMutation,
+  } = useShopTransfersHistory(id, activeProductType);
 
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
 
@@ -70,6 +68,7 @@ const ShopTransfers = () => {
   const woodTypesQuery = tsr.woodType.getAll.useQuery({
     queryKey: ['wood-types'],
     queryData: {},
+    enabled: activeProductType === 'wood',
   });
 
   // Fetch current shop data
@@ -130,7 +129,7 @@ const ShopTransfers = () => {
   const handleDelete = useCallback(
     async (id: string) => {
       try {
-        const response = await deleteProductHistoryMutation.mutateAsync({ id });
+        const response = await deleteTransferMutation.mutateAsync({ id });
         if (response.status === 200 || response.status === 201) {
           message.success(t('deleteSuccess'));
         } else {
@@ -140,7 +139,7 @@ const ShopTransfers = () => {
         message.error(t('deleteError'));
       }
     },
-    [deleteProductHistoryMutation, t]
+    [deleteTransferMutation, t]
   );
 
   const confirmDelete = useCallback(
@@ -605,9 +604,9 @@ const ShopTransfers = () => {
 
   // Dynamic data mapping based on active product type
   const data = useMemo(() => {
-    if (!warehouseHistoryQuery.data?.body.data) return [];
+    if (!transfersQuery.data?.body.data) return [];
 
-    return warehouseHistoryQuery.data.body.data.map((item, index) => {
+    return transfersQuery.data.body.data.map((item, index) => {
       const baseData = {
         key: item.id,
         index: (page - 1) * perPage + (index + 1),
@@ -656,7 +655,7 @@ const ShopTransfers = () => {
         productUnits: item.product?.units || [],
       };
     });
-  }, [warehouseHistoryQuery.data, page, perPage, activeProductType, t]);
+  }, [transfersQuery.data, page, perPage, activeProductType, t]);
 
   // Determine available types based on shop type
   const availableTypes = useMemo(() => {
@@ -696,17 +695,9 @@ const ShopTransfers = () => {
     }));
   };
 
-  // Set type to 'transfer' for shop transfers on mount
-  useEffect(() => {
-    handleTypeChange('transfer');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (warehouseHistoryQuery.isError) {
+  if (transfersQuery.isError) {
     return (
-      <ErrorComponent
-        message={warehouseHistoryQuery.error || t('unknownError')}
-      />
+      <ErrorComponent message={transfersQuery.error || t('unknownError')} />
     );
   }
 
@@ -733,7 +724,7 @@ const ShopTransfers = () => {
               resetFilters();
             }}
             resetDisabled={resetDisabled}
-            count={warehouseHistoryQuery.data?.body.count}
+            count={transfersQuery.data?.body.count}
             customButton={
               <>
                 <ShopNavigationButtons
@@ -772,17 +763,16 @@ const ShopTransfers = () => {
           />
         </>
       )}
-      loading={warehouseHistoryQuery.isLoading}
+      loading={transfersQuery.isLoading}
       columns={columns}
       data={data}
       pagination={{
         current: page,
         pageSize: perPage,
-        total: warehouseHistoryQuery.data?.body?.count,
+        total: transfersQuery.data?.body?.count,
         onChange: handleTableChange,
       }}
-    >
-    </TableLayout>
+    ></TableLayout>
   );
 };
 

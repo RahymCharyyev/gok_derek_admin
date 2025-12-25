@@ -4,7 +4,7 @@ import { queryClient } from '@/Providers';
 import { getEnumParam } from '@/utils/getEnumParam';
 import { useMutation } from '@tanstack/react-query';
 
-export const useUsers = () => {
+export const useUsers = (options?: { enabled?: boolean }) => {
   const {
     page,
     perPage,
@@ -44,6 +44,7 @@ export const useUsers = () => {
   const usersQuery = tsr.user.getAll.useQuery({
     queryKey: ['users', Object.fromEntries(searchParams.entries())],
     queryData: { query },
+    enabled: options?.enabled ?? true,
   });
 
   const createUserMutation = useMutation({

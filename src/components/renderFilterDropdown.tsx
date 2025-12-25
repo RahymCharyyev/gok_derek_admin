@@ -41,10 +41,10 @@ export const renderFilterDropdown = (
             setSearchValues({ ...searchValues, [key]: value || '' });
           }}
           allowClear
-          showSearch
-          filterOption={(input, option) =>
-            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-          }
+          showSearch={{
+            filterOption: (input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase()),
+          }}
         />
       )}
       <Select

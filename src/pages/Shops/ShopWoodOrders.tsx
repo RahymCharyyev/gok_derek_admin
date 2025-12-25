@@ -1,6 +1,6 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
-import { useShopWoodOrdersTableColumn } from '@/components/Shops/hooks/useShopWoodOrdersTableColumn';
+import { useShopWoodOrdersTableColumn } from '@/components/Shops/hooks/TableColumns/useShopWoodOrdersTableColumn';
 import { useShopOrders } from '@/components/Shops/hooks/useShopOrders';
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
@@ -127,4 +127,3 @@ const ShopWoodOrders = () => {
 };
 
 export default ShopWoodOrders;
-

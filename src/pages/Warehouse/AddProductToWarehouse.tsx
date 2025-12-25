@@ -1,7 +1,7 @@
 import ErrorComponent from '@/components/ErrorComponent';
 import { useProducts } from '@/components/Products/hooks/useProducts';
 import Toolbar from '@/components/Toolbar';
-import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
+import { useWarehouseMutations } from '@/components/Warehouse/hooks/useWarehouseMutations';
 import TableLayout from '@/layout/TableLayout';
 import {
   PlusOutlined,
@@ -51,7 +51,7 @@ const AddProductToWarehouse = () => {
     [searchParams, setUrlSearchParams]
   );
 
-  const { addProductMutation } = useWarehouse(undefined, productType);
+  const { addProductMutation } = useWarehouseMutations();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);

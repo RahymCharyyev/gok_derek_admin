@@ -1,7 +1,7 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
-import { useShops } from '@/components/Shops/hooks/useShops';
-import { useShopProductHistoryTableColumn } from '@/components/Shops/hooks/useShopProductHistoryTableColumn';
+import { useShopProductHistory } from '@/components/Shops/hooks/useShopProductHistory';
+import { useShopProductHistoryTableColumn } from '@/components/Shops/hooks/TableColumns/useShopProductHistoryTableColumn';
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
 import TableLayout from '@/layout/TableLayout';
@@ -31,7 +31,7 @@ const ShopProductHistory = () => {
     resetFilters,
     searchParams: hookSearchParams,
     setSearchParams,
-  } = useShops(undefined, undefined, id);
+  } = useShopProductHistory(id);
 
   // Fetch current shop data
   const currentShopQuery = tsr.shop.getOne.useQuery({

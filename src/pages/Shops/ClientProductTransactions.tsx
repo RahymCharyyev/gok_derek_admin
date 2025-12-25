@@ -1,7 +1,7 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
 import { useClientProductTransactions } from '@/components/Shops/hooks/useClientProductTransactions';
-import { useClientProductTransactionsTableColumn } from '@/components/Shops/hooks/useClientProductTransactionsTableColumn';
+import { useClientProductTransactionsTableColumn } from '@/components/Shops/hooks/TableColumns/useClientProductTransactionsTableColumn';
 import Toolbar from '@/components/Toolbar';
 import TableLayout from '@/layout/TableLayout';
 import { ShoppingOutlined } from '@ant-design/icons';

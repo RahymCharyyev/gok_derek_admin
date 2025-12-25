@@ -72,6 +72,7 @@ export const useProducts = (
 
   const woodTypesQuery = tsr.woodType.getAll.useQuery({
     queryKey: ['wood-types'],
+    enabled: productType === 'wood', // или по месту использования
   });
 
   const createProductMutation = useMutation({

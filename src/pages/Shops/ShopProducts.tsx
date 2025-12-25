@@ -1,13 +1,14 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
-import { useShops } from '@/components/Shops/hooks/useShops';
-import { useFurnitureShopProductsTableColumn } from '@/components/Shops/hooks/useFurnitureShopProductsTableColumn';
-import { useOtherShopProductsTableColumn } from '@/components/Shops/hooks/useOtherShopProductsTableColumn';
-import { useWoodShopProductsTableColumn } from '@/components/Shops/hooks/useWoodShopProductsTableColumn';
+import { useShopList } from '@/components/Shops/hooks/useShopList';
+import { useShopProducts } from '@/components/Shops/hooks/useShopProducts';
+import { useFurnitureShopProductsTableColumn } from '@/components/Shops/hooks/TableColumns/useFurnitureShopProductsTableColumn';
+import { useOtherShopProductsTableColumn } from '@/components/Shops/hooks/TableColumns/useOtherShopProductsTableColumn';
+import { useWoodShopProductsTableColumn } from '@/components/Shops/hooks/TableColumns/useWoodShopProductsTableColumn';
 import SaleProductModal from '@/components/Shops/SaleProductModal';
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
-import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
+import { useWarehousesList } from '@/components/Warehouse/hooks/useWarehousesList';
 import TableLayout from '@/layout/TableLayout';
 import { message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
@@ -19,7 +20,6 @@ const ShopProducts = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
-  const { warehousesQuery } = useWarehouse(id);
 
   // State declarations
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,10 +56,6 @@ const ShopProducts = () => {
       : undefined;
 
   const {
-    shopsQuery,
-    shopProductsQuery,
-    transferProductMutation,
-    saleMutation,
     page,
     perPage,
     handleTableChange,
@@ -67,12 +63,19 @@ const ShopProducts = () => {
     clearFilter,
     resetFilters,
     searchParams,
-  } = useShops(undefined, productTypes, id);
+    shopProductsQuery,
+    transferProductMutation,
+    saleMutation,
+  } = useShopProducts({ storeId: id, types: productTypes });
+
+  const { shopsQuery } = useShopList(undefined, { enabled: isModalOpen });
+  const { warehousesQuery } = useWarehousesList({ enabled: isModalOpen });
 
   // Fetch wood types for filtering (only needed for wood products)
   const woodTypesQuery = tsr.woodType.getAll.useQuery({
     queryKey: ['wood-types'],
     queryData: {},
+    enabled: shopType === 'wood' && activeProductType === 'wood',
   });
 
   const handleSearch = useCallback(() => {
@@ -269,23 +272,27 @@ const ShopProducts = () => {
           onChange: handleTableChange,
         }}
       />
-      <SaleProductModal
-        open={isSaleModalOpen}
-        productId={selectedProductId}
-        storeId={id}
-        onCancel={() => setIsSaleModalOpen(false)}
-        onSubmit={handleSaleProduct}
-      />
-      <TransferShopProductModal
-        open={isModalOpen}
-        productId={selectedProductId}
-        onCancel={() => setIsModalOpen(false)}
-        onSubmit={handleTansferProduct}
-        shops={transferDestinations}
-        loading={shopsQuery.isLoading || warehousesQuery.isLoading}
-        onSearchProduct={(value) => setSearchProductValue(value)}
-        onClearProduct={() => clearFilter('name')}
-      />
+      {isSaleModalOpen && (
+        <SaleProductModal
+          open={isSaleModalOpen}
+          productId={selectedProductId}
+          storeId={id}
+          onCancel={() => setIsSaleModalOpen(false)}
+          onSubmit={handleSaleProduct}
+        />
+      )}
+      {isModalOpen && (
+        <TransferShopProductModal
+          open={isModalOpen}
+          productId={selectedProductId}
+          onCancel={() => setIsModalOpen(false)}
+          onSubmit={handleTansferProduct}
+          shops={transferDestinations}
+          loading={shopsQuery.isLoading || warehousesQuery.isLoading}
+          onSearchProduct={(value) => setSearchProductValue(value)}
+          onClearProduct={() => clearFilter('name')}
+        />
+      )}
     </>
   );
 };

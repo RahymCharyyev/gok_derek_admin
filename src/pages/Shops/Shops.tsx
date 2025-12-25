@@ -1,7 +1,7 @@
 import { type UserSchema } from '@/api/schema/user';
 import ErrorComponent from '@/components/ErrorComponent';
-import { useShops } from '@/components/Shops/hooks/useShops';
-import { useShopTableColumn } from '@/components/Shops/hooks/useShopTableColumn';
+import { useShopList } from '@/components/Shops/hooks/useShopList';
+import { useShopTableColumn } from '@/components/Shops/hooks/TableColumns/useShopTableColumn';
 import ShopModal from '@/components/Shops/ShopModal';
 import Toolbar from '@/components/Toolbar';
 import { useUsers } from '@/components/Users/hooks/useUsers';
@@ -15,6 +15,10 @@ import { useDebounce } from 'use-debounce';
 
 const Shops = () => {
   const { t } = useTranslation();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingData, setEditingData] = useState<any | null>(null);
+
   const {
     query,
     page,
@@ -23,19 +27,17 @@ const Shops = () => {
     createShopMutation,
     updateShopMutation,
     deleteShopMutation,
-    addExpenseMutation,
-    addIncomeMutation,
     handleTableChange,
     setFilter,
     clearFilter,
     resetFilters,
     searchParams,
-  } = useShops();
+  } = useShopList();
 
-  const { usersQuery, setSearchParams: setUserSearchParams } = useUsers();
+  const { usersQuery, setSearchParams: setUserSearchParams } = useUsers({
+    enabled: isModalOpen,
+  });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingData, setEditingData] = useState<any | null>(null);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
     userId: '',

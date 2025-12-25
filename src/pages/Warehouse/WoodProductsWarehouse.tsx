@@ -1,21 +1,25 @@
 import ErrorComponent from '@/components/ErrorComponent';
-import { useProducts } from '@/components/Products/hooks/useProducts';
-import { useShops } from '@/components/Shops/hooks/useShops';
 import Toolbar from '@/components/Toolbar';
 import AddTransferProductModal from '@/components/Warehouse/AddTransferProductModal';
-import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
+import { tsr } from '@/api';
+import { useProductSearch } from '@/components/Products/hooks/useProductSearch';
+import { useShopList } from '@/components/Shops/hooks/useShopList';
+import { useWarehouseProducts } from '@/components/Warehouse/hooks/useWarehouseProducts';
 import { useWoodWarehouseTableColumn } from '@/components/Warehouse/hooks/useWoodWarehouseTableColumn';
 import TableLayout from '@/layout/TableLayout';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, message } from 'antd';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useDebounce } from 'use-debounce';
 
 const WoodProductsWarehouse = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingData, setEditingData] = useState<any | null>(null);
+
   const {
     query,
     page,
@@ -29,22 +33,19 @@ const WoodProductsWarehouse = () => {
     resetFilters,
     searchParams,
     setSearchParams,
-  } = useWarehouse(undefined, 'wood');
+  } = useWarehouseProducts('wood');
 
-  const { shopsQuery, setSearchParams: setShopsSearchParams } =
-    useShops('wood');
+  const { shopsQuery } = useShopList('wood', { enabled: isModalOpen });
+
+  const woodTypesQuery = tsr.woodType.getAll.useQuery({
+    queryKey: ['wood-types'],
+    queryData: {},
+  });
 
   const [selectedProductType, setSelectedProductType] = useState<
     'wood' | 'other' | undefined
   >(undefined);
-  const {
-    productsQuery,
-    woodTypesQuery,
-    setSearchParams: setProductsSearchParams,
-  } = useProducts('wood');
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingData, setEditingData] = useState<any | null>(null);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
     thickness: '',
@@ -54,17 +55,16 @@ const WoodProductsWarehouse = () => {
     woodTypeId: '',
   });
   const [isTransfer, setIsTransfer] = useState(false);
-  const [searchProductValue, setSearchProductValue] = useState('');
-  const [debouncedSearchProductValue] = useDebounce(searchProductValue, 500);
 
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-
-    if (debouncedSearchProductValue.trim()) {
-      params.set('name', debouncedSearchProductValue.trim());
-    }
-    setProductsSearchParams(params);
-  }, [debouncedSearchProductValue, setProductsSearchParams, searchParams]);
+  const {
+    productsQuery,
+    setSearchValue: setProductSearchValue,
+    clear: clearProductSearch,
+  } = useProductSearch({
+    productType: selectedProductType,
+    enabled: isModalOpen && !isTransfer,
+    perPage: 50,
+  });
 
   const handleSearch = useCallback(() => {
     const params = new URLSearchParams(searchParams);
@@ -225,8 +225,11 @@ const WoodProductsWarehouse = () => {
         products={productsQuery.data?.body.data || []}
         shops={shopsQuery.data?.body.data || []}
         loading={productsQuery.isLoading || shopsQuery.isLoading}
-        onSearchProduct={(value) => setSearchProductValue(value)}
-        onClearProduct={() => clearFilter('name')}
+        onSearchProduct={(value) => setProductSearchValue(value)}
+        onClearProduct={() => {
+          clearProductSearch();
+          clearFilter('name');
+        }}
         isTransfer={isTransfer}
         productType={selectedProductType}
         onChangeProductType={(val) => setSelectedProductType(val)}

@@ -2,7 +2,7 @@ import ErrorComponent from '@/components/ErrorComponent';
 import Toolbar from '@/components/Toolbar';
 import { useOrderedWoodTableColumn } from '@/components/Warehouse/hooks/useOrderedProducts/useOrderedWoodTableColumn';
 import { useOrders } from '@/components/Warehouse/hooks/useOrders';
-import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
+import { useWarehouseMutations } from '@/components/Warehouse/hooks/useWarehouseMutations';
 import TableLayout from '@/layout/TableLayout';
 import { DatePicker, Form, InputNumber, message, Modal } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
@@ -27,7 +27,7 @@ const OrderedWarehouseWoodProducts = () => {
   } = useOrders('wood');
 
   const { transferOrderedProductMutation, setOrderStatusMutation } =
-    useWarehouse();
+    useWarehouseMutations();
 
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     productName: '',

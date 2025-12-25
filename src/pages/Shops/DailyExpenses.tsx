@@ -1,8 +1,8 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
 import { useDailyExpenses } from '@/components/Shops/hooks/useDailyExpenses';
-import { useDailyExpensesTableColumn } from '@/components/Shops/hooks/useDailyExpensesTableColumn';
-import { useShops } from '@/components/Shops/hooks/useShops';
+import { useDailyExpensesTableColumn } from '@/components/Shops/hooks/TableColumns/useDailyExpensesTableColumn';
+import { useShopFinanceMutations } from '@/components/Shops/hooks/useShopFinanceMutations';
 import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
@@ -33,7 +33,7 @@ const DailyExpenses = () => {
     deleteMutation,
   } = useDailyExpenses(id);
 
-  const { addExpenseMutation } = useShops(undefined, undefined, id);
+  const { addExpenseMutation } = useShopFinanceMutations();
 
   // Fetch current shop data
   const currentShopQuery = tsr.shop.getOne.useQuery({

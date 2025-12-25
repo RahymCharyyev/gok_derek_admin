@@ -1,7 +1,7 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
-import { useCreditsTableColumn } from '@/components/Shops/hooks/useCreditsTableColumn';
-import { useShops } from '@/components/Shops/hooks/useShops';
+import { useCreditsTableColumn } from '@/components/Shops/hooks/TableColumns/useCreditsTableColumn';
+import { useShopCredits } from '@/components/Shops/hooks/useShopCredits';
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
 import TableLayout from '@/layout/TableLayout';
@@ -27,7 +27,7 @@ const ShopCredits = () => {
     resetFilters,
     searchParams,
     gotBackMoneyMutation,
-  } = useShops(undefined, undefined, id);
+  } = useShopCredits(id);
 
   const [isGotBackMoneyModalOpen, setIsGotBackMoneyModalOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<string>('');

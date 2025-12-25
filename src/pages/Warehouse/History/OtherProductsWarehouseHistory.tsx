@@ -1,16 +1,12 @@
 import ErrorComponent from '@/components/ErrorComponent';
-import { useProducts } from '@/components/Products/hooks/useProducts';
-import { useShops } from '@/components/Shops/hooks/useShops';
 import Toolbar from '@/components/Toolbar';
-import AddTransferProductModal from '@/components/Warehouse/AddTransferProductModal';
-import { useWarehouse } from '@/components/Warehouse/hooks/useWarehouse';
+import { useWarehouseProductHistory } from '@/components/Warehouse/hooks/useWarehouseProductHistory';
 import { useOtherWarehouseHistoryTableColumn } from '@/components/Warehouse/hooks/useWarehouseHistory/useOtherWarehouseHistoryTableColumn';
 import TableLayout from '@/layout/TableLayout';
 import { HistoryOutlined } from '@ant-design/icons';
 import { message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDebounce } from 'use-debounce';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 
 const OtherProductsWarehouseHistory = () => {
@@ -21,16 +17,13 @@ const OtherProductsWarehouseHistory = () => {
     page,
     perPage,
     warehouseHistoryQuery,
-    addProductMutation,
-    transferProductMutation,
     handleTableChange,
     setFilter,
     clearFilter,
     resetFilters,
     searchParams,
-    type,
     deleteProductHistoryMutation,
-  } = useWarehouse();
+  } = useWarehouseProductHistory('other');
 
   // Get productId from URL params and set it as a filter
   useEffect(() => {
@@ -41,43 +34,9 @@ const OtherProductsWarehouseHistory = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { shopsQuery, setSearchParams: setShopsSearchParams } = useShops();
-
-  const [selectedProductType, setSelectedProductType] = useState<
-    'wood' | 'other' | undefined
-  >(undefined);
-  const { productsQuery, setSearchParams: setProductsSearchParams } =
-    useProducts(
-      selectedProductType,
-      selectedProductType ? undefined : ['wood', 'other']
-    );
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingData, setEditingData] = useState<any | null>(null);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
     name: '',
   });
-  const [isTransfer, setIsTransfer] = useState(false);
-  const [searchProductValue, setSearchProductValue] = useState('');
-  const [debouncedSearchProductValue] = useDebounce(searchProductValue, 500);
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    if (selectedProductType) {
-      params.set('type', selectedProductType);
-    } else {
-      params.delete('type');
-    }
-    if (debouncedSearchProductValue.trim()) {
-      params.set('name', debouncedSearchProductValue.trim());
-    }
-    setProductsSearchParams(params);
-  }, [
-    debouncedSearchProductValue,
-    setProductsSearchParams,
-    searchParams,
-    selectedProductType,
-  ]);
 
   const handleSearch = useCallback(() => {
     Object.entries(searchValues).forEach(([key, value]) => {
@@ -167,42 +126,6 @@ const OtherProductsWarehouseHistory = () => {
       type: t(item.type) || '',
     })) || [];
 
-  const handleAddProduct = async (values: any) => {
-    try {
-      const response = await addProductMutation.mutateAsync(values);
-      if (response.status == 200 || response.status == 201) {
-        message.success(t('productAdded'));
-      } else if (response.status == 404) {
-        const errorBody = response.body as { message: string };
-        message.error(errorBody.message);
-      } else {
-        message.error(t('addProductError'));
-      }
-      setIsModalOpen(false);
-      setEditingData(null);
-    } catch {
-      message.error(t('addProductError'));
-    }
-  };
-
-  const handleTansferProduct = async (values: any) => {
-    try {
-      const response = await transferProductMutation.mutateAsync(values);
-      if (response.status == 200 || response.status == 201) {
-        message.success(t('productTransfered'));
-      } else if (response.status == 404) {
-        const errorBody = response.body as { message: string };
-        message.error(errorBody.message);
-      } else {
-        message.error(t('transferProductError'));
-      }
-      setIsModalOpen(false);
-      setEditingData(null);
-    } catch {
-      message.error(t('transferProductError'));
-    }
-  };
-
   return (
     <>
       <TableLayout
@@ -224,20 +147,6 @@ const OtherProductsWarehouseHistory = () => {
           total: warehouseHistoryQuery.data?.body?.count,
           onChange: handleTableChange,
         }}
-      />
-      <AddTransferProductModal
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        onSubmit={isTransfer ? handleTansferProduct : handleAddProduct}
-        initialValues={editingData}
-        products={productsQuery.data?.body.data || []}
-        shops={shopsQuery.data?.body.data || []}
-        loading={productsQuery.isLoading || shopsQuery.isLoading}
-        onSearchProduct={(value) => setSearchProductValue(value)}
-        onClearProduct={() => clearFilter('name')}
-        isTransfer={isTransfer}
-        productType={selectedProductType}
-        onChangeProductType={(val) => setSelectedProductType(val)}
       />
     </>
   );

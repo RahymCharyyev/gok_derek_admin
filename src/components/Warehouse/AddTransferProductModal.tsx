@@ -98,11 +98,9 @@ const AddTransferProductModal: FC<
             rules={[{ required: !initialValues, message: t('notEmptyField') }]}
           >
             <Select
-              showSearch
+              showSearch={{ filterOption: false, onSearch: onSearchProduct }}
               allowClear
               placeholder={t('selectProduct')}
-              filterOption={false}
-              onSearch={onSearchProduct}
               loading={loading}
               notFoundContent={loading ? t('loading') : t('noResults')}
               optionLabelProp='label'
@@ -145,11 +143,9 @@ const AddTransferProductModal: FC<
             rules={[{ required: true, message: t('notEmptyField') }]}
           >
             <Select
-              showSearch
+              showSearch={{ filterOption: false, onSearch: onSearchProduct }}
               allowClear
               placeholder={t('selectShop')}
-              filterOption={false}
-              onSearch={onSearchProduct}
               loading={loading}
               notFoundContent={loading ? t('loading') : t('noResults')}
               options={shops.map((e) => ({

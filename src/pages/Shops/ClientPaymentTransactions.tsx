@@ -1,7 +1,7 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
 import { useClientPaymentTransactions } from '@/components/Shops/hooks/useClientPaymentTransactions';
-import { useClientPaymentTransactionsTableColumn } from '@/components/Shops/hooks/useClientPaymentTransactionsTableColumn';
+import { useClientPaymentTransactionsTableColumn } from '@/components/Shops/hooks/TableColumns/useClientPaymentTransactionsTableColumn';
 import Toolbar from '@/components/Toolbar';
 import TableLayout from '@/layout/TableLayout';
 import { TransactionOutlined } from '@ant-design/icons';

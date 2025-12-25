@@ -1,8 +1,8 @@
 import { tsr } from '@/api';
 import ErrorComponent from '@/components/ErrorComponent';
 import { useDailyIncomes } from '@/components/Shops/hooks/useDailyIncomes';
-import { useDailyIncomesTableColumn } from '@/components/Shops/hooks/useDailyIncomesTableColumn';
-import { useShops } from '@/components/Shops/hooks/useShops';
+import { useDailyIncomesTableColumn } from '@/components/Shops/hooks/TableColumns/useDailyIncomesTableColumn';
+import { useShopFinanceMutations } from '@/components/Shops/hooks/useShopFinanceMutations';
 import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
@@ -29,7 +29,7 @@ const DailyIncomes = () => {
     searchParams,
   } = useDailyIncomes(id);
 
-  const { addIncomeMutation } = useShops(undefined, undefined, id);
+  const { addIncomeMutation } = useShopFinanceMutations();
 
   // Fetch current shop data
   const currentShopQuery = tsr.shop.getOne.useQuery({
