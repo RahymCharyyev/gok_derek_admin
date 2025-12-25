@@ -1,10 +1,11 @@
 import { tsr } from '@/api';
 import { role, type Role } from '@/api/schema/user-role';
 import { queryClient } from '@/Providers';
-import { Divider, Modal, Select, Tag, message } from 'antd';
+import { Divider, Select, Tag, message } from 'antd';
 import { useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import ErrorComponent from '../ErrorComponent';
+import { BaseModal } from '@/components/ui/BaseModal';
 
 interface UserRoleModalProps {
   open: boolean;
@@ -81,15 +82,11 @@ const UserRoleModal: FC<UserRoleModalProps> = ({
   };
 
   return (
-    <Modal
+    <BaseModal
       open={open}
       onCancel={onCancel}
       footer={null}
       title={t('editRoles')}
-      width='100%'
-      style={{ maxWidth: 500 }}
-      styles={{ body: { padding: 16 } }}
-      centered
     >
       <div className='space-y-6'>
         <div>
@@ -126,7 +123,7 @@ const UserRoleModal: FC<UserRoleModalProps> = ({
           />
         </div>
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 

@@ -9,17 +9,15 @@ import {
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
 
 interface UseWoodWarehouseTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
   isShopProducts?: boolean;
   handleOpenTransferModal?: (record: any) => void;
@@ -30,13 +28,10 @@ interface UseWoodWarehouseTableColumnProps {
 
 export const useWoodWarehouseTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
   isShopProducts,
   handleOpenTransferModal,
@@ -45,6 +40,10 @@ export const useWoodWarehouseTableColumn = ({
   onSort,
 }: UseWoodWarehouseTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
+  const resolvedSearchValues = synced.searchValues;
+  const resolvedSetSearchValues = synced.setSearchValues;
+  const resolvedHandleSearch = synced.apply;
+  const resolvedClearFilter = synced.clear;
   return [
     {
       title: '№',
@@ -60,14 +59,14 @@ export const useWoodWarehouseTableColumn = ({
         renderFilterDropdown(
           'name',
           t('productName'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'name',
           true,
@@ -85,14 +84,14 @@ export const useWoodWarehouseTableColumn = ({
         renderFilterDropdown(
           'thickness',
           t('woodThickness'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'thickness',
           true,
@@ -110,14 +109,14 @@ export const useWoodWarehouseTableColumn = ({
         renderFilterDropdown(
           'width',
           t('woodWidth'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'width',
           true,
@@ -134,14 +133,14 @@ export const useWoodWarehouseTableColumn = ({
         renderFilterDropdown(
           'length',
           t('woodLength'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'length',
           true,
@@ -158,14 +157,14 @@ export const useWoodWarehouseTableColumn = ({
         renderFilterDropdown(
           'woodTypeId',
           t('woodType'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'woodTypeId',
           false,
@@ -184,14 +183,14 @@ export const useWoodWarehouseTableColumn = ({
         renderFilterDropdown(
           'quality',
           t('woodQuality'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'quality',
           true,

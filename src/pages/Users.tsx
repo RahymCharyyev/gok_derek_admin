@@ -5,10 +5,11 @@ import { useUsersTableColumn } from '@/components/Users/hooks/useUsersTableColum
 import UserModal from '@/components/Users/UserModal';
 import UserRoleModal from '@/components/Users/UserRoleModal';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { UserAddOutlined } from '@ant-design/icons';
 import { message } from 'antd';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const Users = () => {
@@ -23,50 +24,35 @@ const Users = () => {
     deleteUserMutation,
     handleTableChange,
     setFilter,
-    clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
   } = useUsers();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: '',
-  });
 
   const confirmDelete = useDeleteConfirm();
 
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['firstName', 'lastName', 'phone', 'email'],
+    initialValues: { firstName: '', lastName: '', phone: '', email: '' },
+  });
 
   const resetDisabled = useMemo(() => {
-    return (
-      Object.values(searchValues).every((v) => !v) &&
-      !query.sortBy &&
-      !query.sortDirection
-    );
-  }, [searchValues, query]);
+    return synced.isEmpty && !query.sortBy && !query.sortDirection;
+  }, [synced.isEmpty, query]);
 
   const columns = useUsersTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy: query.sortBy || '',
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     handleOpenEditModal: (record) => {
       setEditingData(record);

@@ -12,17 +12,15 @@ import {
 import { Button, Select, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
 
 interface UseOrderedWoodTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
   handleOpenEditModal?: (record: any) => void;
   confirmDelete?: (record: any) => void;
@@ -32,19 +30,18 @@ interface UseOrderedWoodTableColumnProps {
 
 export const useOrderedWoodTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
   handleOpenEditModal,
   confirmDelete,
   handleCreateOrder,
   handleStatusChange,
 }: UseOrderedWoodTableColumnProps): ColumnsType<any> => {
+  const { searchValues, setSearchValues, apply: handleSearch, clear: clearFilter } =
+    synced;
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':

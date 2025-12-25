@@ -1,6 +1,7 @@
-import { Form, InputNumber, Modal } from 'antd';
+import { Form, InputNumber } from 'antd';
 import { useEffect, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BaseModal } from '@/components/ui/BaseModal';
 
 const { useForm } = Form;
 
@@ -27,18 +28,12 @@ const GotBackMoneyModal: FC<GotBackMoneyModalProps> = ({
   }, [open, form]);
 
   return (
-    <Modal
+    <BaseModal
       open={open}
       onCancel={onCancel}
-      onOk={() => form.submit()}
-      okText={t('okText')}
-      cancelText={t('cancelText')}
       title={t('gotBackMoney')}
-      confirmLoading={loading}
-      width='100%'
-      style={{ maxWidth: 500 }}
-      styles={{ body: { padding: 16 } }}
-      centered
+      form={form}
+      loading={loading}
     >
       <Form
         form={form}
@@ -54,7 +49,7 @@ const GotBackMoneyModal: FC<GotBackMoneyModalProps> = ({
           <InputNumber className='w-full' />
         </Form.Item>
       </Form>
-    </Modal>
+    </BaseModal>
   );
 };
 

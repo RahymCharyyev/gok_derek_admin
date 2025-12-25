@@ -3,9 +3,10 @@ import ErrorComponent from '@/components/ErrorComponent';
 import { useClientPaymentTransactions } from '@/components/Shops/hooks/useClientPaymentTransactions';
 import { useClientPaymentTransactionsTableColumn } from '@/components/Shops/hooks/TableColumns/useClientPaymentTransactionsTableColumn';
 import Toolbar from '@/components/Toolbar';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { TransactionOutlined } from '@ant-design/icons';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -30,22 +31,29 @@ const ClientPaymentTransactions = () => {
     clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
   } = useClientPaymentTransactions(id);
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    amount: '',
-    productTransactionId: '',
-    createdById: '',
-    type: '',
-    createdAt: '',
-    productName: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: [
+      'amount',
+      'productTransactionId',
+      'createdById',
+      'type',
+      'createdAt',
+      'productName',
+    ],
+    initialValues: {
+      amount: '',
+      productTransactionId: '',
+      createdById: '',
+      type: '',
+      createdAt: '',
+      productName: '',
+    },
   });
-
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
 
   const sortBy = searchParams.get('sortBy') || 'createdAt';
   const sortDirectionParam =
@@ -53,25 +61,19 @@ const ClientPaymentTransactions = () => {
 
   const resetDisabled = useMemo(() => {
     return (
-      Object.values(searchValues).every((v) => !v) &&
+      synced.isEmpty &&
       !searchParams.get('sortBy') &&
       !searchParams.get('sortDirection')
     );
-  }, [searchValues, searchParams]);
+  }, [synced.isEmpty, searchParams]);
 
   const columns = useClientPaymentTransactionsTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy,
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     dateFormat: 'DD.MM.YYYY HH:mm',
   });
@@ -149,17 +151,7 @@ const ClientPaymentTransactions = () => {
           <Toolbar
             title={t('history')}
             icon={<TransactionOutlined />}
-            onReset={() => {
-              setSearchValues({
-                amount: '',
-                productTransactionId: '',
-                createdById: '',
-                type: '',
-                createdAt: '',
-                productName: '',
-              });
-              resetFilters();
-            }}
+            onReset={resetFilters}
             resetDisabled={resetDisabled}
             count={clientPaymentTransactionsQuery.data?.body.count || 0}
             customButton={

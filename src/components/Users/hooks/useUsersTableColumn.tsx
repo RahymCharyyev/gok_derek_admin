@@ -10,17 +10,15 @@ import type { ColumnsType } from 'antd/es/table';
 import { renderFilterDropdown } from '../../renderFilterDropdown';
 import type { Role } from '@/api/schema/user-role';
 import dayjs from 'dayjs';
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
 
 interface UseUsersTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
   handleOpenEditModal: (record: any) => void;
   handleChangeRoleModal: (record: any) => void;
@@ -29,18 +27,20 @@ interface UseUsersTableColumnProps {
 
 export const useUsersTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
   handleOpenEditModal,
   handleChangeRoleModal,
   confirmDelete,
 }: UseUsersTableColumnProps): ColumnsType<any> => {
+  const resolvedSearchValues = synced.searchValues;
+  const resolvedSetSearchValues = synced.setSearchValues;
+  const resolvedHandleSearch = synced.apply;
+  const resolvedClearFilter = synced.clear;
+
   return [
     {
       title: '№',
@@ -56,14 +56,14 @@ export const useUsersTableColumn = ({
         renderFilterDropdown(
           'username',
           t('loginOfUser'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'username',
           false
@@ -78,14 +78,14 @@ export const useUsersTableColumn = ({
         renderFilterDropdown(
           'firstName',
           t('firstName'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'firstName'
         ),
@@ -99,14 +99,14 @@ export const useUsersTableColumn = ({
         renderFilterDropdown(
           'lastName',
           t('lastName'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'lastName'
         ),
@@ -120,14 +120,14 @@ export const useUsersTableColumn = ({
         renderFilterDropdown(
           'email',
           t('email'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'email'
         ),
@@ -141,14 +141,14 @@ export const useUsersTableColumn = ({
         renderFilterDropdown(
           'phone',
           t('phone'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'phone'
         ),
@@ -179,14 +179,14 @@ export const useUsersTableColumn = ({
         renderFilterDropdown(
           'createdAt',
           t('createdAt'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'createdAt',
           false

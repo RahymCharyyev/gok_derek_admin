@@ -4,10 +4,11 @@ import { useWoodTableColumn } from '@/components/Products/hooks/useWoodTableColu
 import Toolbar from '@/components/Toolbar';
 import WoodModal from '@/components/Products/WoodModal';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { ProductFilled } from '@ant-design/icons';
 import { message } from 'antd';
-import { useCallback, useMemo, useState, type FC } from 'react';
+import { useMemo, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const WoodProducts: FC = () => {
@@ -24,52 +25,49 @@ const WoodProducts: FC = () => {
     deleteProductMutation,
     handleTableChange,
     setFilter,
-    clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
   } = useProducts('wood');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    name: '',
-    woodType: '',
-    woodThickness: '',
-    woodWidth: '',
-    woodLength: '',
-    woodQuality: '',
-    woodUnits: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: [
+      'name',
+      'woodType',
+      'woodThickness',
+      'woodWidth',
+      'woodLength',
+      'woodQuality',
+      'woodUnits',
+    ],
+    initialValues: {
+      name: '',
+      woodType: '',
+      woodThickness: '',
+      woodWidth: '',
+      woodLength: '',
+      woodQuality: '',
+      woodUnits: '',
+    },
   });
 
   const confirmDelete = useDeleteConfirm();
 
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
-
   const resetDisabled = useMemo(() => {
-    return (
-      Object.values(searchValues).every((v) => !v) &&
-      !query.sortBy &&
-      !query.sortDirection
-    );
-  }, [searchValues, query]);
+    return synced.isEmpty && !query.sortBy && !query.sortDirection;
+  }, [synced.isEmpty, query]);
 
   const columns = useWoodTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy: query.sortBy || '',
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     handleOpenEditModal: (record) => {
       setEditingData(record);

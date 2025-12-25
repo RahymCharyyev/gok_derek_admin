@@ -4,31 +4,35 @@ import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
 
 interface UseShopOtherOrdersTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
 }
 
 export const useShopOtherOrdersTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
 }: UseShopOtherOrdersTableColumnProps): ColumnsType<any> => {
+  const resolvedSearchValues = synced.searchValues;
+  const resolvedSetSearchValues = synced.setSearchValues;
+  const resolvedHandleSearch = synced.apply;
+  const resolvedClearFilter = synced.clear;
+  const searchValues = resolvedSearchValues;
+  const setSearchValues = resolvedSetSearchValues;
+  const handleSearch = resolvedHandleSearch;
+  const clearFilter = resolvedClearFilter;
+
   return [
     {
       title: '№',
@@ -45,14 +49,14 @@ export const useShopOtherOrdersTableColumn = ({
         renderFilterDropdown(
           'createdAt',
           t('orderDate'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'createdAt'
         ),
@@ -67,14 +71,14 @@ export const useShopOtherOrdersTableColumn = ({
         renderFilterDropdown(
           'productName',
           t('productName'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'productName'
         ),

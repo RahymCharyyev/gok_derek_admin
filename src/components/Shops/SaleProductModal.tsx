@@ -1,7 +1,8 @@
 import { tsr } from '@/api';
-import { Form, Input, InputNumber, Modal, Radio, Select } from 'antd';
+import { Form, Input, InputNumber, Radio, Select } from 'antd';
 import { type FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BaseModal } from '@/components/ui/BaseModal';
 
 const { useForm } = Form;
 
@@ -97,17 +98,11 @@ const SaleProductModal: FC<SaleProductModalProps> = ({
   };
 
   return (
-    <Modal
+    <BaseModal
       open={open}
       onCancel={handleCancel}
-      onOk={() => form.submit()}
-      okText={t('okText')}
-      cancelText={t('cancelText')}
       title={t('saleProduct')}
-      width='100%'
-      style={{ maxWidth: 500 }}
-      styles={{ body: { padding: 16 } }}
-      centered
+      form={form}
     >
       <Form
         form={form}
@@ -179,7 +174,7 @@ const SaleProductModal: FC<SaleProductModalProps> = ({
           </>
         )}
       </Form>
-    </Modal>
+    </BaseModal>
   );
 };
 

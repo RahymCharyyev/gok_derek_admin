@@ -9,17 +9,15 @@ import {
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
 
 interface UseOtherShopProductsTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
   isShopProducts?: boolean;
   handleOpenTransferModal?: (record: any) => void;
@@ -29,13 +27,10 @@ interface UseOtherShopProductsTableColumnProps {
 
 export const useOtherShopProductsTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
   isShopProducts,
   handleOpenTransferModal,
@@ -43,6 +38,14 @@ export const useOtherShopProductsTableColumn = ({
   shopId,
 }: UseOtherShopProductsTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
+  const resolvedSearchValues = synced.searchValues;
+  const resolvedSetSearchValues = synced.setSearchValues;
+  const resolvedHandleSearch = synced.apply;
+  const resolvedClearFilter = synced.clear;
+  const searchValues = resolvedSearchValues;
+  const setSearchValues = resolvedSetSearchValues;
+  const handleSearch = resolvedHandleSearch;
+  const clearFilter = resolvedClearFilter;
   return [
     {
       title: '№',
@@ -58,14 +61,14 @@ export const useOtherShopProductsTableColumn = ({
         renderFilterDropdown(
           'name',
           t('name'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'name'
         ),
@@ -80,14 +83,14 @@ export const useOtherShopProductsTableColumn = ({
         renderFilterDropdown(
           'quantity',
           t('productQuantity'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'quantity',
           false

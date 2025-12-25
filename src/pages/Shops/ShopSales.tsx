@@ -4,6 +4,7 @@ import { usePaymentTransactionTableColumn } from '@/components/Shops/hooks/Table
 import { useShopSales } from '@/components/Shops/hooks/useShopSales';
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { DatePicker, message } from 'antd';
@@ -30,6 +31,7 @@ const ShopSales = () => {
     clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
   } = useShopSales(id);
 
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
@@ -49,20 +51,26 @@ const ShopSales = () => {
     setSelectedDate(dateParam ? dayjs(dateParam) : null);
   }, [searchParams]);
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    amount: '',
-    productTransactionId: '',
-    createdById: '',
-    type: '',
-    createdAt: '',
-    productName: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: [
+      'amount',
+      'productTransactionId',
+      'createdById',
+      'type',
+      'createdAt',
+      'productName',
+    ],
+    initialValues: {
+      amount: '',
+      productTransactionId: '',
+      createdById: '',
+      type: '',
+      createdAt: '',
+      productName: '',
+    },
   });
-
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
 
   const handleDateChange = useCallback(
     (date: Dayjs | null) => {
@@ -90,26 +98,20 @@ const ShopSales = () => {
 
   const resetDisabled = useMemo(() => {
     return (
-      Object.values(searchValues).every((v) => !v) &&
+      synced.isEmpty &&
       !searchParams.get('sortBy') &&
       !searchParams.get('sortDirection') &&
       !selectedDate
     );
-  }, [searchValues, searchParams, selectedDate]);
+  }, [synced.isEmpty, searchParams, selectedDate]);
 
   const columns = usePaymentTransactionTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy,
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     onCancelSale: handleCancelSale,
   });
@@ -183,14 +185,6 @@ const ShopSales = () => {
             icon={<ShoppingCartOutlined />}
             onReset={() => {
               setSelectedDate(null);
-              setSearchValues({
-                amount: '',
-                productTransactionId: '',
-                createdById: '',
-                type: '',
-                createdAt: '',
-                productName: '',
-              });
               resetFilters();
             }}
             resetDisabled={resetDisabled}

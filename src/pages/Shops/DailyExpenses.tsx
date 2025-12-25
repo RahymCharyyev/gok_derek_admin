@@ -7,6 +7,7 @@ import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Button, DatePicker, message } from 'antd';
@@ -29,6 +30,7 @@ const DailyExpenses = () => {
     clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
     editMutation,
     deleteMutation,
   } = useDailyExpenses(id);
@@ -49,10 +51,11 @@ const DailyExpenses = () => {
   const [editingData, setEditingData] = useState<any | null>(null);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    note: '',
-    amount: '',
-    createdAt: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['note', 'amount', 'createdAt'],
+    initialValues: { note: '', amount: '', createdAt: '' },
   });
 
   // Sync selectedDate from URL params
@@ -60,12 +63,6 @@ const DailyExpenses = () => {
     const dateParam = searchParams.get('createdAt');
     setSelectedDate(dateParam ? dayjs(dateParam) : null);
   }, [searchParams]);
-
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
 
   const handleDateChange = useCallback(
     (date: Dayjs | null) => {
@@ -81,12 +78,12 @@ const DailyExpenses = () => {
 
   const resetDisabled = useMemo(() => {
     return (
-      Object.values(searchValues).every((v) => !v) &&
+      synced.isEmpty &&
       !searchParams.get('sortBy') &&
       !searchParams.get('sortDirection') &&
       !selectedDate
     );
-  }, [searchValues, searchParams, selectedDate]);
+  }, [synced.isEmpty, searchParams, selectedDate]);
 
   const sortBy = searchParams.get('sortBy') || 'createdAt';
   const sortDirectionParam =
@@ -94,17 +91,11 @@ const DailyExpenses = () => {
 
   const columns = useDailyExpensesTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy,
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     handleOpenEditModal: (record) => {
       setEditingData(record);
@@ -191,11 +182,6 @@ const DailyExpenses = () => {
   };
 
   const handleReset = useCallback(() => {
-    setSearchValues({
-      note: '',
-      amount: '',
-      createdAt: '',
-    });
     setSelectedDate(null);
     resetFilters();
   }, [resetFilters]);

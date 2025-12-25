@@ -34,6 +34,7 @@ export const useShopClients = (storeId?: string) => {
     page,
     perPage,
     storeId: storeId || undefined,
+    fullName: searchParams.get('fullName') || undefined,
     phone: searchParams.get('phone') || undefined,
     paymentMethod: searchParams.get('paymentMethod') || undefined,
     createdAt: searchParams.get('createdAt')

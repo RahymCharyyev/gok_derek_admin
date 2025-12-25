@@ -3,31 +3,35 @@ import { formatQuantityOrPrice } from '@/utils/formatters';
 import { SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
 
 interface UseDailyIncomesTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
 }
 
 export const useDailyIncomesTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
 }: UseDailyIncomesTableColumnProps): ColumnsType<any> => {
+  const resolvedSearchValues = synced.searchValues;
+  const resolvedSetSearchValues = synced.setSearchValues;
+  const resolvedHandleSearch = synced.apply;
+  const resolvedClearFilter = synced.clear;
+  const searchValues = resolvedSearchValues;
+  const setSearchValues = resolvedSetSearchValues;
+  const handleSearch = resolvedHandleSearch;
+  const clearFilter = resolvedClearFilter;
+
   return [
     {
       title: '№',
@@ -44,14 +48,14 @@ export const useDailyIncomesTableColumn = ({
         renderFilterDropdown(
           'createdAt',
           t('dateTime'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'createdAt'
         ),
@@ -66,14 +70,14 @@ export const useDailyIncomesTableColumn = ({
         renderFilterDropdown(
           t('productName'),
           'Harydyň ady',
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'productName'
         ),
@@ -88,14 +92,14 @@ export const useDailyIncomesTableColumn = ({
         renderFilterDropdown(
           t('productQuantity'),
           'Mukdary',
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'quantity'
         ),

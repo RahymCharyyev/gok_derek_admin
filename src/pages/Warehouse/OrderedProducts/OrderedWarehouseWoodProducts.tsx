@@ -3,6 +3,7 @@ import Toolbar from '@/components/Toolbar';
 import { useOrderedWoodTableColumn } from '@/components/Warehouse/hooks/useOrderedProducts/useOrderedWoodTableColumn';
 import { useOrders } from '@/components/Warehouse/hooks/useOrders';
 import { useWarehouseMutations } from '@/components/Warehouse/hooks/useWarehouseMutations';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { DatePicker, Form, InputNumber, message, Modal } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
@@ -24,13 +25,17 @@ const OrderedWarehouseWoodProducts = () => {
     clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
   } = useOrders('wood');
 
   const { transferOrderedProductMutation, setOrderStatusMutation } =
     useWarehouseMutations();
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    productName: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['productName'],
+    initialValues: { productName: '' },
   });
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(() => {
     const dateParam = searchParams.get('createdAt');
@@ -41,11 +46,7 @@ const OrderedWarehouseWoodProducts = () => {
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const [form] = useForm();
 
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
+  const handleSearch = useCallback(() => synced.apply(), [synced]);
 
   const handleDateChange = useCallback(
     (date: Dayjs | null) => {
@@ -60,12 +61,8 @@ const OrderedWarehouseWoodProducts = () => {
   );
 
   const resetDisabled = useMemo(() => {
-    return (
-      Object.values(searchValues).every((v) => !v) &&
-      !query.sortBy &&
-      !query.sortDirection
-    );
-  }, [searchValues, query]);
+    return synced.isEmpty && !query.sortBy && !query.sortDirection;
+  }, [synced.isEmpty, query]);
 
   const handleCreateOrder = (record: any) => {
     setSelectedOrder(record);
@@ -112,17 +109,11 @@ const OrderedWarehouseWoodProducts = () => {
 
   const columns = useOrderedWoodTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy: query.sortBy || '',
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     handleCreateOrder,
     handleStatusChange,

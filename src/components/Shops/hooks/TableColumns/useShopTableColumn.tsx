@@ -9,17 +9,15 @@ import {
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
 
 interface UseShopTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
   handleOpenEditModal: (record: any) => void;
   confirmDelete: (options: { id: string }) => void;
@@ -27,18 +25,23 @@ interface UseShopTableColumnProps {
 
 export const useShopTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
   handleOpenEditModal,
   confirmDelete,
 }: UseShopTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
+  const resolvedSearchValues = synced.searchValues;
+  const resolvedSetSearchValues = synced.setSearchValues;
+  const resolvedHandleSearch = synced.apply;
+  const resolvedClearFilter = synced.clear;
+  const searchValues = resolvedSearchValues;
+  const setSearchValues = resolvedSetSearchValues;
+  const handleSearch = resolvedHandleSearch;
+  const clearFilter = resolvedClearFilter;
 
   return [
     {
@@ -55,14 +58,14 @@ export const useShopTableColumn = ({
         renderFilterDropdown(
           'user',
           t('shopSeller'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'user'
         ),
@@ -81,14 +84,14 @@ export const useShopTableColumn = ({
         renderFilterDropdown(
           'type',
           t('type'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'type'
         ),
@@ -103,14 +106,14 @@ export const useShopTableColumn = ({
         renderFilterDropdown(
           'geoLocation',
           t('shopLocation'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'geoLocation'
         ),
@@ -124,14 +127,14 @@ export const useShopTableColumn = ({
         renderFilterDropdown(
           'address',
           t('shopAddress'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'address',
           false

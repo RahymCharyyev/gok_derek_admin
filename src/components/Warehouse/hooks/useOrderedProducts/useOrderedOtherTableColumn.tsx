@@ -4,17 +4,15 @@ import { DownOutlined, PlusCircleFilled } from '@ant-design/icons';
 import { Button, Select, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
 
 interface UseOrderedOtherTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
   handleCreateOrder?: (record: any) => void;
   handleStatusChange?: (record: any) => void;
@@ -22,17 +20,20 @@ interface UseOrderedOtherTableColumnProps {
 
 export const useOrderedOtherTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
   handleCreateOrder,
   handleStatusChange,
 }: UseOrderedOtherTableColumnProps): ColumnsType<any> => {
+  const {
+    searchValues,
+    setSearchValues,
+    apply: handleSearch,
+    clear: clearFilter,
+  } = synced;
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':

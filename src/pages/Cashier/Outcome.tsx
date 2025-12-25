@@ -3,15 +3,11 @@ import { useCashier } from '@/components/Cashier/hooks/useCashier';
 import { useInOutTableColumn } from '@/components/Cashier/hooks/useInOutTableColumn';
 import ErrorComponent from '@/components/ErrorComponent';
 import Toolbar from '@/components/Toolbar';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
-import {
-  BankOutlined,
-  MinusCircleOutlined,
-  MinusOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
+import { MinusCircleOutlined } from '@ant-design/icons';
 import { message } from 'antd';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const Outcome = () => {
@@ -24,48 +20,37 @@ const Outcome = () => {
     createMutation,
     handleTableChange,
     setFilter,
-    clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
   } = useCashier({ type: 'out' });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    amount: '',
-    storeId: '',
-    productTransactionId: '',
-    createdById: '',
-    type: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['amount', 'storeId', 'productTransactionId', 'createdById', 'type'],
+    initialValues: {
+      amount: '',
+      storeId: '',
+      productTransactionId: '',
+      createdById: '',
+      type: '',
+    },
   });
 
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
-
   const resetDisabled = useMemo(() => {
-    return (
-      Object.values(searchValues).every((v) => !v) &&
-      !query.sortBy &&
-      !query.sortDirection
-    );
-  }, [searchValues, query]);
+    return synced.isEmpty && !query.sortBy && !query.sortDirection;
+  }, [synced.isEmpty, query]);
 
   const columns = useInOutTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy: query.sortBy || '',
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     handleOpenEditModal: (record) => {
       setEditingData(record);

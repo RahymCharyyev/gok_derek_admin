@@ -309,8 +309,8 @@ const LayoutComponent: FC<LayoutComponentProps> = ({ children }) => {
             <Switch
               checked={darkMode}
               onChange={toggleDarkMode}
-              checkedChildren='Gara'
-              unCheckedChildren='Ak'
+              checkedChildren={t('themeDark')}
+              unCheckedChildren={t('themeLight')}
             />
             <Button
               icon={<LogoutOutlined />}

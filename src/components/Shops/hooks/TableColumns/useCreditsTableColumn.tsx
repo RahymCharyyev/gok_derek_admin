@@ -8,34 +8,37 @@ import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
 
 interface UseCreditsTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
   onGotBackMoney: (record: any) => void;
 }
 
 export const useCreditsTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
   onGotBackMoney,
 }: UseCreditsTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
+  const resolvedSearchValues = synced.searchValues;
+  const resolvedSetSearchValues = synced.setSearchValues;
+  const resolvedHandleSearch = synced.apply;
+  const resolvedClearFilter = synced.clear;
+  const searchValues = resolvedSearchValues;
+  const setSearchValues = resolvedSetSearchValues;
+  const handleSearch = resolvedHandleSearch;
+  const clearFilter = resolvedClearFilter;
   return [
     {
       title: '№',
@@ -52,14 +55,14 @@ export const useCreditsTableColumn = ({
         renderFilterDropdown(
           'createdAt',
           t('dateTime'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'createdAt'
         ),
@@ -74,14 +77,14 @@ export const useCreditsTableColumn = ({
         renderFilterDropdown(
           'buyer',
           t('buyer'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'buyer'
         ),
@@ -121,7 +124,7 @@ export const useCreditsTableColumn = ({
             type='primary'
             onClick={() => onGotBackMoney(record)}
           >
-       {t('gotBackMoney')}
+            {t('gotBackMoney')}
           </Button>
           <Button
             size='small'

@@ -1,40 +1,35 @@
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
 import { formatQuantityOrPrice } from '@/utils/formatters';
-import {
-  DeleteOutlined,
-  EditOutlined,
-  SearchOutlined,
-  TransactionOutlined,
-} from '@ant-design/icons';
+import { SearchOutlined, TransactionOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { renderFilterDropdown } from '../../renderFilterDropdown';
 
 interface UseFurnitureOtherTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
   handleOpenAddModal?: (record: any) => void;
 }
 
 export const useFurnitureOtherTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
   handleOpenAddModal,
 }: UseFurnitureOtherTableColumnProps): ColumnsType<any> => {
+  const resolvedSearchValues = synced.searchValues;
+  const resolvedSetSearchValues = synced.setSearchValues;
+  const resolvedHandleSearch = synced.apply;
+  const resolvedClearFilter = synced.clear;
+
   return [
     {
       title: '№',
@@ -50,14 +45,14 @@ export const useFurnitureOtherTableColumn = ({
         renderFilterDropdown(
           'furniture',
           t('productCode'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'code'
         ),
@@ -74,14 +69,14 @@ export const useFurnitureOtherTableColumn = ({
         renderFilterDropdown(
           'name',
           t('name'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'name'
         ),

@@ -8,17 +8,15 @@ import {
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
 
 interface UseFurnitureShopProductsTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
   isShopProducts?: boolean;
   handleOpenTransferModal?: (record: any) => void;
@@ -29,13 +27,10 @@ interface UseFurnitureShopProductsTableColumnProps {
 
 export const useFurnitureShopProductsTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
   isShopProducts,
   handleOpenTransferModal,
@@ -44,6 +39,10 @@ export const useFurnitureShopProductsTableColumn = ({
   shopId,
 }: UseFurnitureShopProductsTableColumnProps): ColumnsType<any> => {
   const navigate = useNavigate();
+  const resolvedSearchValues = synced.searchValues;
+  const resolvedSetSearchValues = synced.setSearchValues;
+  const resolvedHandleSearch = synced.apply;
+  const resolvedClearFilter = synced.clear;
   return [
     {
       title: '№',
@@ -59,14 +58,14 @@ export const useFurnitureShopProductsTableColumn = ({
         renderFilterDropdown(
           'code',
           t('productCode'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'code',
           true,
@@ -84,14 +83,14 @@ export const useFurnitureShopProductsTableColumn = ({
         renderFilterDropdown(
           'name',
           t('name'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'name',
           true,

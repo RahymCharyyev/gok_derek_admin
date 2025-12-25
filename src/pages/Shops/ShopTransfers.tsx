@@ -4,6 +4,7 @@ import { renderFilterDropdown } from '@/components/renderFilterDropdown';
 import Toolbar from '@/components/Toolbar';
 import { useShopTransfersHistory } from '@/components/Shops/hooks/useShopTransfersHistory';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { formatQuantityOrPrice } from '@/utils/formatters';
 import {
@@ -50,18 +51,41 @@ const ShopTransfers = () => {
     setSelectedDate(dateParam ? dayjs(dateParam) : null);
   }, [searchParams]);
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    name: '',
-    thickness: '',
-    width: '',
-    length: '',
-    quality: '',
-    woodTypeId: '',
-    quantity: '',
-    toStoreId: '',
-    code: '',
-    price: '',
-    priceSelection: '',
+  const {
+    searchValues,
+    setSearchValues,
+    apply: handleSearch,
+    clear: clearSyncedFilter,
+    isEmpty,
+  } = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: [
+      'name',
+      'thickness',
+      'width',
+      'length',
+      'quality',
+      'woodTypeId',
+      'quantity',
+      'toStoreId',
+      'code',
+      'price',
+      'priceSelection',
+    ],
+    initialValues: {
+      name: '',
+      thickness: '',
+      width: '',
+      length: '',
+      quality: '',
+      woodTypeId: '',
+      quantity: '',
+      toStoreId: '',
+      code: '',
+      price: '',
+      priceSelection: '',
+    },
   });
 
   // Fetch wood types for filtering (only needed for wood products)
@@ -99,32 +123,9 @@ const ShopTransfers = () => {
     []
   );
 
-  const handleSearch = useCallback(() => {
-    const params = new URLSearchParams(searchParams);
-    // Preserve important parameters
-    const existingType = searchParams.get('type');
-    if (existingType) {
-      params.set('type', existingType);
-    }
-    const existingCreatedAt = searchParams.get('createdAt');
-    if (existingCreatedAt) {
-      params.set('createdAt', existingCreatedAt);
-    }
-
-    Object.entries(searchValues).forEach(([key, value]) => {
-      if (value === null || value === '' || value === undefined) {
-        params.delete(key);
-      } else {
-        params.set(key, String(value));
-      }
-    });
-    params.set('page', '1'); // Reset to first page when searching
-    setSearchParams(params);
-  }, [searchValues, searchParams, setSearchParams]);
-
   const resetDisabled = useMemo(() => {
-    return Object.values(searchValues).every((v) => !v) && !selectedDate;
-  }, [searchValues, selectedDate]);
+    return isEmpty && !selectedDate;
+  }, [isEmpty, selectedDate]);
 
   const handleDelete = useCallback(
     async (id: string) => {

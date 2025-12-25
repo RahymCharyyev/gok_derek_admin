@@ -4,6 +4,7 @@ import { useClientsTableColumn } from '@/components/Shops/hooks/TableColumns/use
 import { useShopClients } from '@/components/Shops/hooks/useShopClients';
 import Toolbar from '@/components/Toolbar';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { UserOutlined } from '@ant-design/icons';
 import { message } from 'antd';
@@ -31,20 +32,20 @@ const ShopClients = () => {
     clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
   } = useShopClients(id);
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    fullName: '',
-    phone: '',
-    createdAt: '',
-    paymentMethod: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['fullName', 'phone', 'createdAt', 'paymentMethod'],
+    initialValues: {
+      fullName: '',
+      phone: '',
+      createdAt: '',
+      paymentMethod: '',
+    },
   });
-
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
 
   const sortBy = searchParams.get('sortBy') || 'createdAt';
   const sortDirectionParam =
@@ -52,11 +53,11 @@ const ShopClients = () => {
 
   const resetDisabled = useMemo(() => {
     return (
-      Object.values(searchValues).every((v) => !v) &&
+      synced.isEmpty &&
       !searchParams.get('sortBy') &&
       !searchParams.get('sortDirection')
     );
-  }, [searchValues, searchParams]);
+  }, [synced.isEmpty, searchParams]);
 
   const handleOpenAddModal = () => {
     setEditingData(null);
@@ -130,17 +131,11 @@ const ShopClients = () => {
 
   const columns = useClientsTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy,
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     handleOpenEditModal,
     confirmDelete,

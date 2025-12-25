@@ -1,6 +1,7 @@
-import { Form, Input, Modal } from 'antd';
+import { Form, Input } from 'antd';
 import { useEffect, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BaseModal } from '@/components/ui/BaseModal';
 
 const { useForm } = Form;
 
@@ -58,18 +59,11 @@ const ClientModal: FC<ClientModalProps> = ({
   };
 
   return (
-    <Modal
+    <BaseModal
       open={open}
       onCancel={handleCancel}
       onOk={handleOk}
-      okText={t('okText')}
-      cancelText={t('cancelText')}
       title={initialValues ? t('editClient') : t('createClient')}
-      width='100%'
-      style={{ maxWidth: 500 }}
-      styles={{ body: { padding: 16 } }}
-      centered
-      destroyOnClose
     >
       <Form
         form={form}
@@ -98,7 +92,7 @@ const ClientModal: FC<ClientModalProps> = ({
           <Input allowClear placeholder={t('enterPhone')} type='tel' />
         </Form.Item>
       </Form>
-    </Modal>
+    </BaseModal>
   );
 };
 

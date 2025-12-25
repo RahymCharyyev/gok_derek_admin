@@ -8,33 +8,15 @@ import {
 } from '@ant-design/icons';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
 
 interface UseWorkshopTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
-  sortOptions: string[];
-  handleOpenEditModal: (record: any) => void;
-  confirmDelete: (options: { id: string }) => void;
-  visibleColumns?: string[];
-}
-
-interface UseWorkshopTableColumnProps {
-  t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
-  sortBy: string | null;
-  setSortBy: (value: string) => void;
-  sortDirectionParam: 'asc' | 'desc' | null;
-  setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
   handleOpenEditModal: (record: any) => void;
   confirmDelete: (options: { id: string }) => void;
@@ -44,19 +26,18 @@ interface UseWorkshopTableColumnProps {
 
 export const useWorkshopTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
   handleOpenEditModal,
   confirmDelete,
   visibleColumns,
   isFurniture,
 }: UseWorkshopTableColumnProps): ColumnsType<any> => {
+  const { searchValues, setSearchValues, apply: handleSearch, clear: clearFilter } =
+    synced;
   const columns: ColumnsType<any> = [
     {
       title: '№',

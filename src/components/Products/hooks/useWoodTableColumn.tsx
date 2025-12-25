@@ -1,24 +1,21 @@
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
+import { formatQuantityOrPrice } from '@/utils/formatters';
 import {
   DeleteOutlined,
-  SearchOutlined,
   EditOutlined,
-  TransactionOutlined,
+  SearchOutlined,
 } from '@ant-design/icons';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { renderFilterDropdown } from '../../renderFilterDropdown';
-import { formatQuantityOrPrice } from '@/utils/formatters';
 
 interface UseWoodTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
   handleOpenEditModal: (record: any) => void;
   confirmDelete: (options: { id: string }) => void;
@@ -26,17 +23,19 @@ interface UseWoodTableColumnProps {
 
 export const useWoodTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
   handleOpenEditModal,
   confirmDelete,
 }: UseWoodTableColumnProps): ColumnsType<any> => {
+  const resolvedSearchValues = synced.searchValues;
+  const resolvedSetSearchValues = synced.setSearchValues;
+  const resolvedHandleSearch = synced.apply;
+  const resolvedClearFilter = synced.clear;
+
   return [
     {
       title: '№',
@@ -52,14 +51,14 @@ export const useWoodTableColumn = ({
         renderFilterDropdown(
           'name',
           t('productName'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'name'
         ),
@@ -73,14 +72,14 @@ export const useWoodTableColumn = ({
         renderFilterDropdown(
           'woodType',
           t('woodType'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'woodType'
         ),
@@ -95,14 +94,14 @@ export const useWoodTableColumn = ({
         renderFilterDropdown(
           'woodThickness',
           t('woodThickness'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'thickness'
         ),
@@ -116,14 +115,14 @@ export const useWoodTableColumn = ({
         renderFilterDropdown(
           'woodWidth',
           t('woodWidth'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'width'
         ),
@@ -137,14 +136,14 @@ export const useWoodTableColumn = ({
         renderFilterDropdown(
           'woodLength',
           t('woodLength'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'length'
         ),
@@ -158,14 +157,14 @@ export const useWoodTableColumn = ({
         renderFilterDropdown(
           'woodQuality',
           t('woodQuality'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'quality'
         ),
@@ -180,14 +179,14 @@ export const useWoodTableColumn = ({
         renderFilterDropdown(
           'woodUnits',
           t('woodUnit'),
-          searchValues,
-          setSearchValues,
+          resolvedSearchValues,
+          resolvedSetSearchValues,
           sortOptions,
           sortDirectionParam,
           setSortBy,
           setSortDirectionParam,
-          handleSearch,
-          clearFilter,
+          resolvedHandleSearch,
+          resolvedClearFilter,
           t,
           'unit'
         ),

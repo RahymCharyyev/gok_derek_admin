@@ -4,6 +4,7 @@ import { useCreditsTableColumn } from '@/components/Shops/hooks/TableColumns/use
 import { useShopCredits } from '@/components/Shops/hooks/useShopCredits';
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
@@ -26,6 +27,7 @@ const ShopCredits = () => {
     clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
     gotBackMoneyMutation,
   } = useShopCredits(id);
 
@@ -35,12 +37,17 @@ const ShopCredits = () => {
     'wood'
   );
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    amount: '',
-    createdAt: '',
-    buyer: '',
-    productName: '',
-    quantity: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['amount', 'createdAt', 'buyer', 'productName', 'quantity'],
+    initialValues: {
+      amount: '',
+      createdAt: '',
+      buyer: '',
+      productName: '',
+      quantity: '',
+    },
   });
 
   // Fetch current shop data
@@ -51,12 +58,6 @@ const ShopCredits = () => {
   });
 
   const shopType = currentShopQuery.data?.body?.type;
-
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
 
   const sortBy = searchParams.get('sortBy') || 'createdAt';
   const sortDirectionParam =
@@ -82,25 +83,19 @@ const ShopCredits = () => {
 
   const resetDisabled = useMemo(() => {
     return (
-      Object.values(searchValues).every((v) => !v) &&
+      synced.isEmpty &&
       !searchParams.get('sortBy') &&
       !searchParams.get('sortDirection')
     );
-  }, [searchValues, searchParams]);
+  }, [synced.isEmpty, searchParams]);
 
   const columns = useCreditsTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy,
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     onGotBackMoney: (record) => {
       setSelectedClientId(record.id);

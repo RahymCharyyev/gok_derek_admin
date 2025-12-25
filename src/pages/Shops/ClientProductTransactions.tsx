@@ -3,9 +3,10 @@ import ErrorComponent from '@/components/ErrorComponent';
 import { useClientProductTransactions } from '@/components/Shops/hooks/useClientProductTransactions';
 import { useClientProductTransactionsTableColumn } from '@/components/Shops/hooks/TableColumns/useClientProductTransactionsTableColumn';
 import Toolbar from '@/components/Toolbar';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { ShoppingOutlined } from '@ant-design/icons';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -30,21 +31,21 @@ const ClientProductTransactions = () => {
     clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
   } = useClientProductTransactions(id);
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    createdAt: '',
-    quantity: '',
-    price: '',
-    type: '',
-    productName: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['createdAt', 'quantity', 'price', 'type', 'productName'],
+    initialValues: {
+      createdAt: '',
+      quantity: '',
+      price: '',
+      type: '',
+      productName: '',
+    },
   });
-
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
 
   const sortBy = searchParams.get('sortBy') || 'createdAt';
   const sortDirectionParam =
@@ -52,25 +53,19 @@ const ClientProductTransactions = () => {
 
   const resetDisabled = useMemo(() => {
     return (
-      Object.values(searchValues).every((v) => !v) &&
+      synced.isEmpty &&
       !searchParams.get('sortBy') &&
       !searchParams.get('sortDirection')
     );
-  }, [searchValues, searchParams]);
+  }, [synced.isEmpty, searchParams]);
 
   const columns = useClientProductTransactionsTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy,
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
   });
 
@@ -106,16 +101,7 @@ const ClientProductTransactions = () => {
         <Toolbar
           title={t('products')}
           icon={<ShoppingOutlined />}
-          onReset={() => {
-            setSearchValues({
-              createdAt: '',
-              quantity: '',
-              price: '',
-              type: '',
-              productName: '',
-            });
-            resetFilters();
-          }}
+          onReset={resetFilters}
           resetDisabled={resetDisabled}
           count={clientProductTransactionsQuery.data?.body.count || 0}
           customButton={

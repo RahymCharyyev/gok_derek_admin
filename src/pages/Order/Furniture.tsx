@@ -3,9 +3,10 @@ import AddOrderModal from '@/components/Order/AddOrderModal';
 import { useFurnitureOtherTableColumn } from '@/components/Order/hooks/useFurnitureOtherTableColumn';
 import { useProducts } from '@/components/Products/hooks/useProducts';
 import SecondToolbar from '@/components/SecondToolbar';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { message } from 'antd';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -21,31 +22,23 @@ const FurnitureOrder = () => {
     addOrder,
     handleTableChange,
     setFilter,
-    clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
   } = useProducts('furniture');
 
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    name: '',
-    code: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['name', 'code'],
+    initialValues: { name: '', code: '' },
   });
 
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
-
   const resetDisabled = useMemo(() => {
-    return (
-      Object.values(searchValues).every((v) => !v) &&
-      !query.sortBy &&
-      !query.sortDirection
-    );
-  }, [searchValues, query]);
+    return synced.isEmpty && !query.sortBy && !query.sortDirection;
+  }, [synced.isEmpty, query]);
 
   const handleOpenAddModal = (record: any) => {
     setSelectedProductId(record.key);
@@ -54,17 +47,11 @@ const FurnitureOrder = () => {
 
   const columns = useFurnitureOtherTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy: query.sortBy || '',
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     handleOpenAddModal,
   });

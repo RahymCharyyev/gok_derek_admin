@@ -1,7 +1,8 @@
 import { type UserEdit, type UserSchema } from '@/api/schema/user';
-import { Form, Input, Modal, Select } from 'antd';
+import { Form, Input, Select } from 'antd';
 import { useEffect, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BaseModal } from '@/components/ui/BaseModal';
 
 const { useForm } = Form;
 
@@ -40,17 +41,12 @@ const ShopModal: FC<ShopModalProps> = ({
   }, [initialValues]);
 
   return (
-    <Modal
+    <BaseModal
       open={open}
       onCancel={onCancel}
-      onOk={() => form.submit()}
-      okText={t('okText')}
-      cancelText={t('cancelText')}
       title={initialValues ? t('editShop') : t('createShop')}
-      width='100%'
-      style={{ maxWidth: 500 }}
-      styles={{ body: { padding: 16 } }}
-      centered
+      form={form}
+      loading={loading}
     >
       <Form
         form={form}
@@ -120,7 +116,7 @@ const ShopModal: FC<ShopModalProps> = ({
           <Input allowClear type='number' />
         </Form.Item>
       </Form>
-    </Modal>
+    </BaseModal>
   );
 };
 

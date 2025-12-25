@@ -4,8 +4,9 @@ import { useShopWoodOrdersTableColumn } from '@/components/Shops/hooks/TableColu
 import { useShopOrders } from '@/components/Shops/hooks/useShopOrders';
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { RiOrderPlayLine } from 'react-icons/ri';
@@ -24,6 +25,7 @@ const ShopWoodOrders = () => {
     clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
   } = useShopOrders('wood', id);
 
   // Fetch current shop data
@@ -35,40 +37,28 @@ const ShopWoodOrders = () => {
 
   const shopType = currentShopQuery.data?.body?.type;
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    productName: '',
-    quantity: '',
-    createdAt: '',
-    createdBy: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['productName', 'quantity', 'createdAt', 'createdBy'],
+    initialValues: { productName: '', quantity: '', createdAt: '', createdBy: '' },
   });
-
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
 
   const resetDisabled = useMemo(() => {
     return (
-      Object.values(searchValues).every((v) => !v) &&
+      synced.isEmpty &&
       !query.sortBy &&
       !query.sortDirection
     );
-  }, [searchValues, query]);
+  }, [synced.isEmpty, query]);
 
   const columns = useShopWoodOrdersTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy: query.sortBy || '',
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
   });
 

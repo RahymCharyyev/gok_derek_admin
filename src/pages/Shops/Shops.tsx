@@ -6,6 +6,7 @@ import ShopModal from '@/components/Shops/ShopModal';
 import Toolbar from '@/components/Toolbar';
 import { useUsers } from '@/components/Users/hooks/useUsers';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { BankOutlined } from '@ant-design/icons';
 import { message } from 'antd';
@@ -29,22 +30,27 @@ const Shops = () => {
     deleteShopMutation,
     handleTableChange,
     setFilter,
-    clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
   } = useShopList();
 
   const { usersQuery, setSearchParams: setUserSearchParams } = useUsers({
     enabled: isModalOpen,
   });
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    name: '',
-    userId: '',
-    geoLocation: '',
-    type: '',
-    creditLimit: '',
-    address: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['name', 'userId', 'geoLocation', 'type', 'creditLimit', 'address'],
+    initialValues: {
+      name: '',
+      userId: '',
+      geoLocation: '',
+      type: '',
+      creditLimit: '',
+      address: '',
+    },
   });
 
   const confirmDelete = useDeleteConfirm();
@@ -61,33 +67,17 @@ const Shops = () => {
     setUserSearchParams(params);
   }, [debouncedSearchUserValue, setUserSearchParams, searchParams]);
 
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
-
   const resetDisabled = useMemo(() => {
-    return (
-      Object.values(searchValues).every((v) => !v) &&
-      !query.sortBy &&
-      !query.sortDirection
-    );
-  }, [searchValues, query]);
+    return synced.isEmpty && !query.sortBy && !query.sortDirection;
+  }, [synced.isEmpty, query]);
 
   const columns = useShopTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy: query.sortBy || '',
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     handleOpenEditModal: (record) => {
       setEditingData(record);
@@ -187,7 +177,7 @@ const Shops = () => {
         }
         loading={usersQuery.isLoading}
         onSearchUser={(value) => setSearchUserValue(value)}
-        onClearUser={() => clearFilter('firstName')}
+        onClearUser={() => setSearchUserValue('')}
       />
     </>
   );

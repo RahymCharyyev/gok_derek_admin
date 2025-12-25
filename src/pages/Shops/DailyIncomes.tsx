@@ -6,6 +6,7 @@ import { useShopFinanceMutations } from '@/components/Shops/hooks/useShopFinance
 import IncomeExpenseModal from '@/components/Shops/IncomeExpenseModal';
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Button, DatePicker, message } from 'antd';
@@ -27,6 +28,7 @@ const DailyIncomes = () => {
     clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
   } = useDailyIncomes(id);
 
   const { addIncomeMutation } = useShopFinanceMutations();
@@ -43,11 +45,11 @@ const DailyIncomes = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    productName: '',
-    quantity: '',
-    amount: '',
-    createdAt: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['productName', 'quantity', 'amount', 'createdAt'],
+    initialValues: { productName: '', quantity: '', amount: '', createdAt: '' },
   });
 
   // Sync selectedDate from URL params
@@ -55,12 +57,6 @@ const DailyIncomes = () => {
     const dateParam = searchParams.get('createdAt');
     setSelectedDate(dateParam ? dayjs(dateParam) : null);
   }, [searchParams]);
-
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
 
   const handleDateChange = useCallback(
     (date: Dayjs | null) => {
@@ -76,12 +72,12 @@ const DailyIncomes = () => {
 
   const resetDisabled = useMemo(() => {
     return (
-      Object.values(searchValues).every((v) => !v) &&
+      synced.isEmpty &&
       !searchParams.get('sortBy') &&
       !searchParams.get('sortDirection') &&
       !selectedDate
     );
-  }, [searchValues, searchParams, selectedDate]);
+  }, [synced.isEmpty, searchParams, selectedDate]);
 
   const sortBy = searchParams.get('sortBy') || 'createdAt';
   const sortDirectionParam =
@@ -89,17 +85,11 @@ const DailyIncomes = () => {
 
   const columns = useDailyIncomesTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy,
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
   });
 
@@ -131,12 +121,6 @@ const DailyIncomes = () => {
   };
 
   const handleReset = useCallback(() => {
-    setSearchValues({
-      productName: '',
-      quantity: '',
-      amount: '',
-      createdAt: '',
-    });
     setSelectedDate(null);
     resetFilters();
   }, [resetFilters]);

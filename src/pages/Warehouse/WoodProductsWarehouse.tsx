@@ -6,6 +6,7 @@ import { useProductSearch } from '@/components/Products/hooks/useProductSearch';
 import { useShopList } from '@/components/Shops/hooks/useShopList';
 import { useWarehouseProducts } from '@/components/Warehouse/hooks/useWarehouseProducts';
 import { useWoodWarehouseTableColumn } from '@/components/Warehouse/hooks/useWoodWarehouseTableColumn';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, message } from 'antd';
@@ -29,7 +30,6 @@ const WoodProductsWarehouse = () => {
     transferProductMutation,
     handleTableChange,
     setFilter,
-    clearFilter,
     resetFilters,
     searchParams,
     setSearchParams,
@@ -46,13 +46,18 @@ const WoodProductsWarehouse = () => {
     'wood' | 'other' | undefined
   >(undefined);
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    name: '',
-    thickness: '',
-    width: '',
-    length: '',
-    quality: '',
-    woodTypeId: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['name', 'thickness', 'width', 'length', 'quality', 'woodTypeId'],
+    initialValues: {
+      name: '',
+      thickness: '',
+      width: '',
+      length: '',
+      quality: '',
+      woodTypeId: '',
+    },
   });
   const [isTransfer, setIsTransfer] = useState(false);
 
@@ -66,26 +71,9 @@ const WoodProductsWarehouse = () => {
     perPage: 50,
   });
 
-  const handleSearch = useCallback(() => {
-    const params = new URLSearchParams(searchParams);
-    Object.entries(searchValues).forEach(([key, value]) => {
-      if (value === null || value === '') {
-        params.delete(key);
-      } else {
-        params.set(key, String(value));
-      }
-    });
-    params.set('page', '1'); // Reset to first page when searching
-    setSearchParams(params);
-  }, [searchValues, searchParams, setSearchParams]);
-
   const resetDisabled = useMemo(() => {
-    return (
-      Object.values(searchValues).every((v) => !v) &&
-      !query.sortBy &&
-      !query.sortDirection
-    );
-  }, [searchValues, query]);
+    return synced.isEmpty && !query.sortBy && !query.sortDirection;
+  }, [synced.isEmpty, query]);
 
   const handleOpenTransferModal = (record: any) => {
     setEditingData({ productId: record.id });
@@ -111,17 +99,11 @@ const WoodProductsWarehouse = () => {
 
   const columns = useWoodWarehouseTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy: query.sortBy || '',
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     handleOpenTransferModal,
     woodTypes: woodTypesQuery.data?.body.data,
@@ -228,7 +210,7 @@ const WoodProductsWarehouse = () => {
         onSearchProduct={(value) => setProductSearchValue(value)}
         onClearProduct={() => {
           clearProductSearch();
-          clearFilter('name');
+          synced.clear('name');
         }}
         isTransfer={isTransfer}
         productType={selectedProductType}

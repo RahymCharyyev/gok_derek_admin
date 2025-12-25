@@ -5,10 +5,11 @@ import Toolbar from '@/components/Toolbar';
 import AddTransferProductModal from '@/components/Warehouse/AddTransferProductModal';
 import { useOtherWarehouseTableColumn } from '@/components/Warehouse/hooks/useOtherWarehouseTableColumn';
 import { useWarehouseProducts } from '@/components/Warehouse/hooks/useWarehouseProducts';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, message } from 'antd';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,7 +25,6 @@ const OtherProductsWarehouse = () => {
     transferProductMutation,
     handleTableChange,
     setFilter,
-    clearFilter,
     resetFilters,
     searchParams,
     setSearchParams,
@@ -48,30 +48,16 @@ const OtherProductsWarehouse = () => {
     perPage: 50,
   });
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    name: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['name'],
+    initialValues: { name: '' },
   });
 
-  const handleSearch = useCallback(() => {
-    const params = new URLSearchParams(searchParams);
-    Object.entries(searchValues).forEach(([key, value]) => {
-      if (value === null || value === '') {
-        params.delete(key);
-      } else {
-        params.set(key, String(value));
-      }
-    });
-    params.set('page', '1'); // Reset to first page when searching
-    setSearchParams(params);
-  }, [searchValues, searchParams, setSearchParams]);
-
   const resetDisabled = useMemo(() => {
-    return (
-      Object.values(searchValues).every((v) => !v) &&
-      !query.sortBy &&
-      !query.sortDirection
-    );
-  }, [searchValues, query]);
+    return synced.isEmpty && !query.sortBy && !query.sortDirection;
+  }, [synced.isEmpty, query]);
 
   const handleOpenTransferModal = (record: any) => {
     setEditingData({ productId: record.id });
@@ -86,17 +72,11 @@ const OtherProductsWarehouse = () => {
 
   const columns = useOtherWarehouseTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy: query.sortBy || '',
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     handleOpenTransferModal,
   });
@@ -193,7 +173,7 @@ const OtherProductsWarehouse = () => {
         onSearchProduct={(value) => setProductSearchValue(value)}
         onClearProduct={() => {
           clearProductSearch();
-          clearFilter('name');
+          synced.clear('name');
         }}
         isTransfer={isTransfer}
         productType={selectedProductType}

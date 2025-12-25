@@ -1,4 +1,5 @@
 import { notification } from 'antd';
+import { getApiErrorMessage } from '@/utils/apiError';
 
 export const handleError = (
   error: any,
@@ -6,19 +7,33 @@ export const handleError = (
   message: string,
   description: string
 ) => {
-  if (error.response?.status === 400) {
+  const status = error?.response?.status;
+  const details = getApiErrorMessage(error, 'unknownError');
+
+  if (status === 400 || status === 422) {
     notification.error({
       title: message,
-      message: message,
-      description: description,
+      message,
+      description: details || description,
       placement: 'top',
     });
-  } else {
-    notification.error({
-      title: message,
-      message: errorText,
-      description: error.message,
-      placement: 'top',
-    });
+    return;
   }
+
+  if (status === 401 || status === 403) {
+    notification.error({
+      title: message,
+      message,
+      description: details || errorText,
+      placement: 'top',
+    });
+    return;
+  }
+
+  notification.error({
+    title: message,
+    message,
+    description: details || errorText,
+    placement: 'top',
+  });
 };

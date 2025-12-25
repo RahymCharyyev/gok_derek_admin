@@ -34,10 +34,11 @@ export const useProducts = (
     'desc'
   );
 
-  const units = searchParams.get('units')
-    ? searchParams
-        .get('units')
-        ?.split(',')
+  const unitsParam = searchParams.get('units') || searchParams.get('woodUnits');
+  const units = unitsParam
+    ? unitsParam
+        .split(',')
+        .filter(Boolean)
         .map((unit) => ({ unit: unit as 'piece' | 'meter' | 'sqMeter' }))
     : undefined;
 
@@ -46,11 +47,19 @@ export const useProducts = (
     perPage,
     name: searchParams.get('name') || undefined,
     woodType: searchParams.get('woodType') || undefined,
-    thickness: Number(searchParams.get('thickness')) || undefined,
-    width: Number(searchParams.get('width')) || undefined,
-    length: Number(searchParams.get('length')) || undefined,
+    thickness:
+      Number(
+        searchParams.get('thickness') || searchParams.get('woodThickness')
+      ) || undefined,
+    width:
+      Number(searchParams.get('width') || searchParams.get('woodWidth')) ||
+      undefined,
+    length:
+      Number(searchParams.get('length') || searchParams.get('woodLength')) ||
+      undefined,
     quality: ((): StoreWarehouseSchema['GetProducts']['quality'] => {
-      const val = searchParams.get('quality');
+      const val =
+        searchParams.get('quality') || searchParams.get('woodQuality');
       if (val === null || val === undefined || val === '') return undefined;
       if (['0', '1', '2', '3', 'extra', 'premium'].includes(val)) {
         return val as StoreWarehouseSchema['GetProducts']['quality'];

@@ -5,6 +5,7 @@ import { useShopProductHistoryTableColumn } from '@/components/Shops/hooks/Table
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
 import TableLayout from '@/layout/TableLayout';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
@@ -50,36 +51,32 @@ const ShopProductHistory = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productId]);
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    createdAt: '',
-    quantity: '',
-    type: '',
-    productName: '',
-    productType: '',
-    thickness: '',
-    width: '',
-    length: '',
-    quality: '',
+  const synced = useSyncedSearchValues({
+    searchParams: hookSearchParams,
+    setSearchParams,
+    keys: [
+      'createdAt',
+      'quantity',
+      'type',
+      'productName',
+      'productType',
+      'thickness',
+      'width',
+      'length',
+      'quality',
+    ],
+    initialValues: {
+      createdAt: '',
+      quantity: '',
+      type: '',
+      productName: '',
+      productType: '',
+      thickness: '',
+      width: '',
+      length: '',
+      quality: '',
+    },
   });
-
-  const handleSearch = useCallback(() => {
-    const params = new URLSearchParams(hookSearchParams);
-    // Preserve productId if it exists
-    const existingProductId = hookSearchParams.get('productId');
-    if (existingProductId) {
-      params.set('productId', existingProductId);
-    }
-
-    Object.entries(searchValues).forEach(([key, value]) => {
-      if (value === null || value === '' || value === undefined) {
-        params.delete(key);
-      } else {
-        params.set(key, String(value));
-      }
-    });
-    params.set('page', '1'); // Reset to first page when searching
-    setSearchParams(params);
-  }, [searchValues, hookSearchParams, setSearchParams]);
 
   const sortBy = hookSearchParams.get('sortBy');
   const sortDirectionParam = hookSearchParams.get('sortDirection') as
@@ -106,20 +103,16 @@ const ShopProductHistory = () => {
   // Get menu items for product type selection
 
   const resetDisabled = useMemo(() => {
-    const hasFilters = Object.values(searchValues).some((v) => v);
-    return !hookSearchParams.get('productId') && !hasFilters && !sortBy;
-  }, [hookSearchParams, searchValues, sortBy]);
+    return !hookSearchParams.get('productId') && synced.isEmpty && !sortBy;
+  }, [hookSearchParams, synced.isEmpty, sortBy]);
 
   const columns = useShopProductHistoryTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy,
     setSortBy,
     sortDirectionParam,
     setSortDirectionParam,
-    handleSearch,
-    clearFilter,
     sortOptions,
   });
 

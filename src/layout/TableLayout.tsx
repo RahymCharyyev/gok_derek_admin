@@ -1,10 +1,11 @@
-import { ConfigProvider, Empty, Table } from 'antd';
+import { ConfigProvider, Table } from 'antd';
 import type {
   ColumnsType,
   TablePaginationConfig,
   TableProps,
 } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 interface TableLayoutProps<T> {
   columns: ColumnsType<T> | undefined;
@@ -32,14 +33,7 @@ const TableLayout = <T extends object>({
   const { t } = useTranslation();
   return (
     <div className='min-h-[360px] rounded-lg'>
-      <ConfigProvider
-        renderEmpty={() => (
-          <Empty
-            description={t('noInfo')}
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-          />
-        )}
-      >
+      <ConfigProvider renderEmpty={() => <EmptyState />}>
         <Table<T>
           locale={{
             triggerDesc: t('triggerDesc'),
@@ -61,6 +55,7 @@ const TableLayout = <T extends object>({
             showSizeChanger: true,
           }}
           scroll={{ x: 'max-content' }}
+          sticky
           onRow={onRow}
           onChange={onChange}
           loading={loading}

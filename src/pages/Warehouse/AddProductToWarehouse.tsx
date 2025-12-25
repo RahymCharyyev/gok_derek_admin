@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 import { renderFilterDropdown } from '@/components/renderFilterDropdown';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 
 const { useForm } = Form;
 
@@ -55,15 +56,24 @@ const AddProductToWarehouse = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    name: '',
-    woodType: '',
-    thickness: '',
-    width: '',
-    length: '',
-    quality: '',
-    code: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams: (params) => {
+      params.set('type', productType);
+      setUrlSearchParams(params);
+    },
+    keys: ['name', 'woodType', 'thickness', 'width', 'length', 'quality', 'code'],
+    initialValues: {
+      name: '',
+      woodType: '',
+      thickness: '',
+      width: '',
+      length: '',
+      quality: '',
+      code: '',
+    },
   });
+  const { searchValues, setSearchValues } = synced;
   const [form] = useForm();
 
   // Ensure 'type' parameter is always in the URL
@@ -103,17 +113,6 @@ const AddProductToWarehouse = () => {
   );
 
   const resetFilters = useCallback(() => {
-    // Clear local state
-    setSearchValues({
-      name: '',
-      woodType: '',
-      thickness: '',
-      width: '',
-      length: '',
-      quality: '',
-      code: '',
-    });
-
     // Clear URL params
     const params = new URLSearchParams();
     params.set('type', productType); // Preserve type
@@ -122,44 +121,17 @@ const AddProductToWarehouse = () => {
     setUrlSearchParams(params);
   }, [productType, perPage, setUrlSearchParams]);
 
-  // Sync URL params with local search state on mount
-  useEffect(() => {
-    const newSearchValues: { [key: string]: string } = {
-      name: searchParams.get('name') || '',
-      woodType: searchParams.get('woodType') || '',
-      thickness: searchParams.get('thickness') || '',
-      width: searchParams.get('width') || '',
-      length: searchParams.get('length') || '',
-      quality: searchParams.get('quality') || '',
-      code: searchParams.get('code') || '',
-    };
-    setSearchValues(newSearchValues);
-  }, [searchParams]);
-
   const handleSearch = useCallback(() => {
-    const params = new URLSearchParams(searchParams);
-    params.set('type', productType); // Preserve type
-    params.set('page', '1'); // Reset to first page
-
-    // Apply all filters at once
-    Object.entries(searchValues).forEach(([key, value]) => {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
-    });
-
-    setUrlSearchParams(params);
-  }, [searchValues, searchParams, productType, setUrlSearchParams]);
+    synced.apply();
+  }, [synced]);
 
   const resetDisabled = useMemo(() => {
     return (
-      Object.values(searchValues).every((v) => !v) &&
+      synced.isEmpty &&
       !productsQuery.sortBy &&
       !productsQuery.sortDirection
     );
-  }, [searchValues, productsQuery]);
+  }, [synced.isEmpty, productsQuery]);
 
   const handleOpenAddModal = (record: any) => {
     setSelectedProduct(record);

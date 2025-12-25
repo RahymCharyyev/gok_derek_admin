@@ -1,5 +1,6 @@
 import ErrorComponent from '@/components/ErrorComponent';
 import Toolbar from '@/components/Toolbar';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { SendOutlined } from '@ant-design/icons';
 import { DatePicker } from 'antd';
@@ -21,6 +22,7 @@ const OtherSentProducts = () => {
     clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
   } = useWarehouseSentProducts('other');
 
   // Get productId from URL params and set it as a filter
@@ -32,8 +34,11 @@ const OtherSentProducts = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    name: '',
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: ['name'],
+    initialValues: { name: '' },
   });
 
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(() => {
@@ -41,11 +46,7 @@ const OtherSentProducts = () => {
     return dateParam ? dayjs(dateParam) : null;
   });
 
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
+  const handleSearch = useCallback(() => synced.apply(), [synced]);
 
   const handleDateChange = useCallback(
     (date: Dayjs | null) => {
@@ -61,26 +62,17 @@ const OtherSentProducts = () => {
 
   const resetDisabled = useMemo(() => {
     return (
-      Object.values(searchValues).every((v) => !v) &&
-      !query.sortBy &&
-      !query.sortDirection &&
-      !selectedDate
+      synced.isEmpty && !query.sortBy && !query.sortDirection && !selectedDate
     );
-  }, [searchValues, query, selectedDate]);
+  }, [synced.isEmpty, query, selectedDate]);
 
   const columns = useSentOtherProductsTableColumn({
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy: query.sortBy || '',
     setSortBy: (value) => setFilter('sortBy', value),
     sortDirectionParam: query.sortDirection as 'asc' | 'desc' | null,
     setSortDirectionParam: (value) => setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
   });
 

@@ -9,6 +9,7 @@ import SaleProductModal from '@/components/Shops/SaleProductModal';
 import { ShopNavigationButtons } from '@/components/Shops/ShopNavigationButtons';
 import Toolbar from '@/components/Toolbar';
 import { useWarehousesList } from '@/components/Warehouse/hooks/useWarehousesList';
+import { useSyncedSearchValues } from '@/hooks/useSyncedSearchValues';
 import TableLayout from '@/layout/TableLayout';
 import { message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
@@ -30,15 +31,6 @@ const ShopProducts = () => {
   const [activeProductType, setActiveProductType] = useState<'wood' | 'other'>(
     'wood'
   );
-  const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({
-    name: '',
-    userId: '',
-    geoLocation: '',
-    type: '',
-    creditLimit: '',
-    address: '',
-  });
-
   // Fetch current shop data
   const currentShopQuery = tsr.shop.getOne.useQuery({
     queryKey: ['shop', id],
@@ -60,9 +52,9 @@ const ShopProducts = () => {
     perPage,
     handleTableChange,
     setFilter,
-    clearFilter,
     resetFilters,
     searchParams,
+    setSearchParams,
     shopProductsQuery,
     transferProductMutation,
     saleMutation,
@@ -78,19 +70,42 @@ const ShopProducts = () => {
     enabled: shopType === 'wood' && activeProductType === 'wood',
   });
 
-  const handleSearch = useCallback(() => {
-    Object.entries(searchValues).forEach(([key, value]) => {
-      setFilter(key, value);
-    });
-  }, [searchValues, setFilter]);
+  const synced = useSyncedSearchValues({
+    searchParams,
+    setSearchParams,
+    keys: [
+      'name',
+      'price',
+      'thickness',
+      'width',
+      'length',
+      'woodTypeId',
+      'quality',
+      'type',
+      'isAvailable',
+      'createdAt',
+    ],
+    initialValues: {
+      name: '',
+      price: '',
+      thickness: '',
+      width: '',
+      length: '',
+      woodTypeId: '',
+      quality: '',
+      type: '',
+      isAvailable: '',
+      createdAt: '',
+    },
+  });
 
   const resetDisabled = useMemo(() => {
     return (
-      Object.values(searchValues).every((v) => !v) &&
+      synced.isEmpty &&
       !searchParams.get('sortBy') &&
       !searchParams.get('sortDirection')
     );
-  }, [searchValues, searchParams]);
+  }, [synced.isEmpty, searchParams]);
 
   const handleOpenAddModal = (record: any) => {
     setEditingData(null);
@@ -107,19 +122,13 @@ const ShopProducts = () => {
   // Column configuration based on shop type
   const columnProps = {
     t,
-    searchValues,
-    setSearchValues,
+    synced,
     sortBy: searchParams.get('sortBy') || '',
     setSortBy: (value: string) => setFilter('sortBy', value),
     sortDirectionParam:
       (searchParams.get('sortDirection') as 'asc' | 'desc' | null) || null,
     setSortDirectionParam: (value: 'asc' | 'desc') =>
       setFilter('sortDirection', value),
-    handleSearch,
-    clearFilter: (key: string) => {
-      setSearchValues((prev) => ({ ...prev, [key]: '' }));
-      clearFilter(key);
-    },
     sortOptions: ['asc', 'desc'],
     isShopProducts: true,
     handleOpenTransferModal: handleOpenAddModal,
@@ -290,7 +299,7 @@ const ShopProducts = () => {
           shops={transferDestinations}
           loading={shopsQuery.isLoading || warehousesQuery.isLoading}
           onSearchProduct={(value) => setSearchProductValue(value)}
-          onClearProduct={() => clearFilter('name')}
+          onClearProduct={() => synced.clear('name')}
         />
       )}
     </>

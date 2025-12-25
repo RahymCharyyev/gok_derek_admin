@@ -1,5 +1,5 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Select } from 'antd';
+import { Button, Select } from 'antd';
+import { SearchInput } from '@/components/ui/SearchInput';
 
 export const renderFilterDropdown = (
   key: string,
@@ -21,13 +21,10 @@ export const renderFilterDropdown = (
   return (
     <div className='p-2 space-y-2 w-[220px]'>
       {showSearch && !selectOptions && (
-        <Input
-          value={searchValues[key]}
-          suffix={<SearchOutlined />}
+        <SearchInput
+          value={searchValues[key] ?? ''}
           placeholder={t('search')}
-          onChange={(e) =>
-            setSearchValues({ ...searchValues, [key]: e.target.value })
-          }
+          onChange={(value) => setSearchValues({ ...searchValues, [key]: value })}
           onPressEnter={handleSearch}
         />
       )}

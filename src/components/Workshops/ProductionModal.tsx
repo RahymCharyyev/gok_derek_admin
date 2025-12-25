@@ -1,16 +1,9 @@
 import { tsr } from '@/api';
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import {
-  Button,
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  Select,
-  Typography,
-} from 'antd';
+import { Button, Form, Input, InputNumber, Select, Typography } from 'antd';
 import { useEffect, useMemo, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BaseModal } from '@/components/ui/BaseModal';
 const { useForm } = Form;
 const { Title } = Typography;
 
@@ -367,15 +360,15 @@ const ProductionModal: FC<ProductionModalProps> = ({
   };
 
   return (
-    <Modal
+    <BaseModal
       open={open}
       onCancel={onCancel}
-      onOk={() => form.submit()}
-      okText={t('save')}
-      cancelText={t('cancel')}
       title={initialValues ? t('editProduction') : t('createProduction')}
-      width={1100}
-      centered
+      form={form}
+      okText={t('save')}
+      cancelText={t('cancelText')}
+      width='100%'
+      maxWidth={1100}
     >
       <Form
         form={form}
@@ -1063,7 +1056,7 @@ const ProductionModal: FC<ProductionModalProps> = ({
           </div>
         </div>
       </Form>
-    </Modal>
+    </BaseModal>
   );
 };
 

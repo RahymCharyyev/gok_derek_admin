@@ -8,33 +8,30 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import { Button } from 'antd';
 import dayjs from 'dayjs';
+import type { SyncedSearchValuesReturn } from '@/hooks/useSyncedSearchValues';
 
 interface UseOtherWarehouseHistoryTableColumnProps {
   t: (key: string) => string;
-  searchValues: { [key: string]: string };
-  setSearchValues: (values: { [key: string]: string }) => void;
+  synced: SyncedSearchValuesReturn;
   sortBy: string | null;
   setSortBy: (value: string) => void;
   sortDirectionParam: 'asc' | 'desc' | null;
   setSortDirectionParam: (value: 'asc' | 'desc') => void;
-  handleSearch: () => void;
-  clearFilter: (key: string) => void;
   sortOptions: string[];
   confirmDelete: (options: { id: string }) => void;
 }
 
 export const useOtherWarehouseHistoryTableColumn = ({
   t,
-  searchValues,
-  setSearchValues,
+  synced,
   setSortBy,
   sortDirectionParam,
   setSortDirectionParam,
-  handleSearch,
-  clearFilter,
   sortOptions,
   confirmDelete,
 }: UseOtherWarehouseHistoryTableColumnProps): ColumnsType<any> => {
+  const { searchValues, setSearchValues, apply: handleSearch, clear: clearFilter } =
+    synced;
   return [
     {
       title: '№',
