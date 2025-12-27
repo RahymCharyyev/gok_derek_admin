@@ -224,7 +224,7 @@
   "fromStore": "Nireden",
   "toStore": "Nirä",
   "orderDate": "Sargalan sagady",
-  "orderedQuantity": "Sargan mukdary",
+  "orderedQuantity": "Sargalan mukdary",
   "warehouseQuantity": "Ammardaky mukdary",
   "noSendQuantity": "Ýetmeýän mukdary",
   "orderer": "Sargan",
@@ -343,5 +343,8 @@
   "addItem": "Önüm goşmak",
   "cancel": "Ýatyrmak",
   "produced": "Öndürildi",
-  "sent": "Iberildi"
+  "sent": "Iberildi",
+  "productionDetails": "Önümçilige gelen/giden harytlar",
+  "itemsCount": "Önümleriň sany",
+  "unit": "Ölçeg birligi"
 }

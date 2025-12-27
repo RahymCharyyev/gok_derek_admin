@@ -1,7 +1,8 @@
 import { Button, Tag } from 'antd';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 
 interface UseProductionTableColumnProps {
   t: (key: string) => string;
@@ -12,6 +13,8 @@ export const useProductionTableColumn = ({
   t,
   confirmDelete,
 }: UseProductionTableColumnProps): ColumnsType<any> => {
+  const navigate = useNavigate();
+
   return [
     {
       title: '№',
@@ -57,15 +60,15 @@ export const useProductionTableColumn = ({
     {
       title: t('actions'),
       key: 'actions',
-      width: 100,
+      width: 150,
       render: (_, record) => (
         <div className='flex items-center gap-2'>
-          {/* <Button
-            size="small"
-            type="primary"
-            icon={<EditOutlined />}
-            onClick={() => handleOpenEditModal(record)}
-          /> */}
+          <Button
+            size='small'
+            type='primary'
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/workshops/production/${record.id}`)}
+          />
           <Button
             size='small'
             type='primary'

@@ -135,6 +135,7 @@ const OrderedWarehouseWoodProducts = () => {
       productWidth: item.product?.wood?.width || '',
       productLength: item.product?.wood?.length || '',
       productQuality: item.product?.wood?.quality || '',
+      productWoodType: item.product?.wood?.woodType?.name || '',
       woodUnits: item.product?.wood?.units || '',
       quantity: item.quantity || '',
       productQuantity: item.product?.productQuantity || 0,

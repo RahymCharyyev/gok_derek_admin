@@ -40,13 +40,13 @@ export const useSentWoodProductsTableColumn = ({
       fixed: 'left',
     },
     {
-      title: t('createdAt'),
+      title: t('sentTime'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       filterDropdown: () =>
         renderFilterDropdown(
           'createdAt',
-          t('createdAt'),
+          t('sentTime'),
           resolvedSearchValues,
           resolvedSetSearchValues,
           sortOptions,
@@ -85,94 +85,77 @@ export const useSentWoodProductsTableColumn = ({
       render: (record) => <div>{record}</div>,
     },
     {
-      title: t('woodThickness'),
-      dataIndex: 'productThickness',
-      key: 'productThickness',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'thickness',
-          t('woodThickness'),
-          resolvedSearchValues,
-          resolvedSetSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          resolvedHandleSearch,
-          resolvedClearFilter,
-          t,
-          'thickness'
-        ),
-      filterIcon: () => <SearchOutlined />,
-      render: (record) => <div>{t(record)}</div>,
+      title: t('dimensions'),
+      children: [
+        {
+          title: t('woodThickness'),
+          dataIndex: 'productThickness',
+          key: 'productThickness',
+          filterDropdown: () =>
+            renderFilterDropdown(
+              'thickness',
+              t('woodThickness'),
+              resolvedSearchValues,
+              resolvedSetSearchValues,
+              sortOptions,
+              sortDirectionParam,
+              setSortBy,
+              setSortDirectionParam,
+              resolvedHandleSearch,
+              resolvedClearFilter,
+              t,
+              'thickness'
+            ),
+          filterIcon: () => <SearchOutlined />,
+          render: (record) => <div>{record}</div>,
+        },
+        {
+          title: t('woodWidth'),
+          dataIndex: 'productWidth',
+          key: 'productWidth',
+          filterDropdown: () =>
+            renderFilterDropdown(
+              'width',
+              t('woodWidth'),
+              resolvedSearchValues,
+              resolvedSetSearchValues,
+              sortOptions,
+              sortDirectionParam,
+              setSortBy,
+              setSortDirectionParam,
+              resolvedHandleSearch,
+              resolvedClearFilter,
+              t,
+              'width'
+            ),
+          filterIcon: () => <SearchOutlined />,
+          render: (record) => <div>{record}</div>,
+        },
+        {
+          title: t('woodLength'),
+          dataIndex: 'productLength',
+          key: 'productLength',
+          filterDropdown: () =>
+            renderFilterDropdown(
+              'length',
+              t('woodLength'),
+              searchValues,
+              setSearchValues,
+              sortOptions,
+              sortDirectionParam,
+              setSortBy,
+              setSortDirectionParam,
+              handleSearch,
+              clearFilter,
+              t,
+              'length',
+              false
+            ),
+          filterIcon: () => <DownOutlined />,
+          render: (record) => <div>{record}</div>,
+        },
+      ],
     },
-    {
-      title: t('woodWidth'),
-      dataIndex: 'productWidth',
-      key: 'productWidth',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'width',
-          t('woodWidth'),
-          resolvedSearchValues,
-          resolvedSetSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          resolvedHandleSearch,
-          resolvedClearFilter,
-          t,
-          'width'
-        ),
-      filterIcon: () => <SearchOutlined />,
-    },
-    {
-      title: t('woodLength'),
-      dataIndex: 'productLength',
-      key: 'productLength',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'length',
-          t('woodLength'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'length',
-          false
-        ),
-      filterIcon: () => <DownOutlined />,
-    },
-    {
-      title: t('woodType'),
-      dataIndex: 'productWoodType',
-      key: 'productWoodType',
-      filterDropdown: () =>
-        renderFilterDropdown(
-          'woodTypeId',
-          t('woodType'),
-          searchValues,
-          setSearchValues,
-          sortOptions,
-          sortDirectionParam,
-          setSortBy,
-          setSortDirectionParam,
-          handleSearch,
-          clearFilter,
-          t,
-          'woodTypeId',
-          false
-        ),
-      filterIcon: () => <DownOutlined />,
-      render: (record) => <div>{record}</div>,
-    },
-
     {
       title: t('woodQuality'),
       dataIndex: 'productQuality',
@@ -197,13 +180,36 @@ export const useSentWoodProductsTableColumn = ({
       render: (record) => <div>{record}</div>,
     },
     {
-      title: t('woodUnit'),
+      title: t('woodType'),
+      dataIndex: 'productWoodType',
+      key: 'productWoodType',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'woodTypeId',
+          t('woodType'),
+          searchValues,
+          setSearchValues,
+          sortOptions,
+          sortDirectionParam,
+          setSortBy,
+          setSortDirectionParam,
+          handleSearch,
+          clearFilter,
+          t,
+          'woodTypeId',
+          false
+        ),
+      filterIcon: () => <DownOutlined />,
+      render: (record) => <div>{record || '-'}</div>,
+    },
+    {
+      title: t('woodUnitWide'),
       dataIndex: 'productUnits',
       key: 'productUnits',
       filterDropdown: () =>
         renderFilterDropdown(
           'productUnits',
-          t('woodUnit'),
+          t('woodUnitWide'),
           searchValues,
           setSearchValues,
           sortOptions,
@@ -218,7 +224,7 @@ export const useSentWoodProductsTableColumn = ({
         ),
       filterIcon: () => <DownOutlined />,
       render: (value) => {
-        if (!Array.isArray(value)) return null;
+        if (!Array.isArray(value)) return '-';
         return value.map((e) => t(e.unit)).join(' / ');
       },
     },

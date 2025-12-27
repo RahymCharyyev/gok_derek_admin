@@ -31,6 +31,7 @@ import WoodSentProducts from './pages/Warehouse/SentProducts/WoodSentProducts';
 import OtherSentProducts from './pages/Warehouse/SentProducts/OtherSentProducts';
 import FurnitureWorkshop from './pages/Workshops/Furniture';
 import WoodWorkshop from './pages/Workshops/Wood';
+import ProductionDetail from './pages/Workshops/ProductionDetail';
 import ShopTransfers from './pages/Shops/ShopTransfers';
 import ShopClients from './pages/Shops/ShopClients';
 import ClientProductTransactions from './pages/Shops/ClientProductTransactions';
@@ -338,6 +339,14 @@ function App() {
             element={
               <LayoutComponent>
                 <FurnitureWorkshop />
+              </LayoutComponent>
+            }
+          />
+          <Route
+            path='/workshops/production/:id'
+            element={
+              <LayoutComponent>
+                <ProductionDetail />
               </LayoutComponent>
             }
           />

@@ -296,21 +296,5 @@ export const useWoodWarehouseHistoryTableColumn = ({
         ),
       filterIcon: () => <DownOutlined />,
     },
-    {
-      title: t('actions'),
-      key: 'actions',
-      fixed: 'right',
-      render: (_, record) => (
-        <div className='flex items-center gap-2'>
-          <Button
-            size='small'
-            type='primary'
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => confirmDelete({ id: record.key })}
-          />
-        </div>
-      ),
-    },
   ];
 };

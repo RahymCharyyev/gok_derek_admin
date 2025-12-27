@@ -7,8 +7,9 @@ import ProductionModal from '@/components/Workshops/ProductionModal';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import TableLayout from '@/layout/TableLayout';
 import { PlusOutlined } from '@ant-design/icons';
-import { message } from 'antd';
-import { useMemo, useState, type FC } from 'react';
+import { DatePicker, message } from 'antd';
+import dayjs, { type Dayjs } from 'dayjs';
+import { useCallback, useEffect, useMemo, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const WoodWorkshop: FC = () => {
@@ -31,20 +32,44 @@ const WoodWorkshop: FC = () => {
     productionQuery,
     handleTableChange,
     setFilter,
+    clearFilter,
     resetFilters,
+    searchParams,
+    setSearchParams,
     createMutation,
     editMutation,
     deleteMutation,
-  } = useProduction();
+  } = useProduction(storeId);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<any | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
 
   const confirmDelete = useDeleteConfirm();
 
+  // Sync selectedDate from URL params
+  useEffect(() => {
+    const dateParam = searchParams.get('createdAt');
+    setSelectedDate(dateParam ? dayjs(dateParam) : null);
+  }, [searchParams]);
+
+  const handleDateChange = useCallback(
+    (date: Dayjs | null) => {
+      setSelectedDate(date);
+      if (date) {
+        setFilter('createdAt', date.format('YYYY-MM-DD'));
+      } else {
+        clearFilter('createdAt');
+      }
+    },
+    [setFilter, clearFilter]
+  );
+
   const resetDisabled = useMemo(() => {
-    return !query.sortBy && !query.sortDirection;
-  }, [query]);
+    return (
+      !query.sortBy && !query.sortDirection && !searchParams.get('createdAt')
+    );
+  }, [query, searchParams]);
 
   const columns = useProductionTableColumn({
     t,
@@ -97,6 +122,11 @@ const WoodWorkshop: FC = () => {
     }
   };
 
+  const handleReset = useCallback(() => {
+    setSelectedDate(null);
+    resetFilters();
+  }, [resetFilters]);
+
   return (
     <>
       <TableLayout
@@ -108,9 +138,19 @@ const WoodWorkshop: FC = () => {
               setEditingData(null);
               setIsModalOpen(true);
             }}
-            onReset={resetFilters}
+            onReset={handleReset}
             resetDisabled={resetDisabled}
             count={productionQuery.data?.body.count}
+            customButton={
+              <DatePicker
+                value={selectedDate}
+                onChange={handleDateChange}
+                format='DD.MM.YYYY'
+                placeholder={t('selectDate')}
+                allowClear
+                style={{ width: 200 }}
+              />
+            }
           />
         )}
         loading={productionQuery.isLoading || storeQuery.isLoading}

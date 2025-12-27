@@ -191,6 +191,29 @@ export const useOrderedWoodTableColumn = ({
       render: (record) => <div>{record}</div>,
     },
     {
+      title: t('woodType'),
+      dataIndex: 'productWoodType',
+      key: 'productWoodType',
+      filterDropdown: () =>
+        renderFilterDropdown(
+          'woodType',
+          t('woodType'),
+          searchValues,
+          setSearchValues,
+          sortOptions,
+          sortDirectionParam,
+          setSortBy,
+          setSortDirectionParam,
+          handleSearch,
+          clearFilter,
+          t,
+          'woodType',
+          false
+        ),
+      filterIcon: () => <DownOutlined />,
+      render: (record) => <div>{record || '-'}</div>,
+    },
+    {
       title: t('orderedQuantity'),
       dataIndex: 'quantity',
       key: 'quantity',

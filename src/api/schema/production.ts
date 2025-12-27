@@ -16,6 +16,10 @@ const sortable = schema.pick({storeId: true, createdAt: true}).keyof();
 
 const sort = z.object({sortBy: sortable.default('createdAt'), sortDirection: sortDirection.default('desc')});
 
+const resData = schema.extend({
+  items: productionItemSchema.schema.array(),
+});
+
 const getAll = schema
   .extend({
     storeId: z.string().uuid(),
@@ -25,10 +29,10 @@ const getAll = schema
   .merge(commonQuery);
 const getAllRes = z.object({
   count: z.number(),
-  data: schema.extend({items: productionItemSchema.schema.array()}).partial().array(),
+  data: resData.partial().array(),
 });
 
-const getOneRes = schema;
+const getOneRes = resData.partial();
 
 const create = schema.pick({storeId: true}).extend({
   items: z.object({productId: z.string().uuid(), type: productionItemTypes, amount: z.number().min(0)}).array(),
